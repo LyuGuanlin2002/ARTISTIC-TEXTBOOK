@@ -1,0 +1,266 @@
+%%%%%%%%%%%%%%%%%%%% 参考文献宏包 %%%%%%%%%%%%%%%%%%%%
+%%参考文献编译方式：先用XeLaTeX编译主文件.tex一次；再用BibTeX编译主文件（或各子文件）.tex一次；然后用XeLaTeX编译主文件.tex两次%%
+\RequirePackage[numbers,sectionbib]{natbib}%参考文献格式
+\renewcommand{\bibnumfmt}[1]{\protect\NumberedLabel{#1}}%修改参考文献序号样式
+\renewcommand{\citenumfont}[1]{\color{ColorA}\CiteNumFont#1}%修改引用样式
+\bibpunct{\color{ColorA}{[}}{\color{ColorA}{]}}{,}{n}{}{;}%修改方括号颜色
+\renewcommand{\bibname}{参考文献}%修改参考文献标题
+%%根据类布尔参数splitbib的存在与否来判断是否加载宏包chapterbib%%
+\makeatletter
+\ifTextBook@splitbib
+\RequirePackage{chapterbib}%分章节显示参考文献，且参考文献编号各自独立
+\fi
+%%设置参考文献输出命令键%%
+\define@boolkey{printbib}{intoc}[true]{}
+\def\printbib@biblevel{\@ifundefined{chapter}{\section}{\chapter}*}
+\define@key{printbib}{level}{\def\printbib@biblevel{#1}}
+\def\printbib@toclevel{\@ifundefined{chapter}{section}{chapter}}
+\define@key{printbib}{toclevel}{\def\printbib@toclevel{#1}}
+
+%%设置默认键值%%
+\setkeys{printbib}{level=\chapter*,toclevel=chapter}
+%%参考文献样式设置命令%%
+\newcommand{\bibsetup}[1]{\setkeys{printbib}{#1}}
+%%参考文献输出设置%%
+\newcommand{\printbib}[1]{
+	\colorlet{ListColor}{ColorA}
+	\renewcommand{\bibsection}{
+		\printbib@biblevel{\bibname}
+		\ifKV@printbib@intoc\phantomsection
+		\addcontentsline{toc}{\printbib@toclevel}{\bibname}\fi}
+	\bibliographystyle{plain}
+	\bibliography{#1}}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%% 索引宏包 %%%%%%%%%%%%%%%%%%%%
+\RequirePackage{filecontents}%在tex内编写数据文件
+\RequirePackage[splitindex]{imakeidx}%索引设置，splitindex参数自动分割索引\\Large
+%%索引风格文件indexstyle.ist%%
+\begin{filecontents}[overwrite]{indexstyle.ist}
+	headings_flag 1
+	heading_prefix "\n\\centering\\bfseries\\color{ColorA}"
+	heading_suffix "\\normalfont\\color{black}\\nopagebreak\n"
+	delim_0 " \\hfill " 
+	delim_1 " \\hfill "
+	delim_2 " \\hfill "
+\end{filecontents}
+
+%%设置默认键值（不要引入noclearpage选项，否则会出现目录页码错误）%%
+\setkeys{imkiindex}{level=\chapter,toclevel=chapter}
+
+%\makeatletter
+%%%添加新关键字envlevel（环境中索引层次）%%
+%\def\imki@envindexlevel{\@ifundefined{chapter}{\section}{\chapter}*}
+%\define@key{imkiindex}{envlevel}{\def\imki@envindexlevel{#1}}
+%%%添加新关键字envtoclevel（环境中索引的目录层次）%%
+%\def\imki@envtoclevel{\@ifundefined{chapter}{section}{chapter}}
+%\define@key{imkiindex}{envtoclevel}{\def\imki@envtoclevel{#1}}
+%%%设置默认键值（不要引入noclearpage选项，否则会出现目录页码错误）%%
+%\setkeys{imkiindex}{level=\chapter*,envlevel=\chapter,toclevel=chapter,envtoclevel=chapter}
+%%%修改索引环境%%
+%\ifimki@original
+%\expandafter\def\expandafter\theindex\expandafter{\expandafter
+	%\imki@maybeaddtotoc\theindex}
+%\else
+%\global\let\imki@idxprologue\relax
+%\renewenvironment{theindex}{
+	%%%%%%%%%%% 修改部分开始 %%%%%%%%%%
+	%\if@appendix%判断索引所在环境
+	%\imki@envindexlevel{\indexname}
+	%\else
+	%\imki@indexlevel{\indexname}
+	%\fi
+	%\imki@maybeaddtotoc%添加目录
+	%%\imki@indexheaders%注释掉页眉设置
+	%%\thispagestyle{\imki@firstpagestyle}%注释掉首页页面样式
+	%%%%%%%%%%% 修改部分结束 %%%%%%%%%%
+	%\ifnum\imki@columns>\@ne
+	%\columnsep\imki@columnsep
+	%\ifx\imki@idxprologue\relax
+	%\begin{multicols}{\imki@columns}
+	%\else
+	%\begin{multicols}{\imki@columns}[\imki@idxprologue]
+	%\fi
+	%\else
+	%\imki@idxprologue
+	%\fi
+	%\global\let\imki@idxprologue\relax
+	%\parindent\z@
+	%\parskip\z@\@plus0.3\p@\relax
+	%\columnseprule
+	%\ifKV@imki@columnseprule0.4\p@\else\z@\fi
+	%\raggedright
+	%\let\item\@idxitem
+	%\imki@othercode}{
+	%\ifnum\imki@columns>\@ne
+	%\end{multicols}
+	%\fi}
+%\fi
+%
+%%%修改目录添加%%
+%\def\imki@putindexsplit#1{
+	%\ifimki@nonewpage\else
+	%\imki@clearpage
+	%\ifimki@disableautomatic\else
+	%\immediate\closeout\csname #1@idxfile\endcsname
+	%\fi\fi
+	%\let\imki@indexname\indexname
+	%\@nameuse{imki@set@#1}\imki@decide
+	%\if@tempswa
+	%\imki@exec{\imki@program\imki@options#1.idx}
+	%\else
+	%\imki@finalmessage{#1}
+	%\fi
+	%%%%%%%%%%% 修改部分开始 %%%%%%%%%%
+	%\ifKV@imki@intoc
+	%\if@appendix
+	%\def\imki@maybeaddtotoc{\@nameuse{phantomsection}
+		%\addcontentsline{toc}{\imki@envtoclevel}{\imki@title}}
+	%\else
+	%\def\imki@maybeaddtotoc{\@nameuse{phantomsection}
+		%\addcontentsline{toc}{\imki@toclevel}{\imki@title}}
+	%\fi
+	%\else
+	%\def\imki@maybeaddtotoc{}
+	%\fi
+	%%%%%%%%%%% 修改部分结束 %%%%%%%%%%
+	%\ifx\imki@title\imki@check@indexname\else
+	%\def\indexname{\imki@title}
+	%\fi
+	%\@input@{#1.ind}
+	%\let\indexname\imki@indexname}
+%%%%%
+%\def\imki@putindexunique#1{
+	%\ifimki@nonewpage\else
+	%\imki@clearpage
+	%\fi
+	%\let\imki@indexname\indexname
+	%\@nameuse{imki@set@#1}\imki@decide
+	%\if@tempswa
+	%\ifimki@splitdone\else
+	%\ifimki@disableautomatic\else
+	%\immediate\closeout\@indexfile
+	%\fi
+	%\imki@exec{splitindex \imki@splitindexoptions\space\imki@jobname.idx}
+	%\global\imki@splitdonetrue
+	%\fi
+	%\else
+	%\ifimki@splitdone\else
+	%\imki@splitindexmessage\global\imki@splitdonetrue
+	%\fi\fi
+	%\if@tempswa
+	%\imki@exec{\imki@program\imki@options\imki@jobname-#1.idx}
+	%\fi
+	%%%%%%%%%%% 修改部分开始 %%%%%%%%%%
+	%\ifKV@imki@intoc
+	%\if@appendix
+	%\def\imki@maybeaddtotoc{\@nameuse{phantomsection}
+		%\addcontentsline{toc}{\imki@envtoclevel}{\imki@title}}
+	%\else
+	%\def\imki@maybeaddtotoc{\@nameuse{phantomsection}
+		%\addcontentsline{toc}{\imki@toclevel}{\imki@title}}
+	%\fi
+	%\else
+	%\def\imki@maybeaddtotoc{}
+	%\fi
+	%%%%%%%%%%% 修改部分结束 %%%%%%%%%%
+	%\ifx\imki@title\imki@check@indexname\else
+	%\def\indexname{\imki@title}
+	%\fi
+	%\@input@{\imki@jobname-#1.ind}
+	%\let\indexname\imki@indexname}
+%
+%\makeatother
+
+%%定义中文索引命令，#2是中文，#3是全拼（首字母）%%
+\NewDocumentCommand{\zhindex}{omm}{\IfValueTF{#1}{\index[#1]{#3@#2}}{\index{#3@#2}}}
+
+%%%%%%%%%%%%%%%%%%%% 术语表宏包 %%%%%%%%%%%%%%%%%%%%
+\RequirePackage{nomencl}%引入术语表
+%%生成主要符号表的方法：主文件先用XeLaTeX编译一次，然后建立一个.bat文件，内容为：makeindex <filename>.nlo -s nomencl.ist -o <filename>.nls -t <filename>.nlg，运行，再用XeLaTeX编译主文件两次即可生成%%
+\renewcommand{\nomname}{主要符号表}%更改符号表标题
+
+\makeatletter
+%%以下命令会令nomencl宏包选项失效，符号表的具体设置需要在主文件中进行%%
+%%设置符号表输出命令键%%
+\newif\if@nomencl@columnseprule
+\define@key{nomen}{columns}{\def\@nomencl@columns{#1}}
+\define@key{nomen}{columnsep}{\def\@nomencl@columnsep{#1}}
+%%添加新关键字level%%
+\def\@nomencl@level{\@ifundefined{chapter}{\section}{\chapter}*}
+\define@key{nomen}{level}{\def\@nomencl@level{#1}}
+%%添加新关键字toclevel%%
+\def\@nomencl@toclevel{\@ifundefined{chapter}{section}{chapter}}
+\define@key{nomen}{toclevel}{\def\@nomencl@toclevel{#1}}
+%%定义产生一对布尔键的命令%%
+\newcommand{\@nomen@define@pairboolkeys}[4]{
+	\define@boolkey{nomen}{#1}[true]{#2}
+	\define@boolkey{nomen}{#3}[true]{#4}}
+%%
+\@nomen@define@pairboolkeys{columnseprule}{\@nomencl@columnsepruletrue}{nocolumnseprule}{\@nomencl@columnseprulefalse}
+\@nomen@define@pairboolkeys{intoc}{\@intoctrue}{notintoc}{\@intocfalse}
+\@nomen@define@pairboolkeys{tocbasic}{\@nomencl@tocbasictrue}{notocbasic}{\@nomencl@tocbasicfalse}
+%%设置默认键值%%
+\setkeys{nomen}{level=\chapter*,envlevel=\chapter,toclevel=chapter,envtoclevel=chapter,
+	columns=2,columnsep=2.0em,notintoc,notocbasic,nocolumnseprule}
+%%定义符号表设置命令%%
+\newcommand{\nomensetup}[1]{\setkeys{nomen}{#1}}
+%%修改符号表环境%%
+\renewcommand{\thenomenclature}{
+	%%%%%%%%%% 修改部分开始 %%%%%%%%%%
+	\clearpage
+	\providecommand*{\listofnlsname}{\nomname}
+	\if@nomencl@tocbasic
+	\let\list@fname\listofnlsname
+	\def\@currext{nls}
+	\tocbasic@listhead{\list@fname}
+	\else
+	\if@appendix%判断索引所在环境
+	\@nomencl@envlevel{\nomname}
+	\if@intoc%判断是否存在intoc参数
+	\phantomsection
+	\addcontentsline{toc}{\@nomencl@envtoclevel}{\nomname}
+	\fi
+	\else
+	\@nomencl@level{\nomname}
+	\if@intoc%判断是否存在intoc参数
+	\phantomsection
+	\addcontentsline{toc}{\@nomencl@toclevel}{\nomname}
+	\fi\fi
+	\fi
+	\nompreamble
+	\ifnum\@nomencl@columns>\@ne%多列符号表设置
+	\begin{multicols}{\@nomencl@columns}
+		\columnsep\@nomencl@columnsep
+		\columnseprule
+		\if@nomencl@columnseprule0.4\p@\else\z@\fi
+		\fi
+		%%%%%%%%%% 修改部分结束 %%%%%%%%%%
+		\if@nomentbl
+		\let\itemOrig=\item
+		\def\item{\gdef\item{\\}}
+		\expandafter\longtable\expandafter{\@nomtableformat}
+		\else
+		\list{}{
+			\labelwidth\nom@tempdim
+			\leftmargin\labelwidth
+			\advance\leftmargin\labelsep
+			\itemsep\nomitemsep
+			\let\makelabel\nomlabel}
+		\fi}
+	%%
+	\def\endthenomenclature{
+		\if@nomentbl
+		\item\endlongtable
+		\global\let\item=\itemOrig
+		\else
+		\endlist
+		\fi
+		%%%%%%%%%% 修改部分开始 %%%%%%%%%%
+		\nompostamble
+		\ifnum\@nomencl@columns>\@ne
+	\end{multicols}
+	\fi
+	%%%%%%%%%% 修改部分结束 %%%%%%%%%%
+}
+\makeatother
