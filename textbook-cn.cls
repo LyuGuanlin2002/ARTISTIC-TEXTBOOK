@@ -220,6 +220,8 @@ BoldItalicFont=FZCukai.ttf
 Path=fonts/,
 BoldFont=FZCukai.ttf]
 
+%%取消弹性段间距%%
+\setlength{\parskip}{0pt}
 %%单独修改行距命令%%
 \makeatletter
 \def\set@baselineskip#1#2{%
@@ -251,7 +253,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\TitlepageNormalFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{15pt}}%标题页正常字体
 \newcommand{\TitlepageTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{40pt}}%标题页主标题字体
 \newcommand{\TitlepageSubtitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{30pt}}%标题页次标题字体
-\newcommand{\TitlepageEnglishFont}{\upshape\sffamily\bfseries\FontSizeSet[1.2]{18pt}}%标题页次标题字体
+\newcommand{\TitlepageEnglishFont}{\upshape\sffamily\bfseries\FontSizeSet[1.2]{18pt}}%标题页英文标题字体
 \newcommand{\PartLabelFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{34pt}}%部分标签字体
 \newcommand{\PartNameFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{32pt}}%部分名称字体
 \newcommand{\ChapterLabelFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{27pt}}%章标签字体
@@ -292,7 +294,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\MarginNoteFont}{\itshape\kaiti\FontSizeSet[1.2]{13pt}}%边注字体
 \newcommand{\FootNoteFont}{\itshape\kaiti\FontSizeSet[1.2]{13pt}}%脚注字体
 \newcommand{\ItemFont}{\kaiti}%列表字体
-\newcommand{\MainFont}{\FontSizeSet{14pt}}%正文字体[1.4]
+\newcommand{\MainFont}{\FontSizeSet[1.4]{14pt}}%正文字体
 
 %%%%%%%%%%%%%%%%%%%% 页面布局设定宏包 %%%%%%%%%%%%%%%%%%%%
 \makeatletter
@@ -336,6 +338,7 @@ BoldFont=FZCukai.ttf]
 \gdef\footnotesize{\FootNoteFont}
 %%%%
 \RequirePackage{multicol,paracol}%多栏%分栏、边注、中英对照
+\setlength{\multicolsep}{0pt}%取消multicol环境前的垂直空白距离
 %%%%
 \columnratio{\@MainColumn@Ratio}
 \footnotelayout{m}
@@ -344,7 +347,7 @@ BoldFont=FZCukai.ttf]
 %%将默认的textheight储存起来%%
 \newlength{\defaulttextheight}
 \setlength{\defaulttextheight}{\textheight}
-%%Start New Page: \pcol@startpage在换页时（无论是被动或主动）调用%%
+%%Start New Page: \pcol@startpage在换页时（无论是被动或主动）调用，paracol环境开始的第一页则不调用%%
 \def\pcol@startpage{%
 \global\let\pcol@firstprevdepth\relax
 \global\pcol@toppage\pcol@page
@@ -1834,10 +1837,6 @@ BoldFont=FZCukai.ttf]
 %%章标题顶格放置%%
 \titleclass{\chapter}{top}
 
-\newlength{\defaulttopskip}
-\setlength{\defaulttopskip}{\topskip}
-\newlength{\defaultparskip}
-\setlength{\defaultparskip}{\parskip}
 %%修改chapter断页方式%%
 \newcommand{\chapterbreak}{%
 \if@openright%
@@ -1845,9 +1844,10 @@ BoldFont=FZCukai.ttf]
 \else%
 \clearpage%
 \fi%
-\changetextheight{\ChapterPageHeightCut}%临时修改章首页的版心高度为章底部文字留出空间
-\gsetlength{\topskip}{0pt}%临时清除章上方的垂直空白距离
-\gsetlength{\parskip}{0pt}%临时清除段间距，使得章首页的文字与章标题之间的垂直间距始终保持不变
+%临时修改章首页的版心高度为章底部文字留出空间
+\changetextheight{\ChapterPageHeightCut}%
+%恢复默认版心高度
+\AddToHookNext{shipout}{\changetextheight{-\ChapterPageHeightCut}}
 }
 %%为\chapter*添加短页眉%%
 \NewCommandCopy{\OriginChapter}{\chapter}
@@ -1856,13 +1856,9 @@ BoldFont=FZCukai.ttf]
 \IfBooleanTF{#1}%
 {\OriginChapter*{#3\@mkboth{#2}{#2}}}%
 {\OriginChapter[#2]{#3}}%
-\AddToHookNext{shipout}{%
-\changetextheight{-\ChapterPageHeightCut}%恢复默认版心高度
-\gsetlength{\topskip}{\defaulttopskip}%恢复默认\topskip
-\gsetlength{\parskip}{\defaultparskip}%恢复默认\parskip
-}%
 \nointerlineskip%清除章首页其他的额外垂直空白距离
-\vtop to\ChapterVSpace{}%
+\kern\ChapterVSpace%\kern命令插入不可伸缩的固定垂直距离
+\kern-\topskip%取消顶部多余的留白
 }
 
 %%节样式%%
@@ -2016,7 +2012,6 @@ BoldFont=FZCukai.ttf]
 \fi
 %%
 \coordinate(CC)at([yshift=-\@Subsection@Star@Radius]L.north west);
-%\draw[white,fill=white,sharp corners](CC)--([yshift=\@Subsection@Star@BRadius]CC)arc(90:-90:\@Subsection@Star@BRadius)--cycle;
 \draw[white,fill=white,sharp corners](CC)circle(\@Subsection@Star@BRadius);
 \draw[ColorA,fill=ColorA](CC)circle(\@Subsection@Star@SRadius);
 \draw[white,line width=4.0pt,fill=ColorA](CC)circle(2*\@Subsection@Star@Radius/3);
@@ -2813,7 +2808,7 @@ BoldFont=FZCukai.ttf]
 }
 %%%%
 %%目录页码右侧空格%%
-\contentsmargin{3.5mm}
+\contentsmargin{4.5mm}
 %%标签绘制%%
 \newlength{\@PartToc@LabelCriticWidth}
 \setlength{\@PartToc@LabelCriticWidth}{6.0cm}
@@ -2833,9 +2828,9 @@ BoldFont=FZCukai.ttf]
 \end{varwidth}};
 \pgfgetnodewidth(L)\@PartToc@LabelWidth
 \pgfgetnodeheight(L)\@PartToc@LabelHeight
-%%
+%%+1.0mm
 \node[text=ColorA,inner xsep=\@PartToc@Radius,inner ysep=0mm,outer sep=0mm,minimum width=\linewidth-\@PartToc@LabelWidth,anchor=north west](N)at(L.north east){%
-\begin{minipage}{\linewidth-\@PartToc@LabelWidth-2\@PartToc@Radius+1.0mm}
+\begin{minipage}{\linewidth-\@PartToc@LabelWidth-2\@PartToc@Radius}
 \def\@mpfn{footnote}%修改minipage中的脚注计数器
 \def\thempfn{\thefootnote}%
 %\AdjustStrut{0.9}%
@@ -2864,7 +2859,7 @@ BoldFont=FZCukai.ttf]
 %%不编号部分目录样式%%
 \NewDocumentCommand{\@Toc@Part@Unnumbered}{+m}{\contentslabel[\@PartTocStyle{#1}{\hfill\sffamily\thecontentspage}]{1.25cm}}
 %%
-%%部分目录样式%%\addvspace{15.0pt}
+%%部分目录样式%%
 \titlecontents{part}[1.25cm]{}
 {\@Toc@Part@Numbered}
 {\@Toc@Part@Unnumbered}{}
