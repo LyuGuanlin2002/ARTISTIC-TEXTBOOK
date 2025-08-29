@@ -246,9 +246,7 @@ BoldFont=FZCukai.ttf]
 }
 \makeatother
 %%简化字体命令%%
-\ExplSyntaxOn
-\newcommand{\FontSizeSet}[2][1.5]{\fontsize{#2}{\fp_eval:n{#1*#2}}\selectfont}
-\ExplSyntaxOff
+\newcommand{\FontSizeSet}[2][1.5]{\fontsize{#2}{\fpeval{#1*#2}}\selectfont}
 %%字号设置%%
 \newcommand{\TitlepageNormalFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{15pt}}%标题页正常字体
 \newcommand{\TitlepageTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{40pt}}%标题页主标题字体
@@ -286,7 +284,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\LineNumFont}{\upshape\sffamily\bfseries\FontSizeSet{10pt}}%行号字体
 \newcommand{\ListNumFont}{\upshape\sffamily\bfseries\FontSizeSet{12pt}}%列表序号字体
 \newcommand{\HeadingFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{13pt}}%一般标题字体
-\newcommand{\EgLabelFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.3]{13pt}}%例题标签字体
+\newcommand{\EgLabelFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{13pt}}%例题标签字体
 \newcommand{\BoxTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.3]{13pt}}%盒子标题字体
 \newcommand{\BoxSubtitleFont}{\upshape\rmfamily\bfseries\FontSizeSet{13pt}}%盒子副标题字体
 \newcommand{\BoxLogoFont}{\upshape\rmfamily\bfseries\FontSizeSet{16pt}}%盒子logo字体
@@ -299,10 +297,8 @@ BoldFont=FZCukai.ttf]
 %%%%%%%%%%%%%%%%%%%% 页面布局设定宏包 %%%%%%%%%%%%%%%%%%%%
 \makeatletter
 %%边注宽度设置%%
-\ExplSyntaxOn
-\gdef\@MarginColumn@Ratio{0.25}
-\gdef\@MainColumn@Ratio{\fp_eval:n{1-\@MarginColumn@Ratio}}
-\ExplSyntaxOff
+\def\@MarginColumn@Ratio{0.25}
+\def\@MainColumn@Ratio{\fpeval{1-\@MarginColumn@Ratio}}
 %%%%
 \newlength{\@innerlen}
 \newlength{\@outerlen}
@@ -317,10 +313,7 @@ BoldFont=FZCukai.ttf]
 \RequirePackage{geometry}
 \geometry{letterpaper,headsep=0.75cm,footskip=0.75cm,inner=\@innerlen,outer=\@outerlen,top=\@toplen,bottom=\@botlen,columnsep=2.0em,reversemarginpar,heightrounded}
 %%
-\ExplSyntaxOn
-\setlength{\marginparwidth}{\dim_eval:n{\@MarginColumn@Ratio\textwidth-0.75em}}
-\ExplSyntaxOff
-%%
+\setlength{\marginparwidth}{\dimeval{\@MarginColumn@Ratio\textwidth-0.75em}}
 \setlength{\marginparsep}{-\marginparwidth}
 \setlength{\columnseprule}{0pt}
 %%%%
@@ -476,32 +469,27 @@ BoldFont=FZCukai.ttf]
 \renewcommand{\shorttocname}{内容概览}%更改简洁目录标题
 %%目录计数器%%
 \setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1}
 \makeatletter
 %%重定义\tableofcontents%%
-\RenewDocumentCommand{\tableofcontents}{s O{1} +O{}}{%
+\RenewDocumentCommand{\tableofcontents}{s +O{} O{1}}{%
 \chapter*{\contentsname}%
-\begingroup%确保计数器值只在局部生效
-\c@tocdepth=1%预设目录深度为1
 \IfBooleanTF{#1}{%
-\ifnum#2=1%
+\begin{paracol}{2}%
 \@starttoc{toc}%
-\else%
-\begin{paracol}{#2}%
-\@starttoc{toc}%
-\switchcolumnsloppy[1]%
-#3%
+\switchcolumnsloppy%
+#2%
 \end{paracol}%
-\fi%
 }{%
-\ifnum#2=1%
+\gobble{#2}%这一分支不需要#2参数，如果检测到#2的输入，则“吃掉”#2
+\ifnum#3=1%
 \@starttoc{toc}%
 \else%
-\begin{multicols}{#2}%
+\begin{multicols}{#3}%
 \@starttoc{toc}%
 \end{multicols}%
-\fi%
+\fi}
 }
-\endgroup}
 %%清除跟随在\chapter命令后在lof和lot文件中插入的垂直间距%%
 \def\ttl@tocsep{}
 %%重定义\listoffigures%%
@@ -577,7 +565,7 @@ BoldFont=FZCukai.ttf]
 %%修改addtolength的作用域%%
 \newcommand{\gaddtolength}[1]{\calc@assign@skip{\global\advance#1}}
 %%修改setlength的作用域%%
-\gdef\gsetlength#1#2{%
+\def\gsetlength#1#2{%
 \begingroup
 \setlength\skip@{#2}
 \global#1=\skip@
@@ -631,7 +619,7 @@ BoldFont=FZCukai.ttf]
 \makeatletter
 \newcounter{@Thumb@Number}%记录侧标数
 \regtotcounter{@Thumb@Number}%获取侧标数最大值，需要编译两次才能正确获取
-\newcounter{@Chapter@Number}%记录章总数
+%%%%
 \newcounter{@egnum}[section]
 \newcounter{@varnum}[section]
 \newcounter{@def}[section]
@@ -790,7 +778,6 @@ BoldFont=FZCukai.ttf]
 \markboth{\protect\@subtitle}{\protect\@subtitle}
 \extramarks{\protect\@seriesname}{\protect\@seriesname}
 }
-\makeatother
 %%设置新长度%%
 \newlength{\DeltaH}%第一个侧标与最后一个侧标的中心点到页面最上端和最下端的垂直距离
 \newlength{\SepH}%相邻两个侧标中心点之间的距离
@@ -798,17 +785,21 @@ BoldFont=FZCukai.ttf]
 \setlength{\DeltaH}{6.0cm}
 \AtBeginDocument{%
 \makeatletter
-\ifthenelse{\totvalue{@Thumb@Number}=0\or\totvalue{@Thumb@Number}=1}
-{\setlength{\SepH}{0cm}
-\setlength{\MarkY}{-\paperheight/2}}
-{\setlength{\SepH}{\dimexpr(\paperheight-2\DeltaH)/(\totvalue{@Thumb@Number}-1)\relax}%设置侧标每次移动的距离
-\setlength{\MarkY}{-\DeltaH}}%设置侧标上下两侧锚点坐标的初值
+\xdef\@RealPage{1}%在文档开头文档绝对页数\@RealPage初始化为1
+\ifthenelse{\totvalue{@Thumb@Number}=0\or\totvalue{@Thumb@Number}=1}{%
+\setlength{\SepH}{0cm}
+\setlength{\MarkY}{-\paperheight/2}%
+}{%
+\setlength{\SepH}{\dimeval{(\paperheight-2\DeltaH)/(\totvalue{@Thumb@Number}-1)}}%设置侧标每次移动的距离
+\setlength{\MarkY}{-\DeltaH}%设置侧标上下两侧锚点坐标的初值
+}%
 \DefaultMark%默认标记
 \pagestyle{empty}%默认页面样式为空
 \MainFont%默认正文字体
 \makeatother}
+%%统计绝对页数%%
+\AddToHook{shipout/after}{\xdef\@RealPage{\inteval{\ReadonlyShipoutCounter+1}}}%每一页输出后都给\@RealPage加1
 %%%%
-\makeatletter
 %%绘制页面框架%%
 \newlength{\@ThumbMinimumHeight}
 \setlength{\@ThumbMinimumHeight}{1.2cm}
@@ -1483,7 +1474,6 @@ BoldFont=FZCukai.ttf]
 \newcommand{\PartEnd}{\stopcontents[part]}
 
 %%章节页样式%%
-\newlength{\@Chapter@TitleBlockHeight}
 \newlength{\ChapterVSpace}
 \newlength{\@Chapter@StripeWidth}
 \newlength{\@Chapter@LabelSep}
@@ -1534,6 +1524,11 @@ BoldFont=FZCukai.ttf]
 \end{varwidth}};
 %%渐变带%%
 \path[fill=ColorB,opacity=0.6]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+%%记录当前页占文档总页数的百分比%%
+\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
+%%
+\path[fill=ColorA]([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
 %%标题%%
 \node[inner sep=0mm,anchor=north east,font=\ChapterNameFont,text=ColorA](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]T.south east){%
 \begin{varwidth}{\textwidth}
@@ -1551,7 +1546,7 @@ BoldFont=FZCukai.ttf]
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
-\setlength{\@Chapter@TitleBlockHeight}{\DistanceKL}
+\def\@Chapter@TitleBlockHeight{\DistanceKL}
 \gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
@@ -1595,6 +1590,11 @@ BoldFont=FZCukai.ttf]
 \end{varwidth}};
 %%渐变带%%
 \path[fill=ColorB,opacity=0.6]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=\@innerlen+\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+%%记录当前页占文档总页数的百分比%%
+\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
+%%
+\path[fill=ColorA]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
 %%标题%%
 \node[inner sep=0mm,anchor=north west,font=\ChapterNameFont,text=ColorA](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]T.south west){%
 \begin{varwidth}{\textwidth}
@@ -1612,7 +1612,7 @@ BoldFont=FZCukai.ttf]
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
-\setlength{\@Chapter@TitleBlockHeight}{\DistanceKL}
+\def\@Chapter@TitleBlockHeight{\DistanceKL}
 \gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
@@ -1682,7 +1682,11 @@ BoldFont=FZCukai.ttf]
 %%
 %%渐变带%%
 \path[fill=ColorB,opacity=0.6]([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south east);
+%%记录当前页占文档总页数的百分比%%
+\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
 %%
+\path[fill=ColorA]([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south east);
 %%副标题%%
 \node[inner sep=0mm,outer sep=0mm,anchor=north east,text=ColorA,font=\ChapterNameFont,align=flush right](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]TT.south east){%
 \begin{varwidth}{2\textwidth/3}
@@ -1700,7 +1704,7 @@ BoldFont=FZCukai.ttf]
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
-\setlength{\@Chapter@TitleBlockHeight}{\DistanceKL}
+\def\@Chapter@TitleBlockHeight{\DistanceKL}
 \gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
@@ -1757,7 +1761,11 @@ BoldFont=FZCukai.ttf]
 %%
 %%渐变带%%
 \path[fill=ColorB,opacity=0.6]([xshift=\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+%%记录当前页占文档总页数的百分比%%
+\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
 %%
+\path[fill=ColorA]([xshift=\@innerlen-\paperwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
 %%副标题%%
 \node[inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\ChapterNameFont,align=flush left](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]TT.south west){%
 \begin{varwidth}{2\textwidth/3}
@@ -1775,7 +1783,7 @@ BoldFont=FZCukai.ttf]
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
-\setlength{\@Chapter@TitleBlockHeight}{\DistanceKL}
+\def\@Chapter@TitleBlockHeight{\DistanceKL}
 \gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
