@@ -565,7 +565,12 @@ BoldFont=FZCukai.ttf]
 %%修改addtolength的作用域%%
 \newcommand{\gaddtolength}[1]{\calc@assign@skip{\global\advance#1}}
 %%修改setlength的作用域%%
-\def\gsetlength#1#2{%
+%\def\gsetlength#1#2{%
+%\begingroup
+%\setlength\skip@{#2}
+%\global#1=\skip@
+%\endgroup}
+\newcommand{\gsetlength}[2]{%
 \begingroup
 \setlength\skip@{#2}
 \global#1=\skip@
