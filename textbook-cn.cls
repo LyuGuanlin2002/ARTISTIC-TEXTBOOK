@@ -1493,7 +1493,7 @@ BoldFont=FZCukai.ttf]
 \setlength{\@Chapter@PageSize}{\@PageNumWidth}
 \setlength{\@Chapter@SayingBlockHeight}{\@outerlen-2.5mm}
 %%%%
-\newcommand{\chaptersaying}[1]{\long\def\@chaptersaying{#1}}
+\newcommand{\chaptersaying}[1]{\long\def\@chaptersaying{\hspace*{2.0em}#1}}
 \newcommand{\chaptersubtitle}[1]{\long\def\@chaptersubtitle{#1}}
 \newcommand{\chapterimage}[1]{\long\def\@chapterimage{#1}}
 \chaptersaying{}
