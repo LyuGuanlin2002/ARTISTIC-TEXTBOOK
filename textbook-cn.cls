@@ -321,10 +321,17 @@ BoldFont=FZCukai.ttf]
 %%
 \RequirePackage[strict]{changepage}%临时修改页面的尺寸
 %%边注格式%%
+\RequirePackage{marginnote}
+%%修改边注字体
+\gdef\marginfont{\MarginNoteFont}
+\gdef\raggedleftmarginnote{\parindent=2.0em}
+\gdef\raggedrightmarginnote{\parindent=2.0em}
+%%重定义原始\marginpar命令，设置首行缩进和字体
 \let\originmarginpar\marginpar
-\renewcommand{\marginpar}[1]{\originmarginpar{%
-\setlength{\parindent}{2.0em}%
-\MarginNoteFont#1}}
+%%
+%\renewcommand{\marginpar}[1]{%
+%\originmarginpar[\parindent=2.0em\marginfont#1]{\parindent=2.0em\marginfont#1}}
+
 %%脚注格式%%
 \RequirePackage{footnotehyper}
 \gdef\footnoterule{}
@@ -565,11 +572,6 @@ BoldFont=FZCukai.ttf]
 %%修改addtolength的作用域%%
 \newcommand{\gaddtolength}[1]{\calc@assign@skip{\global\advance#1}}
 %%修改setlength的作用域%%
-%\def\gsetlength#1#2{%
-%\begingroup
-%\setlength\skip@{#2}
-%\global#1=\skip@
-%\endgroup}
 \newcommand{\gsetlength}[2]{%
 \begingroup
 \setlength\skip@{#2}
@@ -2214,8 +2216,8 @@ BoldFont=FZCukai.ttf]
 \ComplexHeading{综合提升}{\hfill 用时：\underline{\qquad}}{\faStar}%
 }
 %%%%
-\newcommand{\NoteArea}{%
-\marginpar{\upshape\LongHeading{\faPenSquare~~笔记区}}
+\newcommand{\NoteArea}[1][0pt]{%
+\marginnote{\LongHeading{\faPenSquare~~笔记区}}[#1]
 }
 %%
 \newcommand{\Listening}{\AdjustiveHeading{\faMusic~~听力模块}}
@@ -3642,10 +3644,9 @@ minted language=#2}
 %%+m表示允许换行、空行的参数%%
 \DeclareDocumentCommand{\RelaInfo}{ s +m }
 {\IfBooleanTF{#1}
-{\marginpar{%
-\begin{box9}[fontupper=\MarginNoteFont,fontlower=\MarginNoteFont]{相关信息}[ColorH][\faCommentDots]
-#2
-\end{box9}}
+{\marginnote{%
+{\tcbox[NoteBox=相关信息/ColorH/\faCommentDots,fontupper=\MarginNoteFont,before=\noindent]{\parbox{\linewidth}{\parindent=2.0em #2}}}
+}
 }{%
 \begin{box9}[fontupper=\MainFont\kaiti\itshape,fontlower=\MainFont\kaiti\itshape]{相关信息}[ColorH][\faCommentDots]
 #2
