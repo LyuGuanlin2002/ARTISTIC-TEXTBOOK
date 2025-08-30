@@ -321,16 +321,16 @@ BoldFont=FZCukai.ttf]
 %%
 \RequirePackage[strict]{changepage}%临时修改页面的尺寸
 %%边注格式%%
-\RequirePackage{marginnote}
+\RequirePackage[parboxrestore]{marginnote}
 %%修改边注字体
 \gdef\marginfont{\MarginNoteFont}
-\gdef\raggedleftmarginnote{\parindent=2.0em}
-\gdef\raggedrightmarginnote{\parindent=2.0em}
+\gdef\raggedleftmarginnote{\setlength{\parindent}{2.0em}\vfill}
+\gdef\raggedrightmarginnote{\setlength{\parindent}{2.0em}\vfill}
 %%重定义原始\marginpar命令，设置首行缩进和字体
-\let\originmarginpar\marginpar
+\NewCommandCopy{\originmarginpar}{\marginpar}
 %%
-%\renewcommand{\marginpar}[1]{%
-%\originmarginpar[\parindent=2.0em\marginfont#1]{\parindent=2.0em\marginfont#1}}
+\RenewDocumentCommand{\marginpar}{+O{#2} +m}{%
+\originmarginpar[\raggedleftmarginnote\marginfont#1]{\raggedrightmarginnote\marginfont#2}}
 
 %%脚注格式%%
 \RequirePackage{footnotehyper}
@@ -479,20 +479,21 @@ BoldFont=FZCukai.ttf]
 \setcounter{tocdepth}{1}
 \makeatletter
 %%重定义\tableofcontents%%
-\RenewDocumentCommand{\tableofcontents}{s +O{} O{1}}{%
+\RenewDocumentCommand{\tableofcontents}{s O{1} !+O{}}{%
 \chapter*{\contentsname}%
 \IfBooleanTF{#1}{%
+\@gobble{#2}%这一分支不需要#2参数，如果检测到#2的输入，则“吃掉”#2
 \begin{paracol}{2}%
 \@starttoc{toc}%
 \switchcolumnsloppy%
-#2%
+#3%
 \end{paracol}%
 }{%
-\gobble{#2}%这一分支不需要#2参数，如果检测到#2的输入，则“吃掉”#2
-\ifnum#3=1%
+\@gobble{#3}%这一分支不需要#3参数，如果检测到#3的输入，则“吃掉”#3
+\ifnum#2=1%
 \@starttoc{toc}%
 \else%
-\begin{multicols}{#3}%
+\begin{multicols}{#2}%
 \@starttoc{toc}%
 \end{multicols}%
 \fi}
@@ -3111,31 +3112,24 @@ BoldFont=FZCukai.ttf]
 \newlength{\@Box@CriticTitleWidth}
 \setlength{\@Box@CriticTitleWidth}{2\linewidth/3}
 %%设置注释盒子样式%%
-\tcbset{NoteBox/.style args={#1/#2/#3}{
+\tcbset{NoteBox/.style args={#1/#2}{
 empty,breakable,
-boxsep=3.0mm,
-top=-3.0mm,bottom=-3.0mm,left=-3.0mm,right=-3.0mm,
+boxsep=0mm,
+top=0mm,bottom=0mm,left=0mm,right=0mm,
+bottomtitle=2.5mm,
 before=\par\medskip,after=\par\medskip,
 fonttitle=\BoxTitleFont,coltitle=#2,
 colupper=#2,collower=#2,
-varwidth boxed title=\@Box@CriticTitleWidth,
 title={\strut#1\strut},
 before title={\def\@mpfn{footnote}%修改minipage中的脚注计数器
 \def\thempfn{\thefootnote}},
-boxed title style={size=minimal,empty,valign=center,boxsep=0mm,left=1.5em,right=0mm,top=0mm,bottom=0mm},
-attach boxed title to top left={yshift=2.5mm},
 before upper={\setlength{\parindent}{2.0em}%
 \def\@mpfn{footnote}%修改minipage中的脚注计数器
 \def\thempfn{\thefootnote}},
 before lower={\setlength{\parindent}{2.0em}%
 \def\@mpfn{footnote}%修改minipage中的脚注计数器
 \def\thempfn{\thefootnote}},
-subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=#2,top=-3.0mm,bottom=-3.0mm},
-underlay boxed title={%
-\BoxTitleFont%
-\def\@BoxTitleLogo@Size{\baselineskip}%
-\node[font=\BoxTitleFont,text=#2,anchor=north west,outer sep=0mm,minimum height=\@BoxTitleLogo@Size,inner xsep=0mm](ST)at(title.north west){#3};
-},
+subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=#2,top=0mm,bottom=0mm},
 segmentation engine=path,
 segmentation style={cap=round,draw=#2!25,loosely dashed},
 segmentation at break=false
@@ -3639,42 +3633,53 @@ minted language=#2}
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
 \makesavenoteenv{box9}
 %%
-\DeclareTColorBox{box9}{ +O{} +m O{ColorA} O{\faCommentDots} }{NoteBox=#2/#3/#4,#1}
+\DeclareTColorBox{box9}{ +O{} +m O{ColorA} }{%
+NoteBox=#2/#3,
+fontupper=\MainFont\kaiti\itshape,
+fontlower=\MainFont\kaiti\itshape,
+#1}
+%%%%
+\makesavenoteenv{box10}
+%%
+\DeclareTColorBox{box10}{ +O{} +m m }{%
+NoteBox=#2/#3,
+fontupper=\MarginNoteFont,
+fontlower=\MarginNoteFont,
+#1}
+
 %%%%
 %%+m表示允许换行、空行的参数%%
-\DeclareDocumentCommand{\RelaInfo}{ s +m }
+\DeclareDocumentCommand{\RelaInfo}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{%
-{\tcbox[NoteBox=相关信息/ColorH/\faCommentDots,fontupper=\MarginNoteFont,before=\noindent]{\parbox{\linewidth}{\parindent=2.0em #2}}}
-}
-}{%
-\begin{box9}[fontupper=\MainFont\kaiti\itshape,fontlower=\MainFont\kaiti\itshape]{相关信息}[ColorH][\faCommentDots]
+{\marginnote{\begin{box10}{\faCommentDots~~相关信息}{ColorH}
 #2
-\end{box9}}
-}
-%%%%
-\DeclareDocumentCommand{\DeepThink}{ s +m }
-{\IfBooleanTF{#1}
-{\marginpar{%
-\begin{box9}[fontupper=\MarginNoteFont,fontlower=\MarginNoteFont]{深入思考}[ColorB!90!black][\faTh]
+\end{box10}}[#3]
+}{\begin{box9}{\faCommentDots~~相关信息}[ColorH]
 #2
-\end{box9}}
-}{%
-\begin{box9}[fontupper=\MainFont\kaiti\itshape,fontlower=\MainFont\kaiti\itshape]{深入思考}[ColorB!90!black][\faTh]
-#2
-\end{box9}}
+\end{box9}
+\gobble{#3}}
 }
 %%%%
-\DeclareDocumentCommand{\Remark}{ s +m }
+\DeclareDocumentCommand{\DeepThink}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginpar{%
-\begin{box9}[fontupper=\MarginNoteFont,fontlower=\MarginNoteFont]{重点注释}[ColorF][\faChrome]
+{\marginnote{\begin{box10}{\faTh~~深入思考}{ColorB!90!black}
 #2
-\end{box9}}
-}{%
-\begin{box9}[fontupper=\MainFont\kaiti\itshape,fontlower=\MainFont\kaiti\itshape]{重点注释}[ColorF][\faChrome]
+\end{box10}}[#3]
+}{\begin{box9}{\faTh~~深入思考}[ColorB!90!black]
 #2
-\end{box9}}
+\end{box9}
+\gobble{#3}}
+}
+%%%%
+\DeclareDocumentCommand{\Remark}{ s +m O{0pt} }
+{\IfBooleanTF{#1}
+{\marginnote{\begin{box10}{\faChrome~~重点注释}{ColorF}
+#2
+\end{box10}}[#3]
+}{\begin{box9}{\faChrome~~重点注释}[ColorF]
+#2
+\end{box9}
+\gobble{#3}}
 }
 
 %%数学公式小盒子%%
