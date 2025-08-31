@@ -222,6 +222,7 @@ BoldFont=FZCukai.ttf]
 
 %%取消弹性段间距%%
 \setlength{\parskip}{0pt}
+\setlength{\topskip}{0pt}
 %%单独修改行距命令%%
 \makeatletter
 \def\set@baselineskip#1#2{%
@@ -324,8 +325,8 @@ BoldFont=FZCukai.ttf]
 \RequirePackage[parboxrestore]{marginnote}
 %%修改边注字体
 \gdef\marginfont{\MarginNoteFont}
-\gdef\raggedleftmarginnote{\setlength{\parindent}{2.0em}\vfill}
-\gdef\raggedrightmarginnote{\setlength{\parindent}{2.0em}\vfill}
+\gdef\raggedleftmarginnote{\setlength{\parindent}{2.0em}}
+\gdef\raggedrightmarginnote{\setlength{\parindent}{2.0em}}
 %%重定义原始\marginpar命令，设置首行缩进和字体
 \NewCommandCopy{\originmarginpar}{\marginpar}
 %%
@@ -625,6 +626,7 @@ BoldFont=FZCukai.ttf]
 \RequirePackage{totcount}%获取计数器的最大值
 %%定义计数器%%
 \makeatletter
+\newcounter{@Total@Chapter@Number}%记录所有chapter的数量，包括\chapter*
 \newcounter{@Thumb@Number}%记录侧标数
 \regtotcounter{@Thumb@Number}%获取侧标数最大值，需要编译两次才能正确获取
 %%%%
@@ -1482,7 +1484,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\PartEnd}{\stopcontents[part]}
 
 %%章节页样式%%
-\newlength{\ChapterVSpace}
+\newlength{\ChapterPageTopCut}
 \newlength{\@Chapter@StripeWidth}
 \newlength{\@Chapter@LabelSep}
 \newlength{\@Chapter@LabelYShift@Down}
@@ -1518,7 +1520,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(F)at([xshift=-5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=-3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([yshift=\@Chapter@LabelYShift@Up]current page text area.north east);
+\coordinate(N)at([xshift=-\@outerlen,yshift=\@Chapter@LabelYShift@Up-\@toplen]current page.north east);
 \coordinate(Q1)at([xshift=-\@FrameWidth+0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=-\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
@@ -1555,7 +1557,7 @@ BoldFont=FZCukai.ttf]
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
 \def\@Chapter@TitleBlockHeight{\DistanceKL}
-\gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\ChapterPageTopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
 %%框架%%
@@ -1584,7 +1586,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(F)at([xshift=5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([yshift=\@Chapter@LabelYShift@Up]current page text area.north west);
+\coordinate(N)at([xshift=\@outerlen,yshift=\@Chapter@LabelYShift@Up-\@toplen]current page.north west);
 \coordinate(Q1)at([xshift=\@FrameWidth-0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
@@ -1621,7 +1623,7 @@ BoldFont=FZCukai.ttf]
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
 \def\@Chapter@TitleBlockHeight{\DistanceKL}
-\gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\ChapterPageTopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
 %%框架%%
@@ -1666,7 +1668,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(F)at([xshift=-5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=-3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([yshift=\@Chapter@Star@LabelYShift@Up]current page text area.north west);
+\coordinate(N)at([xshift=\@innerlen,yshift=\@Chapter@Star@LabelYShift@Up-\@toplen]current page.north west);
 \coordinate(Q1)at([xshift=-\@FrameWidth+0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=-\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
@@ -1713,7 +1715,7 @@ BoldFont=FZCukai.ttf]
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
 \def\@Chapter@TitleBlockHeight{\DistanceKL}
-\gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\ChapterPageTopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
 %%框架%%
@@ -1743,7 +1745,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(F)at([xshift=5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([yshift=\@Chapter@Star@LabelYShift@Up]current page text area.north east);
+\coordinate(N)at([xshift=-\@innerlen,yshift=\@Chapter@Star@LabelYShift@Up-\@toplen]current page.north east);
 \coordinate(Q1)at([xshift=\@FrameWidth-0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
@@ -1792,7 +1794,7 @@ BoldFont=FZCukai.ttf]
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\DistanceKL
 \def\@Chapter@TitleBlockHeight{\DistanceKL}
-\gsetlength{\ChapterVSpace}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\ChapterPageTopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
 %%框架%%
@@ -1815,6 +1817,31 @@ BoldFont=FZCukai.ttf]
 \fi
 \end{tikzpicture}
 }
+
+%%%%%%%%%%%%%%%
+%%定义一个接口，读取aux文件时会调用它来存储到内部命令%%
+\newcommand*{\@Chapter@Page@Top@Cut}[2]{%
+%#1：章编号，#2：长度文本
+\expandafter\gdef\csname chaptopcut@#1\endcsname{#2}%
+%\chaptopcut@#1 为一长度变量，用于储存章节页上半部分的版心高度裁剪长度，但其名称中包含数字（数字表示“章节的序数”，包括编号和不编号章节），不便于使用，因此需要后续的命令对这一长度变量进行封装。
+}
+%%存储函数：将长度\chaptopcut@#1 封装进命令\@Chapter@Page@Top@Cut{#1}{#2}中，并写入aux文件%%
+\newcommand{\@store@chaptopcut}{%
+\begingroup%
+\def\@tempa{%
+\noexpand\@Chapter@Page@Top@Cut{\the@Total@Chapter@Number}{\the\ChapterPageTopCut}%
+}%
+%第一个参数表示章节的序数，第二个参数为版心裁剪长度\ChapterPageTopCut的数值
+\immediate\write\@auxout{\@tempa}%写入aux文件
+\endgroup}
+%%读取函数：从aux文件中读取\chaptopcut@#1的值，并赋给\ChapterPageTopCut%%
+\newcommand*{\@use@chaptopcut}[1]{%
+\ifcsname chaptopcut@#1\endcsname%
+\gsetlength{\ChapterPageTopCut}{\dimexpr\csname chaptopcut@#1\endcsname\relax}%
+\else%
+\gsetlength{\ChapterPageTopCut}{0pt}%
+\fi}
+%%%%%%%%%%%%%%%
 %%侧标更新规则%%
 \newcommand{\@Thumb@Update@Rule}{%
 \stepcounter{@Thumb@Number}%侧标数计数
@@ -1824,8 +1851,8 @@ BoldFont=FZCukai.ttf]
 \gaddtolength{\MarkY}{-\SepH}%更新侧标位置
 \fi}
 %%
-\newlength{\ChapterPageHeightCut}
-\setlength{\ChapterPageHeightCut}{-\@Chapter@SayingBlockHeight+\@FrameWidth}
+\newlength{\ChapterPageBottomCut}
+\setlength{\ChapterPageBottomCut}{\@Chapter@SayingBlockHeight-\@FrameWidth}
 %%编号章节页%%
 \titleformat{\chapter}[block]
 {\setbaselineskip{0pt}\selectfont}{}{0em}
@@ -1850,9 +1877,9 @@ BoldFont=FZCukai.ttf]
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 %%页面风格设置%%
 \assignpagestyle{\chapter}{empty}
-%%章标题顶格放置%%
+%%top参数为章标题占据一整页，用于章节页样式设计%%
+%%若设置为straight参数，则章标题表现类似于节标题连续放置%%
 \titleclass{\chapter}{top}
-
 %%修改chapter断页方式%%
 \newcommand{\chapterbreak}{%
 \if@openright%
@@ -1860,11 +1887,18 @@ BoldFont=FZCukai.ttf]
 \else%
 \clearpage%
 \fi%
+\stepcounter{@Total@Chapter@Number}%
+%从aux文件中读取\chaptopcut@#1的值，并赋给\ChapterPageTopCut
+\@use@chaptopcut{\the@Total@Chapter@Number}%
 %临时修改章首页的版心高度为章底部文字留出空间
-\changetextheight{\ChapterPageHeightCut}%
+\gaddtolength{\topmargin}{\ChapterPageTopCut}%
+\changetextheight{-\ChapterPageBottomCut-\ChapterPageTopCut}%
 %恢复默认版心高度
-\AddToHookNext{shipout}{\changetextheight{-\ChapterPageHeightCut}}
+\AddToHookNext{shipout/before}{%
+\gaddtolength{\topmargin}{-\ChapterPageTopCut}%
+\changetextheight{\ChapterPageBottomCut+\ChapterPageTopCut}}%
 }
+
 %%为\chapter*添加短页眉%%
 \NewCommandCopy{\OriginChapter}{\chapter}
 %%
@@ -1872,10 +1906,10 @@ BoldFont=FZCukai.ttf]
 \IfBooleanTF{#1}%
 {\OriginChapter*{#3\@mkboth{#2}{#2}}}%
 {\OriginChapter[#2]{#3}}%
-\nointerlineskip%清除章首页其他的额外垂直空白距离
-\kern\ChapterVSpace%\kern命令插入不可伸缩的固定垂直距离
-\kern-\topskip%取消顶部多余的留白
-}
+%将长度\chaptopcut@#1 封装进命令\@Chapter@Page@Top@Cut{#1}{#2}中，并写入aux文件
+\@store@chaptopcut
+%清除章首页其他的额外垂直空白距离
+\nointerlineskip}
 
 %%节样式%%
 %%编号节样式%%
