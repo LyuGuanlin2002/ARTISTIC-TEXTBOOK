@@ -480,7 +480,7 @@ BoldFont=FZCukai.ttf]
 \setcounter{tocdepth}{1}
 \makeatletter
 %%重定义\tableofcontents%%
-\RenewDocumentCommand{\tableofcontents}{s O{1} !+O{}}{%
+\RenewDocumentCommand{\tableofcontents}{s O{1} +O{}}{%
 \chapter*{\contentsname}%
 \IfBooleanTF{#1}{%
 \@gobble{#2}%这一分支不需要#2参数，如果检测到#2的输入，则“吃掉”#2
@@ -1835,9 +1835,9 @@ BoldFont=FZCukai.ttf]
 \immediate\write\@auxout{\@tempa}%写入aux文件
 \endgroup}
 %%读取函数：从aux文件中读取\chaptopcut@#1的值，并赋给\ChapterPageTopCut%%
-\newcommand*{\@use@chaptopcut}[1]{%
-\ifcsname chaptopcut@#1\endcsname%
-\gsetlength{\ChapterPageTopCut}{\dimexpr\csname chaptopcut@#1\endcsname\relax}%
+\newcommand{\@use@chaptopcut}{%
+\ifcsname chaptopcut@\the@Total@Chapter@Number\endcsname%
+\gsetlength{\ChapterPageTopCut}{\dimexpr\csname chaptopcut@\the@Total@Chapter@Number\endcsname\relax}%
 \else%
 \gsetlength{\ChapterPageTopCut}{0pt}%
 \fi}
@@ -1889,7 +1889,7 @@ BoldFont=FZCukai.ttf]
 \fi%
 \stepcounter{@Total@Chapter@Number}%
 %从aux文件中读取\chaptopcut@#1的值，并赋给\ChapterPageTopCut
-\@use@chaptopcut{\the@Total@Chapter@Number}%
+\@use@chaptopcut%
 %临时修改章首页的版心高度为章底部文字留出空间
 \gaddtolength{\topmargin}{\ChapterPageTopCut}%
 \changetextheight{-\ChapterPageBottomCut-\ChapterPageTopCut}%
