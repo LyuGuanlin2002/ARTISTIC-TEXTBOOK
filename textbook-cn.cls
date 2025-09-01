@@ -1526,7 +1526,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
 \begin{pgfonlayer}{@Chapter@Top}
 %%编号%%
-\draw[ColorA,fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){
+\draw[ColorA,fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
 \begin{varwidth}{\textwidth/3}
 \def\@mpfn{footnote}%修改minipage中的脚注计数器
 \def\thempfn{\thefootnote}%
@@ -3719,6 +3719,7 @@ fontlower=\MarginNoteFont,
 %%数学公式小盒子%%
 \newtcbox{\Formula}[1][]{%
 nobeforeafter,math upper,tcbox raise base,
+width=\linewidth,tcbox width=auto limited,
 enhanced standard,
 before={\begin{center}},after={\end{center}},
 colframe=ColorB!7.5,colback=ColorB!7.5,
