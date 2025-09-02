@@ -40,7 +40,7 @@
 %%
 \RequirePackage[table,dvipsnames,svgnames,x11names]{xcolor}%颜色宏包，必须放在tikz之前
 %%蓝色主题%%
-\ifdefstring{\TextBook@themecolor}{blue}{
+\newcommand{\SetBlueTheme}{%
 \definecolor{ColorA}{RGB}{68,114,210}
 \definecolor{ColorB}{rgb}{0.3,0.52,1.0}
 \colorlet{ColorC}{RoyalBlue}
@@ -50,9 +50,10 @@
 \colorlet{ColorG}{SteelBlue2}
 \colorlet{ColorH}{DodgerBlue1}
 \colorlet{ColorI}{CornflowerBlue}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{blue}{\SetBlueTheme}{\relax}
 %%红色主题%%
-\ifdefstring{\TextBook@themecolor}{red}{
+\newcommand{\SetRedTheme}{%
 \colorlet{ColorA}{Firebrick2}
 \colorlet{ColorB}{Brown2}
 \colorlet{ColorC}{Crimson}
@@ -62,9 +63,10 @@
 \colorlet{ColorG}{Firebrick3}
 \colorlet{ColorH}{Red2}
 \colorlet{ColorI}{Red3}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{red}{\SetRedTheme}{\relax}
 %%绿色主题%%
-\ifdefstring{\TextBook@themecolor}{green}{
+\newcommand{\SetGreenTheme}{%
 \definecolor{ColorA}{rgb}{0.3,0.6,0.3}
 \definecolor{ColorB}{rgb}{0.4,0.7,0.4}
 \colorlet{ColorC}{ForestGreen}
@@ -74,9 +76,10 @@
 \colorlet{ColorG}{Green4}
 \colorlet{ColorH}{Chartreuse4}
 \colorlet{ColorI}{Chartreuse3}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{green}{\SetGreenTheme}{\relax}
 %%紫色主题%%
-\ifdefstring{\TextBook@themecolor}{purple}{
+\newcommand{\SetPurpleTheme}{%
 \definecolor{ColorA}{RGB}{147,75,201}
 \definecolor{ColorB}{RGB}{192,113,217}
 \colorlet{ColorC}{BlueViolet}
@@ -86,9 +89,10 @@
 \colorlet{ColorG}{DarkOrchid3}
 \colorlet{ColorH}{MediumPurple}
 \colorlet{ColorI}{MediumOrchid}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{purple}{\SetPurpleTheme}{\relax}
 %%橙色主题%%
-\ifdefstring{\TextBook@themecolor}{orange}{
+\newcommand{\SetOrangeTheme}{%
 \colorlet{ColorA}{Firebrick2}
 \colorlet{ColorB}{Dandelion}
 \colorlet{ColorC}{DarkOrange}
@@ -98,9 +102,10 @@
 \colorlet{ColorG}{Sienna1}
 \colorlet{ColorH}{DarkOrange1}
 \colorlet{ColorI}{OrangeRed}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{orange}{\SetOrangeTheme}{\relax}
 %%黄色主题%%
-\ifdefstring{\TextBook@themecolor}{yellow}{
+\newcommand{\SetYellowTheme}{%
 \colorlet{ColorA}{Dandelion}
 \colorlet{ColorB}{Goldenrod1}
 \colorlet{ColorC}{Gold}
@@ -110,9 +115,10 @@
 \colorlet{ColorG}{DarkGoldenrod}
 \colorlet{ColorH}{Goldenrod2}
 \colorlet{ColorI}{DarkGoldenrod2}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{yellow}{\SetYellowTheme}{\relax}
 %%棕色主题%%
-\ifdefstring{\TextBook@themecolor}{brown}{
+\newcommand{\SetBrownTheme}{%
 \definecolor{ColorA}{RGB}{132,60,12}
 \definecolor{ColorB}{RGB}{180,90,0}
 \definecolor{ColorC}{RGB}{99,45,9}
@@ -122,9 +128,10 @@
 \definecolor{ColorG}{RGB}{237,122,43}
 \definecolor{ColorH}{RGB}{107,49,9}
 \definecolor{ColorI}{RGB}{151,69,13}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{brown}{\SetBrownTheme}{\relax}
 %%彩色主题%%
-\ifdefstring{\TextBook@themecolor}{colorful}{
+\newcommand{\SetColorfulTheme}{%
 \definecolor{ColorA}{RGB}{132,60,12}
 \definecolor{ColorB}{RGB}{180,90,0}
 \definecolor{ColorC}{RGB}{84,130,53}
@@ -134,9 +141,10 @@
 \definecolor{ColorG}{RGB}{68,114,196}
 \definecolor{ColorH}{RGB}{231,120,12}
 \definecolor{ColorI}{RGB}{171,68,171}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{colorful}{\SetColorfulTheme}{\relax}
 %%梵高鸢尾花主题%%
-\ifdefstring{\TextBook@themecolor}{iris}{
+\newcommand{\SetIrisTheme}{%
 \definecolor{ColorA}{RGB}{33,48,137}
 \definecolor{ColorB}{RGB}{49,82,160}
 \definecolor{ColorC}{RGB}{209,128,50}
@@ -146,7 +154,8 @@
 \definecolor{ColorG}{RGB}{98,159,202}
 \definecolor{ColorH}{RGB}{122,42,15}
 \definecolor{ColorI}{RGB}{166,201,92}
-}{\relax}
+}
+\ifdefstring{\TextBook@themecolor}{iris}{\SetIrisTheme}{\relax}
 
 \makeatletter
 %%定义书籍信息%%
@@ -337,6 +346,11 @@ BoldFont=FZCukai.ttf]
 \RequirePackage{footnotehyper}
 \gdef\footnoterule{}
 \gdef\footnotesize{\FootNoteFont}
+%%修改minipage中的脚注计数器
+\newcommand{\@change@minipage@footnote}{%
+\def\@mpfn{footnote}%
+\def\thempfn{\thefootnote}%
+}
 %%%%
 \RequirePackage{multicol,paracol}%多栏%分栏、边注、中英对照
 \setlength{\multicolsep}{0pt}%取消multicol环境前的垂直空白距离
@@ -812,14 +826,14 @@ BoldFont=FZCukai.ttf]
 %%%%
 %%绘制页面框架%%
 \newlength{\@ThumbMinimumHeight}
-\setlength{\@ThumbMinimumHeight}{1.2cm}
 \newlength{\@FrameWidth}
-\setlength{\@FrameWidth}{1.0cm}
 \newlength{\@GutterWidth}
-\setlength{\@GutterWidth}{\@FrameWidth+\@innerlen-\@outerlen}
 \newlength{\@PageNumHeight}
-\setlength{\@PageNumHeight}{\@toplen-\headsep+1.5mm}
 \newlength{\@PageNumWidth}
+\setlength{\@ThumbMinimumHeight}{1.2cm}
+\setlength{\@FrameWidth}{1.0cm}
+\setlength{\@GutterWidth}{\@FrameWidth+\@innerlen-\@outerlen}
+\setlength{\@PageNumHeight}{\@toplen-\headsep+1.5mm}
 \setlength{\@PageNumWidth}{\@outerlen-\@FrameWidth-2.0mm}
 %%%%
 \newcommand{\partlabelfront}{第}
@@ -882,8 +896,7 @@ BoldFont=FZCukai.ttf]
 \node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=east](T)at([xshift=-0.1cm,yshift=\MarkY]B){%
 \rotatebox[origin=c]{90}{%
 \begin{varwidth}{\DeltaH}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \centering\strut\@title\strut
 \end{varwidth}}%
 };
@@ -897,8 +910,7 @@ BoldFont=FZCukai.ttf]
 \begin{pgfonlayer}{@MainPage@Top}
 \node[font=\PartNumberFont,text=white,outer sep=0mm,inner xsep=3.5mm,inner ysep=2.5mm,anchor=south](PTN)at([yshift=0.1cm]I){%
 \begin{varwidth}{\textwidth/3}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \centering\strut\firstrightxmark\strut
 \end{varwidth}};
 \end{pgfonlayer}
@@ -940,8 +952,7 @@ BoldFont=FZCukai.ttf]
 \node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=west](T)at([xshift=0.1cm,yshift=\MarkY]B){%
 \rotatebox[origin=c]{-90}{%
 \begin{varwidth}{\DeltaH}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \centering\strut\@title\strut
 \end{varwidth}}%
 };
@@ -955,8 +966,7 @@ BoldFont=FZCukai.ttf]
 \begin{pgfonlayer}{@MainPage@Top}
 \node[font=\PartNumberFont,text=white,outer sep=0mm,inner xsep=3.5mm,inner ysep=2.5mm,anchor=south](PTN)at([yshift=0.1cm]I){%
 \begin{varwidth}{\textwidth/3}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \centering\strut\firstleftxmark\strut
 \end{varwidth}};
 \end{pgfonlayer}
@@ -981,7 +991,7 @@ BoldFont=FZCukai.ttf]
 \AtPageLowerLeft{%
 \begin{tikzpicture}[remember picture]
 \draw[ColorB!7.5,fill=ColorB!7.5](0,0)rectangle(\paperwidth,\paperheight);
-\node[opacity=0.075](L)at(current page.center){\tikz{\BookPressLogo}};
+\node[opacity=0.075](L)at(\paperwidth/2,\paperheight/2){\tikz{\BookPressLogo}};
 \end{tikzpicture}}}
 }
 %%
@@ -1015,6 +1025,14 @@ BoldFont=FZCukai.ttf]
 %%
 %%奇数页布局%%
 \NewDocumentCommand{\@Part@OddPage@Style}{ +m +m }{%
+%%要展开宏再进行非空判断%%
+\expandafter\ifblank\expandafter{\@partimage}{%
+\def\@ColorBlock@Opacity{1}%
+\def\@WhiteLine@Opacity{1}%
+}{%
+\def\@ColorBlock@Opacity{0.9}%
+\def\@WhiteLine@Opacity{0.5}%
+}
 \begin{pgfonlayer}{@Part@Top}
 %%右上角色块坐标%%
 \coordinate(A)at(current page.north east);
@@ -1022,21 +1040,21 @@ BoldFont=FZCukai.ttf]
 \coordinate(C)at([xshift=-\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north east);
 \coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north east);
 %%右上角色块%%
-\path[fill=ColorA,opacity=0.9](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
 %%右侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
 \coordinate(R)at([xshift=-\@Part@MiddleOuterBlockLength]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
 \coordinate(S)at([xshift=-\@Part@MiddleOuterBlockLength]T);
 %%右侧色块%%
-\path[fill=ColorB,opacity=0.5](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
 %%右下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
 \coordinate(F)at([xshift=-\@Part@BlockWidth]E);
 \coordinate(H)at(current page.south east);
 \coordinate(G)at([xshift=-\@Part@BlockWidth]H);
 %%右下角色块%%
-\path[fill=ColorA,opacity=0.9](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%%%
 %%左上角色块坐标%%
@@ -1044,18 +1062,19 @@ BoldFont=FZCukai.ttf]
 \coordinate(J)at(current page.north west);
 \coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
 \coordinate(L)at([xshift=-\@Part@StripeWidth]C);
-%%左上角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](I)--(J)--(K)[rounded corners=2.5mm]--(L)[sharp corners]--cycle;
+%%%%
 %%左下角色块坐标%%
 \coordinate(M)at([xshift=-\@Part@StripeWidth]F);
 \coordinate(N)at([xshift=-\paperwidth]E);
 \coordinate(O)at(current page.south west);
 \coordinate(P)at([xshift=-\@Part@StripeWidth]G);
-%%左下角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](M)[sharp corners]--(N)--(O)--(P)[rounded corners=2.5mm]--cycle;
 %%%%
+%%背景颜色%%
+\fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
-\node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(current page.south west){\@partimage};
+\node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%白色边框%%
+\fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
 \begin{pgfonlayer}{@Part@Top}
 %%页面中部色块坐标1%%
@@ -1064,8 +1083,7 @@ BoldFont=FZCukai.ttf]
 %%部分编号%%
 \node[align=flush right,anchor=south east,font=\PartLabelFont,text=ColorA,inner xsep=0mm](NL)at([yshift=\@Part@StripeWidth+0.25cm]U){%
 \begin{varwidth}{\textwidth-5.0cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 %%页面中部色块坐标2%%
@@ -1075,26 +1093,24 @@ BoldFont=FZCukai.ttf]
 \coordinate(W)at([xshift=-\NLWidth]X);
 %%
 %%页面中部色块%%
-\path[fill=ColorB,opacity=0.8,rounded corners=2.5mm](U)rectangle(W);
+\path[fill=ColorB,rounded corners=2.5mm,opacity=\@ColorBlock@Opacity](U)rectangle(W);
 %%左侧色块坐标%%
 \coordinate(Y)at([xshift=-\@Part@StripeWidth]V);
 \coordinate(Z)at([yshift=-\@Part@StripeWidth]K);
 \coordinate(YY)at([yshift=\@Part@StripeWidth]N);
 \coordinate(ZZ)at([xshift=-\@Part@StripeWidth]W);
 %%左侧色块%%
-\path[fill=ColorB,opacity=0.5](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
 %%部分名%%
 \node[align=flush right,anchor=north east,font=\PartNameFont,text=ColorA,inner xsep=0mm](PT)at([yshift=-\@Part@StripeWidth-0.25cm]X){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{varwidth}};
 %%部分简介%%
 \node[align=flush right,anchor=north east,font=\itshape\kaiti,text=ColorA,inner xsep=0mm](IT)at([yshift=-0.5cm]PT.south east){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
@@ -1108,47 +1124,55 @@ BoldFont=FZCukai.ttf]
 %%
 %%偶数页布局%%
 \NewDocumentCommand{\@Part@EvenPage@Style}{ +m +m }{
+%%要展开宏再进行非空判断%%
+\expandafter\ifblank\expandafter{\@partimage}{%
+\def\@ColorBlock@Opacity{1}%
+\def\@WhiteLine@Opacity{1}%
+}{%
+\def\@ColorBlock@Opacity{0.9}%
+\def\@WhiteLine@Opacity{0.5}%
+}
 \begin{pgfonlayer}{@Part@Top}
-%%右上角色块坐标%%
+%%左上角色块坐标%%
 \coordinate(A)at(current page.north west);
 \coordinate(B)at([xshift=\@Part@BlockWidth]current page.north west);
 \coordinate(C)at([xshift=\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north west);
 \coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north west);
-%%右上角色块%%
-\path[fill=ColorA,opacity=0.9](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
-%%右侧色块坐标%%
+%%左上角色块%%
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
+%%左侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
 \coordinate(R)at([xshift=\@Part@MiddleOuterBlockLength]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
 \coordinate(S)at([xshift=\@Part@MiddleOuterBlockLength]T);
-%%右侧色块%%
-\path[fill=ColorB,opacity=0.5](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
-%%右下角色块坐标%%
+%%左侧色块%%
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
+%%左下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
 \coordinate(F)at([xshift=\@Part@BlockWidth]E);
 \coordinate(H)at(current page.south west);
 \coordinate(G)at([xshift=\@Part@BlockWidth]H);
-%%右下角色块%%
-\path[fill=ColorA,opacity=0.9](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
+%%左下角色块%%
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%%%
-%%左上角色块坐标%%
+%%右上角色块坐标%%
 \coordinate(I)at([xshift=\@Part@StripeWidth]B);
 \coordinate(J)at(current page.north east);
 \coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
 \coordinate(L)at([xshift=\@Part@StripeWidth]C);
-%%左上角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](I)--(J)--(K)[rounded corners=2.5mm]--(L)[sharp corners]--cycle;
-%%左下角色块坐标%%
+%%右下角色块坐标%%
 \coordinate(M)at([xshift=\@Part@StripeWidth]F);
 \coordinate(N)at([xshift=\paperwidth]E);
 \coordinate(O)at(current page.south east);
 \coordinate(P)at([xshift=\@Part@StripeWidth]G);
-%%左下角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](M)[sharp corners]--(N)--(O)--(P)[rounded corners=2.5mm]--cycle;
 %%%%
+%%背景颜色%%
+\fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
-\node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(current page.south east){\@partimage};
+\node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%白色边框%%
+\fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
 \begin{pgfonlayer}{@Part@Top}
 %%页面中部色块坐标1%%
@@ -1157,8 +1181,7 @@ BoldFont=FZCukai.ttf]
 %%部分编号%%
 \node[align=flush left,anchor=south west,font=\PartLabelFont,text=ColorA,inner xsep=0mm](NL)at([yshift=\@Part@StripeWidth+0.25cm]U){%
 \begin{varwidth}{\textwidth-5.0cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 %%页面中部色块坐标2%%
@@ -1168,27 +1191,25 @@ BoldFont=FZCukai.ttf]
 \coordinate(W)at([xshift=\NLWidth]X);
 %%
 %%页面中部色块%%
-\path[fill=ColorB,opacity=0.8,rounded corners=2.5mm](U)rectangle(W);
-%%左侧色块坐标%%
+\path[fill=ColorB,opacity=\@ColorBlock@Opacity,rounded corners=2.5mm](U)rectangle(W);
+%%右侧色块坐标%%
 \coordinate(Y)at([xshift=\@Part@StripeWidth]V);
 \coordinate(Z)at([yshift=-\@Part@StripeWidth]K);
 \coordinate(YY)at([yshift=\@Part@StripeWidth]N);
 \coordinate(ZZ)at([xshift=\@Part@StripeWidth]W);
-%%左侧色块%%
-\path[fill=ColorB,opacity=0.5](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
+%%右侧色块%%
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
 %%
 %%部分名%%
 \node[align=flush left,anchor=north west,font=\PartNameFont,text=ColorA,inner xsep=0mm](PT)at([yshift=-\@Part@StripeWidth-0.25cm]X){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{varwidth}};
 %%部分简介%%
 \node[align=flush left,anchor=north west,font=\itshape\kaiti,text=ColorA,inner xsep=0mm](IT)at([yshift=-0.5cm]PT.south west){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
@@ -1205,8 +1226,6 @@ BoldFont=FZCukai.ttf]
 \pgfdeclarelayer{@Part@Top}
 \pgfdeclarelayer{@Part@Bottom}
 \pgfsetlayers{@Part@Bottom,main,@Part@Top}
-%%白色背景%%
-\draw[white,fill=white](current page.south west)rectangle(current page.north east);
 \ifodd\value{page}%判断奇偶页
 \@Part@OddPage@Style{#1}{#2}
 \else
@@ -1221,6 +1240,14 @@ BoldFont=FZCukai.ttf]
 %%
 %%奇数页布局%%
 \NewDocumentCommand{\@Part@Star@OddPage@Style}{ +m }{
+%%要展开宏再进行非空判断%%
+\expandafter\ifblank\expandafter{\@partimage}{%
+\def\@ColorBlock@Opacity{1}%
+\def\@WhiteLine@Opacity{1}%
+}{%
+\def\@ColorBlock@Opacity{0.9}%
+\def\@WhiteLine@Opacity{0.5}%
+}
 \begin{pgfonlayer}{@Part@Star@Top}
 %%右上角色块坐标%%
 \coordinate(A)at(current page.north east);
@@ -1228,39 +1255,39 @@ BoldFont=FZCukai.ttf]
 \coordinate(C)at([xshift=-\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north east);
 \coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north east);
 %%右上角色块%%
-\path[fill=ColorA,opacity=0.9](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
 %%右侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
 \coordinate(R)at([xshift=-\@Part@MiddleOuterBlockLength]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
 \coordinate(S)at([xshift=-\@Part@MiddleOuterBlockLength]T);
 %%右侧色块%%
-\path[fill=ColorB,opacity=0.5](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
 %%右下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
 \coordinate(F)at([xshift=-\@Part@BlockWidth]E);
 \coordinate(H)at(current page.south east);
 \coordinate(G)at([xshift=-\@Part@BlockWidth]H);
 %%右下角色块%%
-\path[fill=ColorA,opacity=0.9](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%左上角色块坐标%%
 \coordinate(I)at([xshift=-\@Part@StripeWidth]B);
 \coordinate(J)at(current page.north west);
 \coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
 \coordinate(L)at([xshift=-\@Part@StripeWidth]C);
-%%左上角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](I)--(J)--(K)[rounded corners=2.5mm]--(L)[sharp corners]--cycle;
 %%左下角色块坐标%%
 \coordinate(M)at([xshift=-\@Part@StripeWidth]F);
 \coordinate(N)at([xshift=-\paperwidth]E);
 \coordinate(O)at(current page.south west);
 \coordinate(P)at([xshift=-\@Part@StripeWidth]G);
-%%左下角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](M)[sharp corners]--(N)--(O)--(P)[rounded corners=2.5mm]--cycle;
 %%%%
+%%背景颜色%%
+\fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
-\node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(current page.south west){\@partimage};
+\node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%白色边框%%
+\fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
 \begin{pgfonlayer}{@Part@Star@Top}%
 \begingroup%
@@ -1278,8 +1305,7 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,anchor=west](HC3)at(HC2.east){\@HalfCircle@Label{ColorA!60}{\@Part@Star@LabelRadius}};
 \node[align=flush left,inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\PartNameFont](PST)at([xshift=0.5cm,yshift=\@Part@Star@LabelYShift]HC3.north east){%
 \begin{varwidth}{\textwidth-5.0cm}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};}};
 \endgroup%
@@ -1290,27 +1316,25 @@ BoldFont=FZCukai.ttf]
 \coordinate(W)at([xshift=-\ZZWidth]X);
 %%
 %%页面中部色块%%
-\path[fill=ColorB,opacity=0.8,rounded corners=2.5mm](U)rectangle(W);
+\path[fill=ColorB,opacity=\@ColorBlock@Opacity,rounded corners=2.5mm](U)rectangle(W);
 %%左侧色块坐标%%
 \coordinate(Y)at([xshift=-\@Part@StripeWidth]V);
 \coordinate(Z)at([yshift=-\@Part@StripeWidth]K);
 \coordinate(YY)at([yshift=\@Part@StripeWidth]N);
 \coordinate(ZZ)at([xshift=-\@Part@StripeWidth]W);
 %%左侧色块%%
-\path[fill=ColorB,opacity=0.5](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
 %%
 %%部分副标题%%
 \node[align=flush left,anchor=north east,font=\PartNameFont,text=ColorA,inner xsep=0mm](PSST)at([yshift=-\@Part@StripeWidth-0.25cm]X){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \expandafter\ifblank\expandafter{\@partsubtitle}{\relax}{\strut\@partsubtitle\strut}%要展开宏再进行非空判断
 \end{varwidth}};
 %%部分简介%%
 \node[align=flush left,anchor=north east,font=\itshape\kaiti,text=ColorA,inner xsep=0mm](IT)at([yshift=-0.5cm]PSST.south east){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
@@ -1324,6 +1348,14 @@ BoldFont=FZCukai.ttf]
 %%
 %%偶数页布局%%
 \NewDocumentCommand{\@Part@Star@EvenPage@Style}{ +m }{
+%%要展开宏再进行非空判断%%
+\expandafter\ifblank\expandafter{\@partimage}{%
+\def\@ColorBlock@Opacity{1}%
+\def\@WhiteLine@Opacity{1}%
+}{%
+\def\@ColorBlock@Opacity{0.9}%
+\def\@WhiteLine@Opacity{0.5}%
+}
 \begin{pgfonlayer}{@Part@Star@Top}
 %%右上角色块坐标%%
 \coordinate(A)at(current page.north west);
@@ -1331,39 +1363,39 @@ BoldFont=FZCukai.ttf]
 \coordinate(C)at([xshift=\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north west);
 \coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north west);
 %%右上角色块%%
-\path[fill=ColorA,opacity=0.9](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
 %%右侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
 \coordinate(R)at([xshift=\@Part@MiddleOuterBlockLength]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
 \coordinate(S)at([xshift=\@Part@MiddleOuterBlockLength]T);
 %%右侧色块%%
-\path[fill=ColorB,opacity=0.5](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
 %%右下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
 \coordinate(F)at([xshift=\@Part@BlockWidth]E);
 \coordinate(H)at(current page.south west);
 \coordinate(G)at([xshift=\@Part@BlockWidth]H);
 %%右下角色块%%
-\path[fill=ColorA,opacity=0.9](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
+\path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%左上角色块坐标%%
 \coordinate(I)at([xshift=\@Part@StripeWidth]B);
 \coordinate(J)at(current page.north east);
 \coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
 \coordinate(L)at([xshift=\@Part@StripeWidth]C);
-%%左上角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](I)--(J)--(K)[rounded corners=2.5mm]--(L)[sharp corners]--cycle;
 %%左下角色块坐标%%
 \coordinate(M)at([xshift=\@Part@StripeWidth]F);
 \coordinate(N)at([xshift=\paperwidth]E);
 \coordinate(O)at(current page.south east);
 \coordinate(P)at([xshift=\@Part@StripeWidth]G);
-%%左下角色块%%
-\draw[ColorB!7.5,fill=ColorB!7.5](M)[sharp corners]--(N)--(O)--(P)[rounded corners=2.5mm]--cycle;
 %%%%
+%%背景颜色%%
+\fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
-\node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(current page.south east){\@partimage};
+\node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%白色边框%%
+\fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
 \begin{pgfonlayer}{@Part@Star@Top}%
 \begingroup%
@@ -1381,8 +1413,7 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,anchor=west](HC3)at(HC2.east){\@HalfCircle@Label{ColorA!60}{\@Part@Star@LabelRadius}};
 \node[align=flush left,inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\PartNameFont](PST)at([xshift=0.5cm,yshift=\@Part@Star@LabelYShift]HC3.north east){%
 \begin{varwidth}{\textwidth-5.0cm}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};}};
 \endgroup%
@@ -1393,27 +1424,25 @@ BoldFont=FZCukai.ttf]
 \coordinate(W)at([xshift=\ZZWidth]X);
 %%
 %%页面中部色块%%
-\path[fill=ColorB,opacity=0.8,rounded corners=2.5mm](U)rectangle(W);
+\path[fill=ColorB,opacity=\@ColorBlock@Opacity,rounded corners=2.5mm](U)rectangle(W);
 %%左侧色块坐标%%
 \coordinate(Y)at([xshift=\@Part@StripeWidth]V);
 \coordinate(Z)at([yshift=-\@Part@StripeWidth]K);
 \coordinate(YY)at([yshift=\@Part@StripeWidth]N);
 \coordinate(ZZ)at([xshift=\@Part@StripeWidth]W);
 %%左侧色块%%
-\path[fill=ColorB,opacity=0.5](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
+\path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Y)[sharp corners]--(Z)--(YY)[rounded corners=2.5mm]--(ZZ)--cycle;
 %%
 %%部分副标题%%
 \node[align=flush left,anchor=north west,font=\PartNameFont,text=ColorA,inner xsep=0mm](PSST)at([yshift=-\@Part@StripeWidth-0.25cm]X){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \expandafter\ifblank\expandafter{\@partsubtitle}{\relax}{\strut\@partsubtitle\strut}%要展开宏再进行非空判断
 \end{varwidth}};
 %%部分简介%%
 \node[align=flush left,anchor=north west,font=\itshape\kaiti,text=ColorA,inner xsep=0mm](IT)at([yshift=-0.5cm]PSST.south west){%
 \begin{varwidth}{\textwidth-2.45cm}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
@@ -1431,8 +1460,6 @@ BoldFont=FZCukai.ttf]
 \pgfdeclarelayer{@Part@Star@Top}%
 \pgfdeclarelayer{@Part@Star@Bottom}%
 \pgfsetlayers{@Part@Star@Bottom,main,@Part@Star@Top}%
-%%白色背景%%
-\draw[white,fill=white](current page.south west)rectangle(current page.north east);
 \ifodd\value{page}%判断奇偶页
 \@Part@Star@OddPage@Style{#1}%
 \else%
@@ -1528,22 +1555,24 @@ BoldFont=FZCukai.ttf]
 %%编号%%
 \draw[ColorA,fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
 \begin{varwidth}{\textwidth/3}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 %%渐变带%%
-\path[fill=ColorB,opacity=0.6]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+\path[fill=ColorB!90]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
-\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
+\def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+\path[fill=ColorA]([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+%%
+\coordinate(CC)at([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]T.south east);
+%%
+\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
 %%标题%%
 \node[inner sep=0mm,anchor=north east,font=\ChapterNameFont,text=ColorA](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]T.south east){%
 \begin{varwidth}{\textwidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{varwidth}};
 \end{pgfonlayer}
@@ -1594,22 +1623,24 @@ BoldFont=FZCukai.ttf]
 %%编号%%
 \draw[ColorA,fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north west,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
 \begin{varwidth}{\textwidth/3}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 %%渐变带%%
-\path[fill=ColorB,opacity=0.6]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=\@innerlen+\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+\path[fill=ColorB!90]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=\@innerlen+\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
-\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
+\def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
 \path[fill=ColorA]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+%%
+\coordinate(CC)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]T.south west);
+%%
+\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
 %%标题%%
 \node[inner sep=0mm,anchor=north west,font=\ChapterNameFont,text=ColorA](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]T.south west){%
 \begin{varwidth}{\textwidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{varwidth}};
 \end{pgfonlayer}
@@ -1684,24 +1715,26 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,anchor=west](P2)at(P1.east){\@HalfCircle@Label{ColorA!80}{\@Chapter@Star@LabelRadius}};
 \node[inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\ChapterLabelFont](P3)at([xshift=\@Chapter@Star@LabelNameXSep,yshift=\@Chapter@Star@LabelYShift]P2.north east){%
 \begin{varwidth}{\textwidth-2\@Chapter@Star@LabelRadius-\@Chapter@Star@LabelNameXSep}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};}};
 \endgroup%
 %%
 %%渐变带%%
-\path[fill=ColorB,opacity=0.6]([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south east);
+\path[fill=ColorB!90]([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south east);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
-\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
+\def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south east);
+\path[fill=ColorA]([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+%%
+\coordinate(CC)at([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]TT.south west);
+%%
+\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
 %%副标题%%
 \node[inner sep=0mm,outer sep=0mm,anchor=north east,text=ColorA,font=\ChapterNameFont,align=flush right](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]TT.south east){%
 \begin{varwidth}{2\textwidth/3}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{varwidth}};
 \end{pgfonlayer}
@@ -1762,25 +1795,27 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,anchor=west](P2)at(P1.east){\@HalfCircle@Label{ColorA!80}{\@Chapter@Star@LabelRadius}};
 \node[inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\ChapterLabelFont](P3)at([xshift=\@Chapter@Star@LabelNameXSep,yshift=\@Chapter@Star@LabelYShift]P2.north east){%
 \begin{varwidth}{\textwidth-2\@Chapter@Star@LabelRadius-\@Chapter@Star@LabelNameXSep}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 }};
 \endgroup%
 %%
 %%渐变带%%
-\path[fill=ColorB,opacity=0.6]([xshift=\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\path[fill=ColorB!90]([xshift=\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
-\def\@PagePercentLength{\dimeval{\@PagePercent\paperwidth}}
+\def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=\@innerlen-\paperwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\path[fill=ColorA]([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+%%
+\coordinate(CC)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]TT.south west);
+%%
+\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
 %%副标题%%
 \node[inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\ChapterNameFont,align=flush left](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]TT.south west){%
 \begin{varwidth}{2\textwidth/3}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{varwidth}};
 \end{pgfonlayer}
@@ -1978,8 +2013,7 @@ BoldFont=FZCukai.ttf]
 \pgfsetlayers{@Subsection@Bottom,main}%
 \node[text=white,font=\SubsectionFont,inner xsep=\@Subsection@Radius,inner ysep=0mm,outer sep=0mm](L){%
 \begin{varwidth}{\@Subsection@LabelCriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.9}%
 \strut#1\strut
 \end{varwidth}%
@@ -1988,8 +2022,7 @@ BoldFont=FZCukai.ttf]
 %%
 \node[text=ColorA,font=\SubsectionFont,inner xsep=\@Subsection@Radius,inner ysep=0mm,outer sep=0mm,minimum width=\linewidth-\@Subsection@LabelWidth,anchor=north west](N)at(L.north east){\hspace*{\@Subsection@LabelHSkip}%
 \begin{minipage}{\linewidth-\@Subsection@LabelWidth-2\@Subsection@Radius-\@Subsection@LabelHSkip}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.9}%
 \strut#2\strut
 \end{minipage}};
@@ -2033,8 +2066,7 @@ BoldFont=FZCukai.ttf]
 \node[text=white,font=\SubsectionFont,inner xsep=\@Subsection@Star@Radius,inner ysep=0mm,outer sep=0mm](L){%
 \hspace*{\@Subsection@Star@Radius+0.5em}%
 \begin{varwidth}{\@Subsection@Star@LabelCriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.9}%
 \strut#1\strut
 \end{varwidth}};%
@@ -2043,8 +2075,7 @@ BoldFont=FZCukai.ttf]
 %%
 \node[text=ColorA,font=\SubsectionFont,inner xsep=\@Subsection@Star@Radius,inner ysep=0mm,outer sep=0mm,anchor=north west](N)at(L.north east){%
 \begin{minipage}{\linewidth-\@Subsection@Star@LabelWidth-2\@Subsection@Star@Radius-\@Subsection@Star@SRadius}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.9}%
 \strut#2\strut
 \end{minipage}};
@@ -2137,8 +2168,7 @@ BoldFont=FZCukai.ttf]
 \node[text=white,inner xsep=\@ComplexHeading@Radius,inner ysep=0mm,outer sep=0mm](L){%
 \hspace*{\@ComplexHeading@Radius+0.5em}%
 \begin{varwidth}{\@ComplexHeading@LabelCriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};%
 \pgfgetnodewidth(L)\@ComplexHeading@LabelWidth%
@@ -2146,8 +2176,7 @@ BoldFont=FZCukai.ttf]
 %%
 \node[text=ColorB,inner xsep=\@ComplexHeading@Radius,inner ysep=0mm,outer sep=0mm,anchor=north west](N)at(L.north east){%
 \begin{minipage}{\linewidth-\@ComplexHeading@LabelWidth-2\@ComplexHeading@Radius}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#2\strut
 \end{minipage}};
 \pgfgetnodeheight(N)\@ComplexHeading@NameHeight%
@@ -2180,8 +2209,7 @@ BoldFont=FZCukai.ttf]
 \pgfsetlayers{@AdjustiveHeading@Bottom,main}%
 \node[draw=ColorB!75,fill=ColorB!75,rounded corners,text=white,outer sep=0mm,inner xsep=0.5em,inner ysep=0mm,align=center](E){%
 \begin{varwidth}{\linewidth/2}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}
 };
@@ -2871,8 +2899,7 @@ BoldFont=FZCukai.ttf]
 \pgfsetlayers{@PartToc@Bottom,main}%
 \node[text=white,inner xsep=\@PartToc@Radius,inner ysep=0mm,outer sep=0mm](L){%
 \begin{varwidth}{\@PartToc@LabelCriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.9}%
 \strut#1\strut
 \end{varwidth}};
@@ -2881,8 +2908,7 @@ BoldFont=FZCukai.ttf]
 %%+1.0mm
 \node[text=ColorA,inner xsep=\@PartToc@Radius,inner ysep=0mm,outer sep=0mm,minimum width=\linewidth-\@PartToc@LabelWidth,anchor=north west](N)at(L.north east){%
 \begin{minipage}{\linewidth-\@PartToc@LabelWidth-2\@PartToc@Radius}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.9}%
 \strut#2\strut
 \end{minipage}};
@@ -3035,8 +3061,7 @@ BoldFont=FZCukai.ttf]
 \node[text=white,inner sep=0mm,outer sep=0mm](L){%
 \hspace*{\@Example@Radius}%
 \begin{varwidth}{\@Example@LabelCriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.75}%
 \strut#1\strut
 \end{varwidth}%
@@ -3047,8 +3072,7 @@ BoldFont=FZCukai.ttf]
 %%
 \node[text=#3,inner xsep=\@Example@Radius,inner ysep=0mm,outer sep=0mm,anchor=north west](N)at(L.north east){%
 \begin{varwidth}{\@Example@NameCriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.75}%
 \strut\sffamily#2\strut
 \end{varwidth}};
@@ -3078,8 +3102,7 @@ BoldFont=FZCukai.ttf]
 \def\@Example@Radius{\dimexpr\baselineskip/2\relax}%0.75
 \node[draw=#2,fill=#2,rounded corners=\@Example@Radius,text=white,inner xsep=\@Example@Radius,inner ysep=0mm,outer sep=0mm](L){%
 \begin{varwidth}{\@Answer@CriticWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 %\AdjustStrut{0.75}%
 \strut#1\strut
 \end{varwidth}
@@ -3155,14 +3178,11 @@ before=\par\medskip,after=\par\medskip,
 fonttitle=\BoxTitleFont,coltitle=#2,
 colupper=#2,collower=#2,
 title={\strut#1\strut},
-before title={\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+before title={\@change@minipage@footnote},
 before upper={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 before lower={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=#2,top=0mm,bottom=0mm},
 segmentation engine=path,
 segmentation style={cap=round,draw=#2!25,loosely dashed},
@@ -3176,11 +3196,9 @@ boxsep=3.0mm,
 top=2.0mm,bottom=-3.0mm,left=-3.0mm,right=-3.0mm,
 varwidth boxed title=\@Box@CriticTitleWidth,
 before upper={\setlength{\parindent}{2.0em}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 before lower={\setlength{\parindent}{2.0em}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 before=\par\medskip,after=\par\medskip,
 fontupper=\ItemFont,fontlower=\ItemFont,
 fonttitle=\BoxTitleFont,coltitle=white,
@@ -3188,8 +3206,7 @@ title={%
 %\AdjustStrut{0.85}
 \strut#1\strut%
 },
-before title={\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+before title={\@change@minipage@footnote},
 attach boxed title to top left={yshift*=-\tcboxedtitleheight},
 boxed title style={size=minimal,empty,valign=center,left=2.25em,right=1.0em},
 subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=#2,top=-3.0mm,bottom=-3.0mm},
@@ -3223,23 +3240,19 @@ varwidth boxed title=\@Box@CriticTitleWidth,
 before=\par\bigskip,after=\par\bigskip,
 fonttitle=\BoxTitleFont,coltitle=white,
 title={\strut#1\strut},
-before title={\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+before title={\@change@minipage@footnote},
 IfBlankTF={#2}{}{after title={\strut~:~~#2\strut}},
 attach boxed title to top left={yshift*=-\tcboxedtitleheight+1.5mm},
 boxed title style={size=minimal,empty,valign=center,left=2.5em,right=1.0em},
 IfBlankTF={#3}{
 before upper={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}}
+\@change@minipage@footnote}
 }{before upper={\setlength{\parindent}{2.0em}%
 \noindent{\BoxTitleFont\color{#4}#3}\hspace{1.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}}
+\@change@minipage@footnote}
 },
 before lower={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=#4,top=-3.0mm,bottom=-3.0mm},
 segmentation style={cap=round,line width=2.25pt,draw=#4!25,solid,shorten <= 5.0mm,shorten >= 5.0mm},
 segmentation at break=false
@@ -3256,21 +3269,17 @@ top=1.5mm,bottom=1.5mm,left=2.0em+0.5mm,right=2.0mm,
 before=\par\bigskip,after=\par\bigskip,
 IfEmptyTF={#3}{
 before upper={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}}
+\@change@minipage@footnote}
 }{before upper={\setlength{\parindent}{2.0em}%
 \noindent{\BoxTitleFont\color{#4}#3}\hspace{1.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}}
+\@change@minipage@footnote}
 },
 before lower={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 fonttitle=\BoxTitleFont,coltitle=white,
 varwidth boxed title=\@Box@CriticTitleWidth,
 title={\strut#1\strut},
-before title={\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+before title={\@change@minipage@footnote},
 IfBlankTF={#2}{}{after title={\strut~:~~#2\strut}},
 boxed title style={size=minimal,empty,left=1.2em,right=1.2em,top=0.25em,bottom=0.05em},
 attach boxed title to top left={yshift*=-\tcboxedtitleheight},
@@ -3288,8 +3297,7 @@ underlay boxed title={
 \end{tcbclipinterior}
 \node[font=\BoxTitleFont,text=#4,anchor=east,outer sep=0mm,inner xsep=5.0mm](ST)at([yshift={-\tcboxedtitleheight/2}]interior.north east){
 \begin{varwidth}{\linewidth-\@Box@CriticTitleWidth}
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}%
+\@change@minipage@footnote%
 #5
 \end{varwidth}};},
 overlay middle and last={
@@ -3309,18 +3317,15 @@ bottomtitle=-4.5mm,
 colframe=ColorB!7.5,colback=ColorB!7.5,colbacktitle=ColorB!7.5,rounded corners,arc=7.5pt,
 before=\par\medskip,after=\par\medskip,
 before upper={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 before lower={\setlength{\parindent}{2.0em}%
-\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}},
+\@change@minipage@footnote},
 fonttitle=\BoxTitleFont,coltitle=ColorA,
 subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=ColorA,top=-3.0mm,bottom=-3.0mm},
 segmentation style={cap=round,line width=2.25pt,draw=ColorA!25,solid,shorten <= 5.0mm,shorten >= 5.0mm,loosely dashed},
 segmentation at break=false,
 IfBlankTF={#1}{}{title={\strut#1\strut}},
-before title={\def\@mpfn{footnote}%修改minipage中的脚注计数器
-\def\thempfn{\thefootnote}}
+before title={\@change@minipage@footnote}
 }}
 
 %%设置节前盒子%%
