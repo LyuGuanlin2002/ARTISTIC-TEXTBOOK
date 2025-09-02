@@ -1559,16 +1559,17 @@ BoldFont=FZCukai.ttf]
 \strut#1\strut
 \end{varwidth}};
 %%渐变带%%
-\path[fill=ColorB!90]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+\path[fill=ColorB!90,opacity=0.9]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south east);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east)rectangle([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+\coordinate(PUL)at([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east);
+\coordinate(PUR)at([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east);
+\coordinate(PDR)at([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+\coordinate(PDL)at([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
 %%
-\coordinate(CC)at([xshift=-\@innerlen-\textwidth+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]T.south east);
-%%
-\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
+\path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%标题%%
 \node[inner sep=0mm,anchor=north east,font=\ChapterNameFont,text=ColorA](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]T.south east){%
 \begin{varwidth}{\textwidth}
@@ -1627,16 +1628,17 @@ BoldFont=FZCukai.ttf]
 \strut#1\strut
 \end{varwidth}};
 %%渐变带%%
-\path[fill=ColorB!90]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=\@innerlen+\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+\path[fill=ColorB!90,opacity=0.9]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south west)rectangle([xshift=\@innerlen+\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south west);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west)rectangle([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+\coordinate(PUL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west);
+\coordinate(PUR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west);
+\coordinate(PDR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+\coordinate(PDL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
 %%
-\coordinate(CC)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]T.south west);
-%%
-\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
+\path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%标题%%
 \node[inner sep=0mm,anchor=north west,font=\ChapterNameFont,text=ColorA](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]T.south west){%
 \begin{varwidth}{\textwidth}
@@ -1721,16 +1723,17 @@ BoldFont=FZCukai.ttf]
 \endgroup%
 %%
 %%渐变带%%
-\path[fill=ColorB!90]([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south east);
+\path[fill=ColorB!90,opacity=0.9]([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south east);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\coordinate(PUL)at([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west);
+\coordinate(PUR)at([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west);
+\coordinate(PDR)at([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\coordinate(PDL)at([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
 %%
-\coordinate(CC)at([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]TT.south west);
-%%
-\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
+\path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%副标题%%
 \node[inner sep=0mm,outer sep=0mm,anchor=north east,text=ColorA,font=\ChapterNameFont,align=flush right](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]TT.south east){%
 \begin{varwidth}{2\textwidth/3}
@@ -1802,16 +1805,17 @@ BoldFont=FZCukai.ttf]
 \endgroup%
 %%
 %%渐变带%%
-\path[fill=ColorB!90]([xshift=\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\path[fill=ColorB!90,opacity=0.9]([xshift=\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south west);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
-\path[fill=ColorA]([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\coordinate(PUL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west);
+\coordinate(PUR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west);
+\coordinate(PDR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\coordinate(PDL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
 %%
-\coordinate(CC)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth/2]TT.south west);
-%%
-\shade[left color=ColorA,right color=ColorB!90](CC)circle(3\@Chapter@StripeWidth/4);
+\path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%副标题%%
 \node[inner sep=0mm,outer sep=0mm,anchor=north west,text=ColorA,font=\ChapterNameFont,align=flush left](P)at([yshift=-4\@Chapter@LabelYShift@Down/3-\@Chapter@StripeWidth]TT.south west){%
 \begin{varwidth}{2\textwidth/3}
@@ -3232,8 +3236,8 @@ enhanced standard,breakable,
 pad after break=5.0mm,
 grow to left by=-2.0pt,
 rounded corners,arc=5.0pt,boxrule=2.25pt,
-colback=white,colframe=white,
-frame style={left color=#4!50,right color=#4!50,middle color=#4},
+colback=white,colframe=#4!75,%colframe=white,
+%frame style={left color=#4!50,right color=#4!50,middle color=#4},
 boxsep=3.0mm,
 top=1.5mm,bottom=1.5mm,left=2.0mm,right=2.0mm,
 varwidth boxed title=\@Box@CriticTitleWidth,
@@ -3262,8 +3266,8 @@ segmentation at break=false
 enhanced standard,breakable,
 pad after break=5.0mm,
 rounded corners,arc=5.0pt,boxrule=2.25pt,
-colback=white,colframe=white,
-frame style={left color=#4!50,right color=#4!50,middle color=#4},
+colback=white,colframe=#4!75,%colframe=white,
+%frame style={left color=#4!50,right color=#4!50,middle color=#4},
 boxsep=3.0mm,
 top=1.5mm,bottom=1.5mm,left=2.0em+0.5mm,right=2.0mm,
 before=\par\bigskip,after=\par\bigskip,
