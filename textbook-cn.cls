@@ -1073,6 +1073,9 @@ BoldFont=FZCukai.ttf]
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
 \node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%如果\@partimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@partimage}{\relax}{%
+\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1171,6 +1174,9 @@ BoldFont=FZCukai.ttf]
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
 \node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%如果\@partimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@partimage}{\relax}{%
+\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1286,6 +1292,9 @@ BoldFont=FZCukai.ttf]
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
 \node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%如果\@partimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@partimage}{\relax}{%
+\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1394,6 +1403,9 @@ BoldFont=FZCukai.ttf]
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
 \node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
+%%如果\@partimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@partimage}{\relax}{%
+\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1518,7 +1530,7 @@ BoldFont=FZCukai.ttf]
 \newlength{\@Chapter@PageSize}
 \newlength{\@Chapter@SayingBlockHeight}
 \newlength{\@Chapter@LabelYShift@Up}
-\setlength{\@Chapter@StripeWidth}{0.35cm}
+\setlength{\@Chapter@StripeWidth}{0.325cm}
 \setlength{\@Chapter@LabelSep}{0.5cm}
 \setlength{\@Chapter@LabelYShift@Down}{0.65cm}
 \setlength{\@Chapter@LabelYShift@Up}{0.5cm}
