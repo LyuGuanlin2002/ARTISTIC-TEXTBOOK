@@ -1031,7 +1031,7 @@ BoldFont=FZCukai.ttf]
 \def\@WhiteLine@Opacity{1}%
 }{%
 \def\@ColorBlock@Opacity{0.9}%
-\def\@WhiteLine@Opacity{0.5}%
+\def\@WhiteLine@Opacity{0.3}%
 }
 \begin{pgfonlayer}{@Part@Top}
 %%右上角色块坐标%%
@@ -1075,7 +1075,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
-\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
+\fill[white,opacity=0.5](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1176,7 +1176,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
-\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
+\fill[white,opacity=0.5](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1294,7 +1294,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
-\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
+\fill[white,opacity=0.5](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
@@ -1405,7 +1405,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
-\fill[white,opacity=\@WhiteLine@Opacity](A)rectangle(O);}
+\fill[white,opacity=0.5](A)rectangle(O);}
 %%白色边框%%
 \fill[white,opacity=\@WhiteLine@Opacity](A)--(I)[rounded corners=2.5mm]--(L)[sharp corners]--(K)--(N)[rounded corners=2.5mm]--(M)[sharp corners]--(P)--(H)--cycle;
 %%%%
