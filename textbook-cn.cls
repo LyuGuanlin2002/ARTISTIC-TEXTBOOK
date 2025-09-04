@@ -331,16 +331,16 @@ BoldFont=FZCukai.ttf]
 %%
 \RequirePackage[strict]{changepage}%临时修改页面的尺寸
 %%边注格式%%
-\RequirePackage[parboxrestore]{marginnote}
+\RequirePackage{marginnote}
 %%修改边注字体
 \gdef\marginfont{\MarginNoteFont}
 \gdef\raggedleftmarginnote{\setlength{\parindent}{2.0em}}
 \gdef\raggedrightmarginnote{\setlength{\parindent}{2.0em}}
 %%重定义原始\marginpar命令，设置首行缩进和字体
 \NewCommandCopy{\originmarginpar}{\marginpar}
-%%
+%%原生\marginpar命令的第一个参数为可选参数，且默认值为第二个参数的值
 \RenewDocumentCommand{\marginpar}{+O{#2} +m}{%
-\originmarginpar[\raggedleftmarginnote\marginfont#1]{\raggedrightmarginnote\marginfont#2}}
+\originmarginpar[{\raggedleftmarginnote\marginfont#1}]{\raggedrightmarginnote\marginfont#2}}
 
 %%脚注格式%%
 \RequirePackage{footnotehyper}
@@ -434,15 +434,6 @@ BoldFont=FZCukai.ttf]
 \fi
 \pcol@iflushfloats\z@\pcol@ncolleft\@outputbox
 \@outputpage}}
-%%%%
-%%添加了\sloppy命令的\switchcolumn，实现对狭长列对齐的优化%%
-\NewDocumentCommand{\switchcolumnsloppy}{s O{1} s +O{}}{%
-\IfBooleanTF{#1}{%
-\IfBooleanTF{#3}{\switchcolumn*[#2]*[#4]}{\switchcolumn*[#2][#4]}
-}{%
-\IfBooleanTF{#3}{\switchcolumn[#2]*}{\switchcolumn[#2]}
-}
-\sloppy}
 \makeatother
 
 %%%%%%%%%%%%%%%%%%%% 图表插入宏包 %%%%%%%%%%%%%%%%%%%%
@@ -493,18 +484,61 @@ BoldFont=FZCukai.ttf]
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{1}
 \makeatletter
+%%定义在目录中插入边注文字和图片的命令%%
+\NewDocumentCommand{\addmarginparintoc}{ +m O{0pt} }{%
+\addtocontents{toc}{\protect\marginnote{{#1}}[#2]}%
+}
+%%按照\marginpar原有传参逻辑重定义\marginpar，此命令用在其他目录命令中，防止有边注模式的主目录影响其他目录%%
+\newcommand{\@erase@marginpar}{%
+\def\marginpar{%
+\@ifnextchar[%
+{\@temp@marginpar@i}
+{\@temp@marginpar@ii}}
+%%
+\def\@temp@marginpar@i[##1]##2{}
+\def\@temp@marginpar@ii##1{}
+}
+%%按照\marginnote原有传参逻辑重定义\marginnote，此命令用在其他目录命令中，防止有边注模式的主目录影响其他目录%%
+\newcommand{\@erase@marginnote}{%
+\def\marginnote{%
+\@ifnextchar[%
+{\@temp@marginnote@A}%
+{\@temp@marginnote@noA}%
+}
+%%
+\def\@temp@marginnote@A[##1]##2{%
+\@ifnextchar[%     
+{\@temp@marginnote@bothAB[##1]{##2}}
+{\@temp@marginnote@onlyA[##1]{##2}}
+}
+%%
+\def\@temp@marginnote@noA##1{%
+\@ifnextchar[%     
+{\@temp@marginnote@onlyB{##1}}
+{\@temp@marginnote@noAB{##1}}
+}
+%%
+\def\@temp@marginnote@bothAB[##1]##2[##3]{}
+\def\@temp@marginnote@onlyA[##1]##2{}
+\def\@temp@marginnote@onlyB##1[##2]{}
+\def\@temp@marginnote@noAB##1{}
+}
+
 %%重定义\tableofcontents%%
-\RenewDocumentCommand{\tableofcontents}{s O{1} +O{}}{%
+\RenewDocumentCommand{\tableofcontents}{ s O{1} }{%
+\begingroup%确保计数器值和重定义只在局部生效
 \chapter*{\contentsname}%
 \IfBooleanTF{#1}{%
 \@gobble{#2}%这一分支不需要#2参数，如果检测到#2的输入，则“吃掉”#2
 \begin{paracol}{2}%
 \@starttoc{toc}%
-\switchcolumnsloppy%
-#3%
 \end{paracol}%
 }{%
-\@gobble{#3}%这一分支不需要#3参数，如果检测到#3的输入，则“吃掉”#3
+%%局部清空\marginpar的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginpar
+%%局部清空\marginnote的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginnote
+%%
 \ifnum#2=1%
 \@starttoc{toc}%
 \else%
@@ -512,11 +546,17 @@ BoldFont=FZCukai.ttf]
 \@starttoc{toc}%
 \end{multicols}%
 \fi}
-}
-%%清除跟随在\chapter命令后在lof和lot文件中插入的垂直间距%%
-\def\ttl@tocsep{}
+\endgroup}
 %%重定义\listoffigures%%
 \RenewDocumentCommand{\listoffigures}{O{1}}{%
+\begingroup%确保计数器值和重定义只在局部生效
+%%清除跟随在\chapter命令后在lof和lot文件中插入的垂直间距%%
+\def\ttl@tocsep{}
+%%局部清空\marginpar的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginpar
+%%局部清空\marginnote的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginnote
+%%
 \chapter*{\listfigurename}%
 \ifnum#1=1%
 \@starttoc{lof}%
@@ -525,9 +565,17 @@ BoldFont=FZCukai.ttf]
 \@starttoc{lof}
 \end{multicols}
 \fi%
-}
+\endgroup}
 %%重定义\listoftables%%
 \RenewDocumentCommand{\listoftables}{O{1}}{%
+\begingroup%确保计数器值和重定义只在局部生效
+%%清除跟随在\chapter命令后在lof和lot文件中插入的垂直间距%%
+\def\ttl@tocsep{}
+%%局部清空\marginpar的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginpar
+%%局部清空\marginnote的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginnote
+%%
 \chapter*{\listtablename}
 \ifnum#1=1%
 \@starttoc{lot}%
@@ -536,10 +584,15 @@ BoldFont=FZCukai.ttf]
 \@starttoc{lot}
 \end{multicols}
 \fi%
-}
+\endgroup}
 %%重定义\shorttableofcontents%%
 \RenewDocumentCommand{\shorttableofcontents}{O{1}}{%
-\begingroup%确保计数器值只在局部生效
+\begingroup%确保计数器值和重定义只在局部生效
+%%局部清空\marginpar的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginpar
+%%局部清空\marginnote的定义，防止边注模式的主目录影响其他目录%%
+\@erase@marginnote
+%%
 \chapter*{\shorttocname}
 \c@tocdepth=0%预设目录深度为0
 \ifnum#1=1%
@@ -1120,7 +1173,11 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,anchor=south west](SC)at([xshift=\@innerlen+2.5mm,yshift=\@botlen]current page.south west){%
 \parbox{\textwidth-2.45cm}{%
 \begin{multicols}{3}
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}
+\begingroup%
+\@erase@marginpar%
+\@erase@marginnote%
+\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\endgroup%
 \end{multicols}}
 };
 \end{pgfonlayer}}
@@ -1222,7 +1279,11 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,minimum width=4.0cm,anchor=south east](SC)at([xshift=-\@innerlen-2.5mm,yshift=\@botlen]current page.south east){%
 \parbox{\textwidth-2.45cm}{%
 \begin{multicols}{3}
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}
+\begingroup%
+\@erase@marginpar%
+\@erase@marginnote%
+\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\endgroup%
 \end{multicols}}
 };
 \end{pgfonlayer}}
@@ -1350,7 +1411,11 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,anchor=south west](SC)at([xshift=\@innerlen+2.5mm,yshift=\@botlen]current page.south west){%
 \parbox{\textwidth-2.45cm}{%
 \begin{multicols}{3}
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}
+\begingroup%
+\@erase@marginpar%
+\@erase@marginnote%
+\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\endgroup%
 \end{multicols}}
 };
 \end{pgfonlayer}}
@@ -1461,7 +1526,11 @@ BoldFont=FZCukai.ttf]
 \node[inner sep=0mm,outer sep=0mm,minimum width=4.0cm,anchor=south east](SC)at([xshift=-\@innerlen-2.5mm,yshift=\@botlen]current page.south east){%
 \parbox{\textwidth-2.45cm}{%
 \begin{multicols}{3}
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}
+\begingroup%
+\@erase@marginpar%
+\@erase@marginnote%
+\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\endgroup%
 \end{multicols}}
 };
 \end{pgfonlayer}}
