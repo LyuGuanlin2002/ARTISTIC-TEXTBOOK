@@ -284,11 +284,13 @@ BoldFont=FZCukai.ttf]
 \newcommand{\TocSubsubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%目录小小节字体
 \newcommand{\LofFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%图列表字体
 \newcommand{\LotFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%表列表字体
-\newcommand{\LTocTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{14pt}}%小目录标题
+\newcommand{\LTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{14pt}}%小目录标题
 \newcommand{\TocLChapterFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{14pt}}%小目录章字体
 \newcommand{\TocLSectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小目录节字体
 \newcommand{\TocLSubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小目录小节字体
 \newcommand{\TocLSubsubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小目录小小节字体
+\newcommand{\LofLFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小图列表字体
+\newcommand{\LotLFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小表列表字体
 \newcommand{\ContentPageNumFont}{\upshape\sffamily\FontSizeSet{14pt}}%目录页码字体
 \newcommand{\CiteNumFont}{\upshape\rmfamily}%引用字体
 \newcommand{\LineNumFont}{\upshape\sffamily\bfseries\FontSizeSet{10pt}}%行号字体
@@ -486,7 +488,7 @@ BoldFont=FZCukai.ttf]
 \makeatletter
 %%定义在目录中插入边注文字和图片的命令%%
 \NewDocumentCommand{\addmarginparintoc}{ +m O{0pt} }{%
-\addtocontents{toc}{\protect\marginnote{{#1}}[#2]}%
+\addtocontents{toc}{\protecting{\marginnote{{#1}}[#2]}}%
 }
 %%按照\marginpar原有传参逻辑重定义\marginpar，此命令用在其他目录命令中，防止有边注模式的主目录影响其他目录%%
 \newcommand{\@erase@marginpar}{%
@@ -1044,7 +1046,7 @@ BoldFont=FZCukai.ttf]
 \AtPageLowerLeft{%
 \begin{tikzpicture}[remember picture]
 \draw[ColorB!7.5,fill=ColorB!7.5](0,0)rectangle(\paperwidth,\paperheight);
-\node[opacity=0.075](L)at(\paperwidth/2,\paperheight/2){\tikz{\BookPressLogo}};
+%\node[opacity=0.075](L)at(\paperwidth/2,\paperheight/2){\tikz{\BookPressLogo}};
 \end{tikzpicture}}}
 }
 %%
@@ -1176,7 +1178,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\printcontents[parts]{l}{0}[0]{}%
 \endgroup%
 \end{multicols}}
 };
@@ -1282,7 +1284,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\printcontents[parts]{l}{0}[0]{}%
 \endgroup%
 \end{multicols}}
 };
@@ -1414,7 +1416,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\printcontents[parts]{l}{0}[0]{}%
 \endgroup%
 \end{multicols}}
 };
@@ -1529,7 +1531,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[part]{l}{0}{\setcounter{tocdepth}{0}}%
+\printcontents[parts]{l}{0}[0]{}%
 \endgroup%
 \end{multicols}}
 };
@@ -1552,7 +1554,7 @@ BoldFont=FZCukai.ttf]
 %%编号部分页%%
 \titleformat{\part}
 {}{}{0em}
-{\startcontents[part]%开启小目录
+{\startcontents[parts]%开启小目录
 \@PartStyle{\partlabelfront{\sffamily\thepart}\partlabelback}{#1}%部分样式
 \thispagestyle{empty}%部分页的页面样式为空白
 }
@@ -1561,7 +1563,7 @@ BoldFont=FZCukai.ttf]
 %%不编号部分页%%
 \titleformat{name=\part,numberless}
 {}{}{0em}
-{\startcontents[part]%开启小目录
+{\startcontents[parts]%开启小目录
 \@PartStarStyle{#1}%部分样式
 \thispagestyle{empty}%部分页的页面样式为空白
 }
@@ -2961,8 +2963,8 @@ BoldFont=FZCukai.ttf]
 %%部分页上的小目录章样式%%
 \titlecontents{lchapter}[0.75cm]
 {\TocLChapterFont\color{ColorB}}
-{\color{ColorB}\contentslabel[\TocLChapterFont\faGenderless]{0.6cm}}
-{\color{ColorB}\contentslabel[\TocLChapterFont\faGenderless]{0.6cm}}%不编号章节
+{\color{ColorB}\contentslabel[\TocLChapterFont\faGenderless]{0.5cm}}
+{\color{ColorB}\contentslabel[\TocLChapterFont\faGenderless]{0.5cm}}%不编号章节
 {}[\addvspace{5.0pt}]
 %%部分页上的小目录节样式%%
 \titlecontents{lsection}[0.9cm]
@@ -2979,8 +2981,21 @@ BoldFont=FZCukai.ttf]
 %%部分页上的小目录小小节样式%%
 \titlecontents{lsubsubsection}[1.2cm]
 {\TocLSubsubsectionFont\color{ColorB}}
-{\contentslabel[\TocLSubsectionFont\faGenderless]{0.5cm}}
-{\contentslabel[\TocLSubsectionFont\faGenderless]{0.5cm}}%不编号章节
+{\contentslabel[\TocLSubsubsectionFont\faGenderless]{0.5cm}}
+{\contentslabel[\TocLSubsubsectionFont\faGenderless]{0.5cm}}%不编号章节
+{}[\addvspace{5.0pt}]
+%%%%
+%%部分页上的小图目录样式%%
+\titlecontents{lfigure}[0.9cm]
+{\TocLSectionFont\color{ColorB}}
+{\contentslabel[\LofLFont\faGenderless]{0.5cm}}
+{\contentslabel[\LofLFont\faGenderless]{0.5cm}}%不编号章节
+{}[\addvspace{5.0pt}]
+%%部分页上的小图目录样式%%
+\titlecontents{ltable}[0.9cm]
+{\TocLSectionFont\color{ColorB}}
+{\contentslabel[\LotLFont\faGenderless]{0.5cm}}
+{\contentslabel[\LotLFont\faGenderless]{0.5cm}}%不编号章节
 {}[\addvspace{5.0pt}]
 \makeatother
 
