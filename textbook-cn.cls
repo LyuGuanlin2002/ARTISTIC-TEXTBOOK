@@ -365,77 +365,15 @@ BoldFont=FZCukai.ttf]
 \newlength{\defaulttextheight}
 \setlength{\defaulttextheight}{\textheight}
 %%Start New Page: \pcol@startpage在换页时（无论是被动或主动）调用，paracol环境开始的第一页则不调用%%
+\NewCommandCopy{\originpcol@startpage}{\pcol@startpage}
 \def\pcol@startpage{%
-\global\let\pcol@firstprevdepth\relax
-\global\pcol@toppage\pcol@page
-\ifx\pcol@currpage\@empty\else
-\pcol@getcurrpinfo{\global\c@page}\@tempdima\@tempskipa
-\@cons\pcol@pages
-{{\number\c@page}\pcol@spanning\pcol@currfoot
-{\pcol@sptextlist}{\pcol@mparbottom}}%
-\stepcounter{page}\ifpcol@paired\else \stepcounter{page}\fi
-\fi
-\textheight\defaulttextheight
-\global\@colht\textheight%
-\global\topskip\pcol@topskip
-\@dblfloatplacement \let\f@depth\z@
-\@tryfcolumn\@dbldeferlist
-\@whilesw\if@fcolmade\fi{%
-\pcol@Fb
-\@next\@currbox\@freelist{%
-\global\setbox\@currbox\box\@outputbox}\pcol@ovf
-\pcol@Fe{startpage(fcol)}%
-\global\dimen\@currbox-\maxdimen
-\global\skip\@currbox\pcol@topskip
-\@cons\pcol@pages{{\number\c@page}\@currbox\voidb@x{}{}}%
-\stepcounter{page}\ifpcol@paired\else \stepcounter{page}\fi
-\global\advance\pcol@page\@ne \global\pcol@toppage\pcol@page
-\@tryfcolumn\@dbldeferlist}%
-\begingroup
-\let\reserved@b\@dbldeferlist \let\reserved@c\@deferlist
-\global\let\@dbldeferlist\@empty \global\let\@deferlist\@empty
-\let\@elt\@sdblcolelt
-\reserved@b
-\let\@elt\relax \xdef\@dbldeferlist{\@dbldeferlist\@deferlist}%
-\global\let\@deferlist\reserved@c
-\endgroup
-\ifx\@dbltoplist\@empty
-\pcol@defcurrpage{\number\c@page}\voidb@x\voidb@x{}{}%
-\else
-\setbox\@tempboxa\vbox{}%
-\begingroup
-\let\@elt\@comdblflelt
-\@dbltoplist
-\let\@elt\relax
-\pcol@Fb
-\xdef\@freelist{\@freelist\@dbltoplist}%
-\pcol@Fe{startpage(dbltop)}%
-\global\let\@dbltoplist\@empty
-\pcol@Fb
-\@next\@currbox\@freelist{\global\setbox\@currbox\vbox{%
-\unvbox\@tempboxa \vskip-\dblfloatsep \dblfigrule
-\vskip\dbltextfloatsep}}\pcol@ovf
-\pcol@Fe{startpage(spanning)}%
-\global\dimen\@currbox\@colht
-\global\skip\@currbox\pcol@topskip
-\pcol@defcurrpage{\number\c@page}\@currbox\voidb@x{}{}%
-\endgroup
-\fi
-\gdef\pcol@footins{\voidb@x}
-}
+\textheight\defaulttextheight%
+\originpcol@startpage}
 %%%%
+\NewCommandCopy{\originpcol@flushfloats}{\pcol@flushfloats}
 \def\pcol@flushfloats{%
-\textheight\defaulttextheight
-\global\@colht\textheight
-\@whilesw\if@fcolmade\fi{%
-\global\@fcolmadefalse
-\ifnum\pcol@ncolleft<\pcol@ncol
-\pcol@iflushfloats\pcol@ncolleft\pcol@ncol\pcol@rightpage
-\else
-\setbox\pcol@rightpage\box\voidb@x
-\fi
-\pcol@iflushfloats\z@\pcol@ncolleft\@outputbox
-\@outputpage}}
+\textheight\defaulttextheight%
+\originpcol@flushfloats}
 \makeatother
 
 %%%%%%%%%%%%%%%%%%%% 图表插入宏包 %%%%%%%%%%%%%%%%%%%%
@@ -864,7 +802,6 @@ BoldFont=FZCukai.ttf]
 \setlength{\DeltaH}{6.0cm}
 \AtBeginDocument{%
 \makeatletter
-\xdef\@RealPage{1}%在文档开头文档绝对页数\@RealPage初始化为1
 \ifthenelse{\totvalue{@Thumb@Number}=0\or\totvalue{@Thumb@Number}=1}{%
 \setlength{\SepH}{0cm}
 \setlength{\MarkY}{-\paperheight/2}%
@@ -876,8 +813,6 @@ BoldFont=FZCukai.ttf]
 \pagestyle{empty}%默认页面样式为空
 \MainFont%默认正文字体
 \makeatother}
-%%统计绝对页数%%
-\AddToHook{shipout/after}{\xdef\@RealPage{\inteval{\ReadonlyShipoutCounter+1}}}%每一页输出后都给\@RealPage加1
 %%%%
 %%绘制页面框架%%
 \newlength{\@ThumbMinimumHeight}
@@ -1644,7 +1579,7 @@ BoldFont=FZCukai.ttf]
 %%渐变带%%
 \path[fill=ColorB!90,opacity=0.9]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south east)rectangle([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south east);
 %%记录当前页占文档总页数的百分比%%
-\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
 \coordinate(PUL)at([xshift=-\@innerlen-\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east);
@@ -1713,7 +1648,7 @@ BoldFont=FZCukai.ttf]
 %%渐变带%%
 \path[fill=ColorB!90,opacity=0.9]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south west)rectangle([xshift=\@innerlen+\textwidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south west);
 %%记录当前页占文档总页数的百分比%%
-\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
 \coordinate(PUL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west);
@@ -1808,7 +1743,7 @@ BoldFont=FZCukai.ttf]
 %%渐变带%%
 \path[fill=ColorB!90,opacity=0.9]([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south east);
 %%记录当前页占文档总页数的百分比%%
-\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
 \coordinate(PUL)at([xshift=-\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west);
@@ -1890,7 +1825,7 @@ BoldFont=FZCukai.ttf]
 %%渐变带%%
 \path[fill=ColorB!90,opacity=0.9]([xshift=\@innerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south west);
 %%记录当前页占文档总页数的百分比%%
-\def\@PagePercent{\fpeval{\@RealPage/\@abspage@last}}
+\def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
 \def\@PagePercentLength{\dimeval{\@innerlen+\@PagePercent\textwidth}}
 %%
 \coordinate(PUL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]TT.south west);
@@ -3589,13 +3524,20 @@ underlay boxed title={%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
 \makesavenoteenv{box8}
 %%
+\newcommand{\paragraphnumber}{%
+\def\parano{0}%
+\everypar{%
+\edef\parano{\number\numexpr\parano+1\relax}%
+\xllap{\dimexpr2.0em+1.1cm\relax}{\hbox to \linenumberwidth{\hss\linenumberfont\parano}}%
+}}
+%%
 \DeclareTColorBox{box8}{+O{} +m +O{} +O{} O{ColorA} O{}}{CodeBox=#2/#3/#4/#5/#6,#1}
 
-\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{阅读理解{\sffamily\the@comprehension}}[#1][#2][ColorB]}{\end{box8}}
+\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{阅读理解{\sffamily\the@comprehension}}[#1][#2][ColorB]\paragraphnumber}{\end{box8}}
 %%
-\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{完形填空{\sffamily\the@cloze}}[#1][#2][ColorA]}{\end{box8}}
+\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{完形填空{\sffamily\the@cloze}}[#1][#2][ColorA]\paragraphnumber}{\end{box8}}
 %%
-\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{文本解读}[#1][#2][ColorC]}{\end{box8}}
+\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{文本解读}[#1][#2][ColorC]\paragraphnumber}{\end{box8}}
 %%
 \NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{词汇解析}[#1][#2][ColorE]}{\end{box8}}
 %%%%
