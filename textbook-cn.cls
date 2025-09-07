@@ -292,7 +292,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\LotLFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小表列表字体
 \newcommand{\ContentPageNumFont}{\upshape\sffamily\FontSizeSet{14pt}}%目录页码字体
 \newcommand{\CiteNumFont}{\upshape\rmfamily}%引用字体
-\newcommand{\LineNumFont}{\upshape\sffamily\bfseries\FontSizeSet{10pt}}%行号字体
+\newcommand{\LineNumFont}{\upshape\sffamily\bfseries\FontSizeSet{11pt}}%行号字体
 \newcommand{\ListNumFont}{\upshape\sffamily\bfseries\FontSizeSet{12pt}}%列表序号字体
 \newcommand{\HeadingFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{13pt}}%一般标题字体
 \newcommand{\EgLabelFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{13pt}}%例题标签字体
@@ -321,7 +321,7 @@ BoldFont=FZCukai.ttf]
 \setlength{\@botlen}{2.5cm}
 %%%%
 \RequirePackage{geometry}
-\geometry{letterpaper,headsep=0.75cm,footskip=0.75cm,inner=\@innerlen,outer=\@outerlen,top=\@toplen,bottom=\@botlen,columnsep=2.0em,reversemarginpar,heightrounded}
+\geometry{letterpaper,headsep=0.75cm,footskip=0.75cm,inner=\@innerlen,outer=\@outerlen,top=\@toplen,bottom=\@botlen,columnsep=0.75cm,reversemarginpar,heightrounded}
 %%
 \setlength{\textwidth}{\paperwidth-\@outerlen-\@innerlen}
 \setlength{\marginparwidth}{\dimeval{\@MarginColumn@Ratio\textwidth}}
@@ -560,7 +560,10 @@ BoldFont=FZCukai.ttf]
 \RequirePackage{lineno}%行号宏包
 \modulolinenumbers[5]%每5行显示一个行号
 \renewcommand{\linenumberfont}{\color{ColorA}\LineNumFont}%修改行号字体
-\setlength{\linenumbersep}{4.0mm}%修改行号与正文的间距
+\setlength{\linenumbersep}{5.0mm}%修改行号与正文的间距
+\RequirePackage{fancyvrb}%代码盒子
+%%修改代码盒子左侧行数样式%%
+\renewcommand{\theFancyVerbLine}{\color{ColorA}\LineNumFont{\arabic{FancyVerbLine}}}
 
 %%%%%%%%%%%%%%%%%%%% 绘图与表格宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{pifont,fontawesome5}%图标
@@ -648,26 +651,30 @@ BoldFont=FZCukai.ttf]
 \renewcommand{\thesubsubsection}{\arabic{subsubsection}}
 
 %%%%%%%%%%%%%%%%%%%% 列表环境 %%%%%%%%%%%%%%%%%%%%%%
+%%列表长度设置%%
+\setlength{\itemsep}{0mm}
+\setlength{\labelsep}{0mm}
+\setlength{\leftmargini}{0mm}
 %%设置不编号点样式%%
 \newcommand*{\UnnumberedLabel}{%
 \tikz[baseline=-0.4em]{%
-\node[circle,fill=white,draw=ColorA,ultra thick,anchor=base,minimum size=1.0em,inner sep=0mm,outer sep=0mm]{};%
-\node[circle,fill=ColorA,draw=ColorA,anchor=base,minimum size=0.5em,inner sep=0mm,outer sep=0mm]{};%
+\draw[ColorA,fill=white,ultra thick](0,0)circle(0.5em);
+\draw[ColorA,fill=ColorA](0,0)circle(0.25em);
 }}
 %%设置编号点样式%%
 \newcommand*{\NumberedLabel}[1]{%
-\tikz[baseline=-0.1em]{%
-\node[circle,fill=ColorA,draw=ColorA,ultra thick,anchor=base,minimum size=1.0em,align=center,inner sep=0mm,outer sep=0mm,font=\ListNumFont,text=white]{\maxsizebox{0.9em}{!}{#1}};}}
+\tikz[baseline=-0.4em]{%
+\node[circle,fill=ColorA,draw=ColorA,ultra thick,minimum size=1.0em,align=center,inner sep=0mm,outer sep=0mm,font=\ListNumFont,text=white]{\maxsizebox{0.9em}{!}{#1}};}}
 %%%%
 %%无编号列表环境%%
 \NewDocumentEnvironment{UnnumberedItem}{O{1}}{%
+\setlist[itemize]{labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\UnnumberedLabel}%
 \ifnum#1=1%
-\begin{itemize}[labelsep=0.5em,labelwidth=1.0em,itemsep=0em,itemindent=1.6em,leftmargin=0.8em,label=\protect\UnnumberedLabel]%
+\begin{itemize}%
 \else%
-\setlength{\columnsep}{0.7em}%
 \begin{multicols}{#1}%
 \ItemFont%
-\begin{itemize}[labelsep=0.5em,labelwidth=1.0em,itemsep=0em,itemindent=1.6em,leftmargin=0.8em,label=\protect\UnnumberedLabel]%
+\begin{itemize}%
 \fi%
 }{%
 \ifnum#1=1%
@@ -676,15 +683,16 @@ BoldFont=FZCukai.ttf]
 \end{itemize}%
 \end{multicols}%
 \fi}
+
 %%编号列表环境%%
 \NewDocumentEnvironment{NumberedItem}{O{1}}{%
+\setlist[enumerate]{labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\arabic*}}%
 \ifnum#1=1%
-\begin{enumerate}[labelsep=0.5em,labelwidth=1.0em,itemsep=0em,itemindent=1.6em,leftmargin=0.8em,label=\protect\NumberedLabel{\arabic*}]%
+\begin{enumerate}%
 \else%
-\setlength{\columnsep}{0.7em}%
 \begin{multicols}{#1}%
 \ItemFont%
-\begin{enumerate}[labelsep=0.5em,labelwidth=1.0em,itemsep=0em,itemindent=1.6em,leftmargin=0.8em,label=\protect\NumberedLabel{\arabic*}]%
+\begin{enumerate}%
 \fi%
 }{%
 \ifnum#1=1%
@@ -700,13 +708,13 @@ BoldFont=FZCukai.ttf]
 \setcounter{@temp@item}{0}
 %%%%
 \NewDocumentEnvironment{QuestionItem}{O{1}}{%
+\setlist[enumerate]{labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ColorA}\arabic*.}}%
 \ifnum#1=1%
-\begin{enumerate}[labelsep=0em,labelwidth=2.0em,itemsep=0em,itemindent=2.0em,leftmargin=0.8em,label={\protect\raisebox{0.1em}{\parbox{2.0em}{\sffamily\bfseries\color{ColorA}\arabic*.}}}]%
+\begin{enumerate}%
 \setcounter{enumi}{\value{@temp@item}}%
 \else%
-\setlength{\columnsep}{0.7em}%
 \begin{multicols}{#1}%
-\begin{enumerate}[labelsep=0em,labelwidth=2.0em,itemsep=0em,itemindent=2.0em,leftmargin=0.8em,label={\protect\raisebox{0.1em}{\parbox{2.0em}{\sffamily\bfseries\color{ColorA}\arabic*.}}}]%
+\begin{enumerate}%
 \setcounter{enumi}{\value{@temp@item}}%
 \fi%
 }{%
@@ -1480,7 +1488,7 @@ BoldFont=FZCukai.ttf]
 %%
 %%编号部分页%%
 \titleformat{\part}
-{}{}{0em}
+{}{}{0mm}
 {\startcontents[parts]%开启小目录
 \@PartStyle{\partlabelfront{\sffamily\thepart}\partlabelback}{#1}%部分样式
 \thispagestyle{empty}%部分页的页面样式为空白
@@ -1489,7 +1497,7 @@ BoldFont=FZCukai.ttf]
 \global\partimage{}]%清空\partimage
 %%不编号部分页%%
 \titleformat{name=\part,numberless}
-{}{}{0em}
+{}{}{0mm}
 {\startcontents[parts]%开启小目录
 \@PartStarStyle{#1}%部分样式
 \thispagestyle{empty}%部分页的页面样式为空白
@@ -1928,7 +1936,7 @@ BoldFont=FZCukai.ttf]
 %%%%%%%%%%%%%%%
 %%编号章节页%%
 \titleformat{\chapter}[block]
-{\setbaselineskip{0pt}\selectfont}{}{0em}
+{\setbaselineskip{0pt}\selectfont}{}{0mm}
 {\stepcounter{@Total@Chapter@Number}%侧标数更新
 \@ChapterStyle{\chapterlabelfront{\sffamily\thechapter}\chapterlabelback}{#1}%章样式
 }[\global\chapterimage{}%清空\chapterimage
@@ -1937,7 +1945,7 @@ BoldFont=FZCukai.ttf]
 
 %%不编号章节页%%
 \titleformat{name=\chapter,numberless}[block]
-{\setbaselineskip{0pt}\selectfont}{}{0em}
+{\setbaselineskip{0pt}\selectfont}{}{0mm}
 {\stepcounter{@Total@Chapter@Number}%侧标数更新
 \@ChapterStarStyle{#1}{\@chaptersubtitle}%章样式
 }[\global\chaptersubtitle{}%清空\chaptersubtitle
@@ -2223,7 +2231,7 @@ BoldFont=FZCukai.ttf]
 \end{pgfonlayer}%
 \coordinate(C)at([xshift=\@ComplexHeading@Radius,yshift=-\@ComplexHeading@Radius]L.north west);
 \draw[ColorB,fill=white](C)circle(\@ComplexHeading@Radius-2.5pt);
-\node[circle,text=ColorB,inner sep=0mm,outer sep=0mm,font=\MainFont](F)at(C){\centering#3};
+\node[circle,text=ColorB,inner sep=0mm,outer sep=0mm,font=\MainFont,align=center](F)at(C){#3};
 \end{tikzpicture}%
 \end{flushleft}%
 \par
@@ -2256,11 +2264,7 @@ BoldFont=FZCukai.ttf]
 \NewDocumentCommand{\LongHeading}{+m}{%
 \begin{center}%
 \begin{tikzpicture}%
-\node[font=\HeadingFont,text=ColorA,draw=ColorB!7.5,fill=ColorB!7.5,ultra thick,rounded corners,inner sep=0mm](P){%
-\hspace*{1.5mm}%
-\parbox{\linewidth-3.0mm}{\centering\strut#1\strut}%
-\hspace*{1.5mm}%
-};
+\node[font=\HeadingFont,align=center,text=ColorA,draw=ColorB!7.5,fill=ColorB!7.5,ultra thick,rounded corners,inner xsep=2.5mm,inner ysep=0mm,minimum width=\linewidth](P){\strut#1\strut};
 \end{tikzpicture}%
 \end{center}%
 }
@@ -3471,47 +3475,49 @@ underlay boxed title={%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
 \makesavenoteenv{box8}
 %%段编号命令
-\newcommand{\paragraphnumber}{%
-\def\parano{0}%
+\newcommand{\@Paragraph@Number}{%
+\newdimen\@linenumber@xshift%
+\newdimen\@linenumber@sep%
+\@linenumber@xshift=\dimexpr\parindent+1.0em\relax%
+\@linenumber@sep=7.5mm%
+\def\@parano{0}%
 \everypar{%
-\edef\parano{\number\numexpr\parano+1\relax}%
-\xllap{\dimexpr2.0em+1.1cm\relax}{\hbox to \linenumberwidth{\hss\linenumberfont\parano}}%
+\edef\@parano{\number\numexpr\@parano+1\relax}%
+\xllap{\dimexpr\@linenumber@xshift+\@linenumber@sep\relax}{\hbox to 1.0em{\hfill\linenumberfont\@parano}}%
 }}
+
 %%
 \DeclareTColorBox{box8}{+O{} +m +O{} +O{} O{ColorA} O{}}{CodeBox=#2/#3/#4/#5/#6,#1}
 
-\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{阅读理解{\sffamily\the@comprehension}}[#1][#2][ColorB]\paragraphnumber}{\end{box8}}
+\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{阅读理解{\sffamily\the@comprehension}}[#1][#2][ColorB]\@Paragraph@Number}{\end{box8}}
 %%
-\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{完形填空{\sffamily\the@cloze}}[#1][#2][ColorA]\paragraphnumber}{\end{box8}}
+\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{完形填空{\sffamily\the@cloze}}[#1][#2][ColorA]\@Paragraph@Number}{\end{box8}}
 %%
-\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{文本解读}[#1][#2][ColorC]\paragraphnumber}{\end{box8}}
+\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{文本解读}[#1][#2][ColorC]\@Paragraph@Number}{\end{box8}}
 %%
 \NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{词汇解析}[#1][#2][ColorE]}{\end{box8}}
 %%%%
-%%修改代码盒子左侧行数样式%%
-\renewcommand{\theFancyVerbLine}{\LineNumFont\color{ColorA}{\arabic{FancyVerbLine}}}
-%%%%
 \newtcblisting{PythonBox}[1][]{
 CodeBox={代码示例}/#1/{}/ColorA/{\uppercase{\sffamily python}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=python}
 
 \newtcblisting{CppBox}[1][]{
 CodeBox={代码示例}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=cpp}
 
 \newtcblisting{JavaBox}[1][]{
 CodeBox={代码示例}/#1/{}/ColorC/{\uppercase{\sffamily java}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=java}
 
 \newtcblisting{CodeBox}[3][]{
 CodeBox={代码示例}/#1/{}/#3/{\uppercase{\sffamily#2}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=#2}
 
