@@ -360,18 +360,19 @@ BoldFont=FZCukai.ttf]
 \footnotelayout{m}
 \twosided[pcm]
 %%paracol源代码修正%%
-%%将默认的textheight储存起来%%
-\newlength{\@default@textheight}
-\expandafter\setlength\expandafter{\@default@textheight}{\textheight}
 %%Start New Page: \pcol@startpage在换页时（无论是被动或主动）调用，paracol环境开始的第一页则不调用%%
 \NewCommandCopy{\originpcol@startpage}{\pcol@startpage}
 \def\pcol@startpage{%
-\textheight\@default@textheight%
+\newdimen\@DefaultTextheight%
+\@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax%
+\textheight\@DefaultTextheight%
 \originpcol@startpage}
 %%%%
 \NewCommandCopy{\originpcol@flushfloats}{\pcol@flushfloats}
 \def\pcol@flushfloats{%
-\textheight\@default@textheight%
+\newdimen\@DefaultTextheight%
+\@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax%
+\textheight\@DefaultTextheight%
 \originpcol@flushfloats}
 
 %%%%%%%%%%%%%%%%%%%% 图表插入宏包 %%%%%%%%%%%%%%%%%%%%
@@ -626,14 +627,14 @@ BoldFont=FZCukai.ttf]
 \newcounter{@Total@Chapter@Number}%记录侧标数
 \regtotcounter{@Total@Chapter@Number}%获取侧标数最大值，需要编译两次才能正确获取
 %%%%
-\newcounter{@egnum}[section]
-\newcounter{@varnum}[section]
-\newcounter{@def}[section]
-\newcounter{@thm}[section]
-\newcounter{@axm}[section]
-\newcounter{@lem}[section]
-\newcounter{@colry}[section]
-\newcounter{@prop}[section]
+\newcounter{@example}[section]
+\newcounter{@variant}[section]
+\newcounter{@definition}[section]
+\newcounter{@theorem}[section]
+\newcounter{@axiom}[section]
+\newcounter{@lemma}[section]
+\newcounter{@corollary}[section]
+\newcounter{@proposition}[section]
 \newcounter{@check}
 \newcounter{@comprehension}
 \newcounter{@cloze}
@@ -815,13 +816,13 @@ BoldFont=FZCukai.ttf]
 \newdimen\@ThumbStartHeight%
 \newdimen\@ThumbRangeHeight%
 \newdimen\@ChapterPercentLength%
-%%
-\@GutterWidth=\dimeval{\@FrameWidth+\@innerlen-\@outerlen}
-\@PageNumHeight=\dimeval{\@toplen-\headsep+1.5mm}%
-\@PageNumWidth=\dimeval{\@outerlen-\@FrameWidth-2.0mm}%
-\@DefaultTextwidth=\dimeval{\paperwidth-\@innerlen-\@outerlen}%
+%%\pgfmathsetlengthmacro
+\@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
+\@PageNumHeight=\dimexpr\@toplen-\headsep+1.5mm\relax%
+\@PageNumWidth=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax%
+\@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax%
 \@ThumbStartHeight=6.0cm%
-\@ThumbRangeHeight=\dimeval{\paperheight-2\@ThumbStartHeight}%
+\@ThumbRangeHeight=\dimexpr\paperheight-2\@ThumbStartHeight\relax%
 %%侧标位置更新%%
 \ifnum\totvalue{@Total@Chapter@Number}=0
 \@ChapterPercentLength=\dimeval{\paperheight/2}
@@ -1196,7 +1197,7 @@ BoldFont=FZCukai.ttf]
 \@Part@BlockWidth=1.75cm
 \@Part@TopOuterBlockLength=7.0cm
 \@Part@MiddleOuterBlockLength=4.0cm
-\@DefaultTextwidth=\dimeval{\paperwidth-\@innerlen-\@outerlen}
+\@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
 %%
 \pgfdeclarelayer{@Part@Top}
 \pgfdeclarelayer{@Part@Bottom}
@@ -1455,7 +1456,7 @@ BoldFont=FZCukai.ttf]
 \@Part@BlockWidth=1.75cm
 \@Part@TopOuterBlockLength=7.0cm
 \@Part@MiddleOuterBlockLength=4.0cm
-\@DefaultTextwidth=\dimeval{\paperwidth-\@innerlen-\@outerlen}
+\@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
 %%
 \pgfdeclarelayer{@Part@Star@Top}%
 \pgfdeclarelayer{@Part@Star@Bottom}%
@@ -1518,12 +1519,8 @@ BoldFont=FZCukai.ttf]
 }
 
 %%章节页样式%%
-\newlength{\@Chapter@SayingBlockHeight}
 \newlength{\@ChapterPage@BottomCut}
 \newlength{\@ChapterPage@TopCut}
-%%
-\setlength{\@Chapter@SayingBlockHeight}{\@outerlen-2.5mm}
-\setlength{\@ChapterPage@BottomCut}{\@Chapter@SayingBlockHeight-\@FrameWidth}
 %%%%
 \newcommand{\chaptersaying}[1]{\long\def\@chaptersaying{\hspace*{2.0em}#1}}
 \newcommand{\chaptersubtitle}[1]{\long\def\@chaptersubtitle{#1}}
@@ -1541,15 +1538,19 @@ BoldFont=FZCukai.ttf]
 \newdimen\@Chapter@LabelSep
 \newdimen\@Chapter@LabelYShift@Up
 \newdimen\@Chapter@LabelYShift@Down
+\newdimen\@Chapter@SayingBlockHeight
 \newdimen\@DefaultTextwidth
 %%
-\@GutterWidth=\dimeval{\@FrameWidth+\@innerlen-\@outerlen}
-\@Chapter@PageSize=\dimeval{\@outerlen-\@FrameWidth-2.0mm}
+\@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
+\@Chapter@PageSize=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax
 \@Chapter@StripeWidth=0.325cm
 \@Chapter@LabelSep=0.5cm
 \@Chapter@LabelYShift@Up=0.5cm
 \@Chapter@LabelYShift@Down=0.65cm
-\@DefaultTextwidth=\dimeval{\paperwidth-\@innerlen-\@outerlen}
+\@Chapter@SayingBlockHeight=\dimexpr\@outerlen-2.5mm\relax
+\@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
+%%定义页面底部裁剪长度%%
+\gsetlength{\@ChapterPage@BottomCut}{\@Chapter@SayingBlockHeight-\@FrameWidth}
 %%
 \pgfdeclarelayer{@Chapter@Top}
 \pgfdeclarelayer{@Chapter@Bottom}
@@ -1705,15 +1706,19 @@ BoldFont=FZCukai.ttf]
 \newdimen\@Chapter@Star@LabelNameXSep
 \newdimen\@Chapter@Star@LabelYShift@Up
 \newdimen\@Chapter@Star@LabelYShift@Down
+\newdimen\@Chapter@SayingBlockHeight
 \newdimen\@DefaultTextwidth
 %%
-\@GutterWidth=\dimeval{\@FrameWidth+\@innerlen-\@outerlen}
-\@Chapter@PageSize=\dimeval{\@outerlen-\@FrameWidth-2.0mm}
+\@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
+\@Chapter@PageSize=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax
 \@Chapter@StripeWidth=0.325cm
 \@Chapter@Star@LabelNameXSep=0.4cm
 \@Chapter@Star@LabelYShift@Up=0.5cm
 \@Chapter@Star@LabelYShift@Down=0.65cm
-\@DefaultTextwidth=\dimeval{\paperwidth-\@innerlen-\@outerlen}
+\@Chapter@SayingBlockHeight=\dimexpr\@outerlen-2.5mm\relax
+\@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
+%%定义页面底部裁剪长度%%
+\gsetlength{\@ChapterPage@BottomCut}{\@Chapter@SayingBlockHeight-\@FrameWidth}
 %%
 \pgfdeclarelayer{@Chapter@Star@Top}
 \pgfdeclarelayer{@Chapter@Star@Bottom}
@@ -1890,27 +1895,36 @@ BoldFont=FZCukai.ttf]
 
 %%%%%%%%%%%%%%%
 %%定义一个接口，读取aux文件时会调用它来存储到内部命令%%
-\newcommand*{\@Chapter@Page@Top@Cut}[2]{%
+\newcommand*{\@Chapter@Page@Cut}[3]{%
 %#1：章编号，#2：长度文本
 \expandafter\gdef\csname chaptopcut@#1\endcsname{#2}%
-%\chaptopcut@#1 为一长度变量，用于储存章节页上半部分的版心高度裁剪长度，但其名称中包含数字（数字表示“章节的序数”，包括编号和不编号章节），不便于使用，因此需要后续的命令对这一长度变量进行封装。
+\expandafter\gdef\csname chapbotcut@#1\endcsname{#3}%
+%\chap***cut@#1 为一长度变量，用于储存章节页上半部分的版心高度裁剪长度，但其名称中包含数字（数字表示“章节的序数”，包括编号和不编号章节），不便于使用，因此需要后续的命令对这一长度变量进行封装。
 }
-%%存储函数：将长度\chaptopcut@#1 封装进命令\@Chapter@Page@Top@Cut{#1}{#2}中，并写入aux文件%%
-\newcommand{\@store@chaptopcut}{%
+%%存储函数：将长度\chap***cut@#1 封装进命令\@Chapter@Page@Cut{#1}{#2}{#3}中，并写入aux文件%%
+\newcommand{\@store@chapcut}{%
 \begingroup%
 \def\@temp@aux{%
-\noexpand\@Chapter@Page@Top@Cut{\the@Chapter@Number}{\the\@ChapterPage@TopCut}%
+\noexpand\@Chapter@Page@Cut{\the@Chapter@Number}{\the\@ChapterPage@TopCut}{\the\@ChapterPage@BottomCut}%
 }%
-%第一个参数表示章节的序数，第二个参数为版心裁剪长度\@ChapterPage@TopCut的数值
+%第一个参数表示章节的序数，第二个参数为版心顶部裁剪长度\@ChapterPage@TopCut的数值，第三个参数为版心底部裁剪长度\@ChapterPage@BottomCut的数值
 \immediate\write\@auxout{\@temp@aux}%写入aux文件
 \endgroup}
-%%读取函数：从aux文件中读取\chaptopcut@#1的值，并赋给\@ChapterPage@TopCut%%
-\newcommand{\@use@chaptopcut}{%
+%%读取函数：从aux文件中读取\chap***cut@#1的值，并赋给\@ChapterPage@***Cut%%
+\newcommand{\@use@chapcut}{%
 \ifcsname chaptopcut@\the@Chapter@Number\endcsname%
 \gsetlength{\@ChapterPage@TopCut}{\dimexpr\csname chaptopcut@\the@Chapter@Number\endcsname\relax}%
 \else%
 \gsetlength{\@ChapterPage@TopCut}{0pt}%
+\fi%
+%%
+\ifcsname chapbotcut@\the@Chapter@Number\endcsname%
+\gsetlength{\@ChapterPage@BottomCut}{\dimexpr\csname chapbotcut@\the@Chapter@Number\endcsname\relax}%
+\else%
+\gsetlength{\@ChapterPage@BottomCut}{0pt}%
 \fi}
+
+
 %%%%%%%%%%%%%%%
 %%编号章节页%%
 \titleformat{\chapter}[block]
@@ -1939,14 +1953,11 @@ BoldFont=FZCukai.ttf]
 \titleclass{\chapter}{top}
 %%修改chapter断页方式%%
 \newcommand{\chapterbreak}{%
-\if@openright%
-\cleardoublepage%
-\else%
-\clearpage%
-\fi%
+\if@openright\cleardoublepage%
+\else\clearpage\fi%
 \stepcounter{@Chapter@Number}%
-%从aux文件中读取\chaptopcut@#1的值，并赋给\@ChapterPage@TopCut
-\@use@chaptopcut%
+%从aux文件中读取\chap***cut@#1的值，并赋给\@ChapterPage@***Cut
+\@use@chapcut%
 %临时修改章首页的版心高度为章底部文字留出空间
 \gaddtolength{\topmargin}{\@ChapterPage@TopCut}%
 \changetextheight{-\@ChapterPage@BottomCut-\@ChapterPage@TopCut}%
@@ -1963,8 +1974,8 @@ BoldFont=FZCukai.ttf]
 \IfBooleanTF{#1}%
 {\OriginChapter*{#3\@mkboth{#2}{#2}}}%
 {\OriginChapter[#2]{#3}}%
-%将长度\chaptopcut@#1 封装进命令\@Chapter@Page@Top@Cut{#1}{#2}中，并写入aux文件
-\@store@chaptopcut
+%将长度\chap***cut@#1 封装进命令\@Chapter@Page@***@Cut{#1}{#2}{#3}中，并写入aux文件
+\@store@chapcut
 %清除章首页其他的额外垂直空白距离
 \nointerlineskip}
 
@@ -1977,7 +1988,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \SectionFont%
 \newdimen\@Section@LabelRadius%
-\@Section@LabelRadius=\dimeval{\baselineskip/2}%
+\@Section@LabelRadius=\dimexpr\baselineskip/2\relax%
 \draw[ColorA,fill=ColorA](0,0)circle(\@Section@LabelRadius);
 \node[circle,outer sep=0mm,inner sep=0mm,font=\SectionFont\sffamily,text=white]at(0,0){\maxsizebox{2\@Section@LabelRadius}{!}{\thesection}};
 \endgroup}%
@@ -1990,7 +2001,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \SectionFont%
 \newdimen\@Section@Star@LabelRadius%
-\@Section@Star@LabelRadius=\dimeval{\baselineskip/2}%
+\@Section@Star@LabelRadius=\dimexpr\baselineskip/2\relax%
 \draw[ColorB!75,fill=ColorB!75](0,0)circle(\@Section@Star@LabelRadius);
 \draw[white,fill=ColorB,line width=2.75pt](0,0)circle(7*\@Section@Star@LabelRadius/12);
 \endgroup}
@@ -2020,9 +2031,9 @@ BoldFont=FZCukai.ttf]
 \newdimen\@Subsection@BRadius%
 \newdimen\@Subsection@LabelHSkip%
 %%
-\@Subsection@Radius=\dimeval{\baselineskip/2}%0.9
-\@Subsection@BRadius=\dimeval{\baselineskip/2+6.5pt}%
-\@Subsection@LabelHSkip=\dimeval{\baselineskip-2.5mm}%
+\@Subsection@Radius=\dimexpr\baselineskip/2\relax%0.9
+\@Subsection@BRadius=\dimexpr\baselineskip/2+6.5pt\relax%
+\@Subsection@LabelHSkip=\dimexpr\baselineskip-2.5mm\relax%
 %%
 \pgfdeclarelayer{@Subsection@Bottom}%
 \pgfsetlayers{@Subsection@Bottom,main}%
@@ -2072,9 +2083,9 @@ BoldFont=FZCukai.ttf]
 \newdimen\@Subsection@Star@BRadius%
 \newdimen\@Subsection@Star@SRadius%
 %%
-\@Subsection@Star@Radius=\dimeval{\baselineskip/2}%0.9
-\@Subsection@Star@BRadius=\dimeval{\baselineskip/2+\@left@white@line@width+2.0pt}%
-\@Subsection@Star@SRadius=\dimeval{\baselineskip/2+2.0pt}%
+\@Subsection@Star@Radius=\dimexpr\baselineskip/2\relax%0.9
+\@Subsection@Star@BRadius=\dimexpr\baselineskip/2+\@left@white@line@width+2.0pt\relax%
+\@Subsection@Star@SRadius=\dimexpr\baselineskip/2+2.0pt\relax%
 %%
 \pgfdeclarelayer{@Subsection@Star@Bottom}%
 \pgfsetlayers{@Subsection@Star@Bottom,main}%
@@ -2146,7 +2157,7 @@ BoldFont=FZCukai.ttf]
 \SubsubsectionFont%
 \newdimen\@Subsubsection@LabelRadius%
 %%
-\@Subsubsection@LabelRadius=\dimeval{5\baselineskip/12}%
+\@Subsubsection@LabelRadius=\dimexpr5\baselineskip/12\relax%
 \node[outer sep=0mm,inner sep=0mm]{\@HalfCircle@Label{ColorB}{\@Subsubsection@LabelRadius}};
 \endgroup}%
 \hspace*{2.5mm}%
@@ -2159,7 +2170,7 @@ BoldFont=FZCukai.ttf]
 \SubsubsectionFont%
 \newdimen\@Subsubsection@LabelRadius
 %%
-\@Subsubsection@LabelRadius=\dimeval{5\baselineskip/12}%
+\@Subsubsection@LabelRadius=\dimexpr5\baselineskip/12\relax%
 \node[outer sep=0mm,inner sep=0mm]{\@HalfCircle@Label{ColorB}{\@Subsubsection@LabelRadius}};
 \endgroup}%
 }{4.0mm}{#1}
@@ -2179,7 +2190,7 @@ BoldFont=FZCukai.ttf]
 \SubsectionFont%
 \newdimen\@ComplexHeading@Radius%
 %%
-\@ComplexHeading@Radius=\dimeval{\baselineskip/2}%
+\@ComplexHeading@Radius=\dimexpr\baselineskip/2\relax%
 %%
 \pgfdeclarelayer{@ComplexHeading@Bottom}%
 \pgfsetlayers{@ComplexHeading@Bottom,main}%
@@ -2224,7 +2235,7 @@ BoldFont=FZCukai.ttf]
 \HeadingFont%
 \newdimen\@AdjustiveHeading@Radius%
 %%
-\@AdjustiveHeading@Radius=\dimeval{\baselineskip/2}%
+\@AdjustiveHeading@Radius=\dimexpr\baselineskip/2\relax%
 %%
 \pgfdeclarelayer{@AdjustiveHeading@Bottom}%
 \pgfsetlayers{@AdjustiveHeading@Bottom,main}%
@@ -2766,7 +2777,7 @@ BoldFont=FZCukai.ttf]
 \TocPartFont%
 \newdimen\@PartToc@Radius%
 %%
-\@PartToc@Radius=\dimeval{\baselineskip/2}%0.9
+\@PartToc@Radius=\dimexpr\baselineskip/2\relax%0.9
 %%
 \pgfdeclarelayer{@PartToc@Bottom}%
 \pgfsetlayers{@PartToc@Bottom,main}%
@@ -2911,7 +2922,7 @@ BoldFont=FZCukai.ttf]
 \EgLabelFont%
 \newdimen\@Example@Radius%
 %%
-\@Example@Radius=\dimeval{\baselineskip/2}%0.75
+\@Example@Radius=\dimexpr\baselineskip/2\relax%0.75
 %%
 \pgfdeclarelayer{@Example@Bottom}%
 \pgfsetlayers{@Example@Bottom,main}%
@@ -2955,7 +2966,7 @@ BoldFont=FZCukai.ttf]
 \begingroup%
 \EgLabelFont%
 \newdimen\@Answer@Radius%
-\@Answer@Radius=\dimeval{\baselineskip/2}%0.75
+\@Answer@Radius=\dimexpr\baselineskip/2\relax%0.75
 \node[draw=#2,fill=#2,rounded corners=\@Answer@Radius,ultra thick,text=white,inner xsep=\@Answer@Radius,inner ysep=0mm,outer sep=0mm](L){%
 \begin{varwidth}{3.0cm}
 \@change@minipage@footnote%
@@ -2983,8 +2994,8 @@ BoldFont=FZCukai.ttf]
 \newenvironment{Example}{%
 \medskip%
 \if@mainmatter%
-\stepcounter{@egnum}%
-\@ExampleStyle{例题}{\environmentmark\the@prenumber.\the@egnum}{ColorA}%
+\stepcounter{@example}%
+\@ExampleStyle{例题}{\environmentmark\the@prenumber.\the@example}{ColorA}%
 \else%
 \@AnswerStyle{\@Example@Name}{ColorA}%
 \fi%
@@ -3001,8 +3012,8 @@ BoldFont=FZCukai.ttf]
 \newenvironment{Variant}{%
 \medskip%
 \if@mainmatter%
-\stepcounter{@varnum}%
-\@ExampleStyle{变式}{\environmentmark\the@prenumber.\the@varnum}{ColorB}%
+\stepcounter{@variant}%
+\@ExampleStyle{变式}{\environmentmark\the@prenumber.\the@variant}{ColorB}%
 \else%
 \@AnswerStyle{\@Variant@Name}{ColorB}%
 \fi%
@@ -3065,7 +3076,7 @@ segmentation at break=false,
 underlay boxed title={%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[#2,fill=#2,ultra thick,rounded corners=\@BoxTitle@Radius](title.north west)rectangle(title.south east);
 \draw[white,fill=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle(\@BoxTitle@Radius-2.0pt);
 \draw[#2,fill=#2]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle(\@BoxTitle@Radius/2);
@@ -3139,7 +3150,7 @@ segmentation at break=false,
 underlay boxed title={%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \begin{tcbclipinterior}
 \fill[#4!7.5,draw=#4!7.5](frame.south west)rectangle([xshift=2.0em]frame.north west);
 \draw[#4!7.5,fill=#4!7.5](frame.north east)rectangle(title.south west);
@@ -3202,7 +3213,7 @@ underlay boxed title={%
 \begingroup%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[white,fill=white,rounded corners=\@BoxTitle@Radius,line width=10.0pt](title.north west)rectangle(title.south east);
 \draw[#5,fill=#5,ultra thick,rounded corners=\@BoxTitle@Radius](title.north west)rectangle(title.south east);
 %%%%
@@ -3231,7 +3242,7 @@ underlay boxed title={%
 \begingroup%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[white,fill=white,line width=10.0pt,rounded corners=\@BoxTitle@Radius](title.north east)rectangle(title.south west);
 %%%%
 \fill[white,draw=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({5*\@BoxTitle@Radius/3});
@@ -3274,7 +3285,7 @@ underlay boxed title={%
 \begingroup%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \pgfgetnodeheight(title)\@BoxTitle@Height
 \ifdim\@BoxTitle@Height>2\@BoxTitle@Radius
 \draw[white,fill=white,line width=10.0pt](title.north east)--([xshift={sqrt(15)*\@BoxTitle@Radius/7+\@BoxTitle@Radius}]title.north west)arc(asin(7/8):{270-asin(7/8)}:{8*\@BoxTitle@Radius/7})[rounded corners=\@BoxTitle@Radius]--(title.south west)--(title.south east)--cycle;
@@ -3290,28 +3301,28 @@ underlay boxed title={%
 %%编号定义盒子%%
 \DeclareDocumentEnvironment{Definition}{ +O{} +O{} }{\begin{box3}[phantom={%
 \if@mainmatter%
-\refstepcounter{@def}
+\refstepcounter{@definition}
 \fi}]{定义%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@def}%
+{~\sffamily\environmentmark\the@prenumber.\the@definition}%
 \fi}
 [#1][#2][ColorA][\faCrosshairs]}{\end{box3}}
 %%%%
 \DeclareDocumentEnvironment{Theorem}{ +O{} +O{} }{\begin{box3}[phantom={%
 \if@mainmatter%
-\refstepcounter{@thm}
+\refstepcounter{@theorem}
 \fi}]{定理%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@thm}%
+{~\sffamily\environmentmark\the@prenumber.\the@theorem}%
 \fi}
 [#1][#2][ColorB][\faCrosshairs]}{\end{box3}}
 %%%%
 \DeclareDocumentEnvironment{Axiom}{ +O{} +O{} }{\begin{box3}[phantom={%
 \if@mainmatter%
-\refstepcounter{@axm}
+\refstepcounter{@axiom}
 \fi}]{公理%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@axm}%
+{~\sffamily\environmentmark\the@prenumber.\the@axiom}%
 \fi}
 [#1][#2][ColorI][\faCompactDisc]}{\end{box3}}
 %%%%
@@ -3333,7 +3344,7 @@ underlay boxed title={%
 \begingroup%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[white,fill=white,line width=10.0pt]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({8*\@BoxTitle@Radius/7});
 \draw[white,fill=white,rounded corners=\@BoxTitle@Radius,line width=10.0pt](title.north west)rectangle(title.south east);
 \draw[#5,fill=#5,rounded corners=\@BoxTitle@Radius,ultra thick](title.north west)rectangle(title.south east);
@@ -3345,30 +3356,30 @@ underlay boxed title={%
 %%编号引理盒子%%
 \DeclareDocumentEnvironment{Lemma}{ +O{} +O{}}{\begin{box4}[phantom={%
 \if@mainmatter%
-\refstepcounter{@lem}
+\refstepcounter{@lemma}
 \fi}]{引理%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@lem}%
+{~\sffamily\environmentmark\the@prenumber.\the@lemma}%
 \fi}
 [#1][#2][ColorE][\faGlobe]}{\end{box4}}
 %%%%
 \DeclareDocumentEnvironment{Corollary}{ +O{} +O{} }{\begin{box4}[phantom={%
 \if@mainmatter%
-\refstepcounter{@colry}
+\refstepcounter{@corollary}
 \fi
 }]{推论%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@colry}%
+{~\sffamily\environmentmark\the@prenumber.\the@corollary}%
 \fi}
 [#1][#2][ColorG][\faCompactDisc]}{\end{box4}}
 %%%%
 \DeclareDocumentEnvironment{Proposition}{ +O{} +O{} }{\begin{box4}[phantom={%
 \if@mainmatter%
-\refstepcounter{@prop}
+\refstepcounter{@proposition}
 \fi
 }]{命题%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@prop}%
+{~\sffamily\environmentmark\the@prenumber.\the@proposition}%
 \fi}
 [#1][#2][ColorH][\faGlobe]}{\end{box4}}
 %%%%
@@ -3388,7 +3399,7 @@ underlay boxed title={%
 \begingroup%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[white,fill=white,rounded corners=\@BoxTitle@Radius,line width=10.0pt](title.north west)rectangle(title.south east);
 \draw[#5,fill=#5,rounded corners=\@BoxTitle@Radius,ultra thick](title.north west)rectangle(title.south east);
 \fill[white,draw=white,line width=10.0pt]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({8*\@BoxTitle@Radius/7});
@@ -3414,7 +3425,7 @@ underlay boxed title={%
 \begingroup%
 \BoxTitleFont%
 \newdimen\@BoxTitle@Radius%
-\@BoxTitle@Radius=\dimeval{\baselineskip/2}%0.85
+\@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[white,fill=white,line width=10.0pt,rounded corners=\@BoxTitle@Radius](title.north east)rectangle(title.south west);
 \draw[#5!90,fill=#5!90,line width=2.0pt,rounded corners=\@BoxTitle@Radius](title.north east)rectangle(title.south west);
 %%%%
@@ -3573,7 +3584,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 \setlength{\parindent}{0em}
 \begin{tikzpicture}[remember picture,overlay]%
 \newdimen\@GutterWidth
-\@GutterWidth=\dimeval{\@FrameWidth+\@innerlen-\@outerlen}
+\@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
 %%
 \coordinate(A)at(current page.north west);
 \coordinate(B)at(current page.north east);
