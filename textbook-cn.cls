@@ -1616,13 +1616,18 @@ BoldFont=FZCukai.ttf]
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
 %%框架%%
-\filldraw[draw=ColorB!7.5,fill=ColorB!7.5,even odd rule,sharp corners]
+\path[fill=ColorB!7.5,even odd rule,sharp corners]
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
 \node[anchor=north west,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
+%%如果\@chapterimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
+\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+(A)--(B)--(C)--(D)--cycle
+(J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
-\draw[white,fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
+\path[fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
 \end{pgfonlayer}
 %%
 \begin{pgfonlayer}{@Chapter@Top}
@@ -1684,13 +1689,18 @@ BoldFont=FZCukai.ttf]
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
 %%框架%%
-\filldraw[draw=ColorB!7.5,fill=ColorB!7.5,even odd rule,sharp corners]
+\path[fill=ColorB!7.5,even odd rule,sharp corners]
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
 \node[anchor=north east,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
+%%如果\@chapterimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
+\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+(A)--(B)--(C)--(D)--cycle
+(J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
-\draw[white,fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
+\path[fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
 \end{pgfonlayer}
 %%
 \begin{pgfonlayer}{@Chapter@Top}
@@ -1797,13 +1807,18 @@ BoldFont=FZCukai.ttf]
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
 %%框架%%
-\filldraw[draw=ColorB!7.5,fill=ColorB!7.5,even odd rule,sharp corners]
+\path[fill=ColorB!7.5,even odd rule,sharp corners]
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
 \node[anchor=north west,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
+%%如果\@chapterimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
+\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+(A)--(B)--(C)--(D)--cycle
+(J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
-\draw[white,fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
+\path[fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
 \end{pgfonlayer}
 %%
 \begin{pgfonlayer}{@Chapter@Star@Top}
@@ -1881,13 +1896,18 @@ BoldFont=FZCukai.ttf]
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
 %%框架%%
-\filldraw[draw=ColorB!7.5,fill=ColorB!7.5,even odd rule,sharp corners]
+\path[fill=ColorB!7.5,even odd rule,sharp corners]
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
 \node[anchor=north east,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
+%%如果\@chapterimage不为空则添加白色透明蒙版%%
+\expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
+\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+(A)--(B)--(C)--(D)--cycle
+(J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
-\draw[white,fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
+\path[fill=white,opacity=0.75](J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
 \end{pgfonlayer}
 %%
 \begin{pgfonlayer}{@Chapter@Star@Top}
@@ -1931,7 +1951,6 @@ BoldFont=FZCukai.ttf]
 \else%
 \gsetlength{\@ChapterPage@BottomCut}{0pt}%
 \fi}
-
 
 %%%%%%%%%%%%%%%
 %%编号章节页%%
