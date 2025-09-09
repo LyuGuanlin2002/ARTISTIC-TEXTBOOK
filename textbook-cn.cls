@@ -1623,7 +1623,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=north west,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
-\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+\path[fill=white,opacity=0.3,even odd rule,sharp corners]%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
@@ -1696,7 +1696,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=north east,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
-\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+\path[fill=white,opacity=0.3,even odd rule,sharp corners]%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
@@ -1814,7 +1814,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=north west,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
-\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+\path[fill=white,opacity=0.3,even odd rule,sharp corners]%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
@@ -1903,7 +1903,7 @@ BoldFont=FZCukai.ttf]
 \node[anchor=north east,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
-\path[fill=white,opacity=0.4,even odd rule,sharp corners]%
+\path[fill=white,opacity=0.3,even odd rule,sharp corners]%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;}
 %%白色半透明蒙版%%
