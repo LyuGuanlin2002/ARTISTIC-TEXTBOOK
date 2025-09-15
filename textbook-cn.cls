@@ -3,7 +3,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{textbook-cn}[By Lyu Guanlin]
 
-
 \makeatletter
 %%%%%%%%%%%%%%%%%%%% 自定义命令宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{xkeyval,kvoptions,etoolbox,ifthen,xifthen,xparse,expl3,letltxmacro}%设置键和键值%自定义命令
@@ -570,7 +569,7 @@ BoldFont=FZCukai.ttf]
 \RequirePackage{anyfontsize}%自由调整字体大小
 \RequirePackage{pgfplots,tikz,tikzpagenodes,tkz-euclide,eso-pic}%绘图
 \pgfplotsset{compat=1.18}
-\usetikzlibrary{fit,calc,math,scopes,backgrounds,positioning,intersections,decorations,shadows,shadings,fadings,arrows,arrows.meta,patterns.meta,patterns,shapes.geometric,decorations.footprints}
+\usetikzlibrary{fit,calc,math,scopes,backgrounds,positioning,intersections,shadows,shadings,fadings,arrows,arrows.meta,patterns,patterns.meta,shapes.geometric,decorations,decorations.pathmorphing,decorations.text,decorations.shapes,shapes.symbols}
 \makesavenoteenv{tikzpicture}%确保tikz环境内的脚注正确生成
 \makesavenoteenv{pgfonlayer}%确保pgfonlayer环境内的脚注正确生成
 %%修改addtolength的作用域%%
@@ -773,14 +772,6 @@ BoldFont=FZCukai.ttf]
 \end{flushleft}
 }
 %%%%%%%%%%%%%%%%%% 页面样式 %%%%%%%%%%%%%%%%%%%%%%%%
-%%BookPressLogo%%
-\newcommand{\BookPressLogo}{%
-\path[fill=ColorB,even odd rule]
-(26.1,7.4)--(24.3,-0.5)--(16.9,-0.4)..controls(16.8,-0.2)and(16.8,0.0)..(16.7,0.2)--(23.6,0.3)--(25.4,7.2)--cycle;
-%%%%
-\path[fill=ColorA,even odd rule]
-(24.2,9.4)--(24.1,8.9)..controls(23.8,7.7)and(23.5,6.7)..(23.2,5.4)..controls(22.6,3.5)and(22.7,2.9)..(21.5,2.2)..controls(20.2,1.7)and(19.2,1.5)..(16.1,0.8)--(16.4,-0.9)--(25.0,-1.8)--(26.4,4.7)--(27.1,4.6)--(25.6,-2.6)--(24.9,-2.5)..controls(21.6,-2.1)and(19.5,-1.9)..(16.1,-1.2)--(15.9,-0.9)..controls(15.5,-0.1)and(15.4,0.3)..(15.5,0.7)--(17.8,5.4)--(17.9,5.4)..controls(19.1,5.7)and(22.4,8.0)..(24.2,9.4)--cycle;
-}
 %%定义部分总数（序言、前言视作一个部分，目录、插图目录、表格目录视作一个部分，绪论、有编号部分、无编号部分以及后记）,编译两次可以得到正确的页面框架%%
 \AtBeginDocument{%
 \pagestyle{empty}%默认页面样式为空
@@ -814,6 +805,12 @@ BoldFont=FZCukai.ttf]
 %%绘制主页面样式%%
 \newlength{\@FrameWidth}
 \setlength{\@FrameWidth}{1.0cm}
+%%声明装订线布尔变量%%
+\newif\if@Gutter
+\@Gutterfalse
+%%
+\newcommand{\AddGutter}{\@Guttertrue}%添加装订线
+\newcommand{\RemoveGutter}{\@Gutterfalse}%移除装订线
 %%
 \newcommand{\@Main@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]%
@@ -824,7 +821,7 @@ BoldFont=FZCukai.ttf]
 \newdimen\@ThumbStartHeight%
 \newdimen\@ThumbRangeHeight%
 \newdimen\@ChapterPercentLength%
-%%\pgfmathsetlengthmacro
+%%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
 \@PageNumHeight=\dimexpr\@toplen-\headsep+1.5mm\relax%
 \@PageNumWidth=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax%
@@ -859,17 +856,11 @@ BoldFont=FZCukai.ttf]
 \coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]current page.north west);
 \coordinate(I)at(current page.south);
 %%绘制页面框架%%
-\filldraw[draw=ColorB!7.5,fill=ColorB!7.5,even odd rule,sharp corners]
+\path[fill=ColorB!7.5,even odd rule,sharp corners]
 (A)--(B)--(C)--(D)--cycle
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 %%绘制页码%%
-\path[fill=ColorA!60!ColorB]
-([xshift=-\@outerlen+0.35cm]B)[rounded corners=1.5mm]--
-([xshift=-\@outerlen+0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
-([xshift=-\@FrameWidth+0.15cm,yshift=-\@PageNumHeight]B)[sharp corners]--
-([xshift=-\@FrameWidth+0.15cm]B)--cycle;
-%%%%
-\path[pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]
 ([xshift=-\@outerlen+0.35cm]B)[rounded corners=1.5mm]--
 ([xshift=-\@outerlen+0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
 ([xshift=-\@FrameWidth+0.15cm,yshift=-\@PageNumHeight]B)[sharp corners]--
@@ -887,9 +878,7 @@ BoldFont=FZCukai.ttf]
 };
 \end{pgfonlayer}
 %%%%
-\path[fill=ColorA!60!ColorB](T.north west)--([xshift=0.1cm]T.north east)--([xshift=0.1cm]T.south east)[rounded corners=1.75mm]--(T.south west)[rounded corners=1.75mm]--cycle;
-%%%%
-\path[pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA](T.north west)--([xshift=0.1cm]T.north east)--([xshift=0.1cm]T.south east)[rounded corners=1.75mm]--(T.south west)[rounded corners=1.75mm]--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA](T.north west)--([xshift=0.1cm]T.north east)--([xshift=0.1cm]T.south east)[rounded corners=1.75mm]--(T.south west)[rounded corners=1.75mm]--cycle;
 %%%%
 %%绘制部分序号标签%%
 \begin{pgfonlayer}{@MainPage@Top}
@@ -900,10 +889,19 @@ BoldFont=FZCukai.ttf]
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\path[fill=ColorA!60!ColorB]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
 %%%%
-\path[pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
-%%%%
+\if@Gutter
+%%绘制装订线%%
+\def\@CircleNumber{6}%圆的数量
+\def\@CircleRadius{2.5mm}%圆半径
+%计算垂直方向的均匀间距
+\newdimen\@CircleSep
+\@CircleSep=\dimeval{(\paperheight-\@toplen-\@botlen)/(\@CircleNumber-1)}
+%%
+\foreach \i in {1,...,\@CircleNumber}{%
+\fill[ColorB!50]([xshift=\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north west)circle(\@CircleRadius);}
+\fi
 \else
 \coordinate(A)at(current page.north east);
 \coordinate(B)at(current page.north west);
@@ -915,17 +913,11 @@ BoldFont=FZCukai.ttf]
 \coordinate(H)at([xshift=-\@GutterWidth,yshift=-\@FrameWidth]current page.north east);
 \coordinate(I)at(current page.south);
 %%绘制页面框架%%
-\filldraw[draw=ColorB!7.5,fill=ColorB!7.5,even odd rule,sharp corners]
+\path[fill=ColorB!7.5,even odd rule,sharp corners]
 (A)--(B)--(C)--(D)--cycle
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 %%绘制页码%%
-\path[fill=ColorA!60!ColorB]
-([xshift=\@outerlen-0.35cm]B)[rounded corners=1.5mm]--
-([xshift=\@outerlen-0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
-([xshift=\@FrameWidth-0.15cm,yshift=-\@PageNumHeight]B)[sharp corners]--
-([xshift=\@FrameWidth-0.15cm]B)--cycle;
-%%%%
-\path[pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]
 ([xshift=\@outerlen-0.35cm]B)[rounded corners=1.5mm]--
 ([xshift=\@outerlen-0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
 ([xshift=\@FrameWidth-0.15cm,yshift=-\@PageNumHeight]B)[sharp corners]--
@@ -943,9 +935,7 @@ BoldFont=FZCukai.ttf]
 };
 \end{pgfonlayer}
 %%%%
-\path[fill=ColorA!60!ColorB]([xshift=-0.1cm]T.north west)[rounded corners=1.75mm]--(T.north east)[rounded corners=1.75mm]--(T.south east)[sharp corners]--([xshift=-0.1cm]T.south west)--cycle;
-%%%%
-\path[pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([xshift=-0.1cm]T.north west)[rounded corners=1.75mm]--(T.north east)[rounded corners=1.75mm]--(T.south east)[sharp corners]--([xshift=-0.1cm]T.south west)--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([xshift=-0.1cm]T.north west)[rounded corners=1.75mm]--(T.north east)[rounded corners=1.75mm]--(T.south east)[sharp corners]--([xshift=-0.1cm]T.south west)--cycle;
 %%%%
 %%绘制部分序号标签%%
 \begin{pgfonlayer}{@MainPage@Top}
@@ -956,10 +946,19 @@ BoldFont=FZCukai.ttf]
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\path[fill=ColorA!60!ColorB]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
 %%%%
-\path[pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
+\if@Gutter
+%%绘制装订线%%
+\def\@CircleNumber{6}%圆的数量
+\def\@CircleRadius{2.5mm}%圆半径
+%计算垂直方向的均匀间距
+\newdimen\@CircleSep
+\@CircleSep=\dimeval{(\paperheight-\@toplen-\@botlen)/(\@CircleNumber-1)}
 %%
+\foreach \i in {1,...,\@CircleNumber}{%
+\fill[ColorB!50]([xshift=-\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north east)circle(\@CircleRadius);}
+\fi
 \fi
 \end{tikzpicture}%
 }
@@ -970,13 +969,86 @@ BoldFont=FZCukai.ttf]
 \fancyfoot[C]{\@Main@PageStyle}%
 \fancyhead[RO]{\HeaderFont\color{ColorA}\rightmark}%
 \fancyhead[LE]{\HeaderFont\color{ColorA}\leftmark}}
+
+%%防伪水印%%
+\newcommand{\WaterMark}{%
+\tikz[scale=2.25,opaque]{%
+\begingroup%
+%参数
+\newdimen\@StripeHalfWidth
+\newdimen\@StripeHalfHeight
+\newdimen\@NotchDepth
+%%
+\@StripeHalfWidth=1.25cm
+\@StripeHalfHeight=4.5cm
+\@NotchDepth=0.75cm
+%%
+\fill[ColorB!50]
+(-\@StripeHalfWidth,\@StripeHalfHeight)[rounded corners=2.5mm]--(0,\@StripeHalfHeight-\@NotchDepth)[rounded corners=5.0mm]--(\@StripeHalfWidth,\@StripeHalfHeight)--(\@StripeHalfWidth,-\@StripeHalfHeight)[rounded corners=2.5mm]--(0,-\@StripeHalfHeight+\@NotchDepth)[rounded corners=5.0mm]--(-\@StripeHalfWidth,-\@StripeHalfHeight)--cycle;
+%参数定义
+\newdimen\@CoilCircleBRadius
+\newdimen\@CoilCircleSRadius
+\newdimen\@Amplitude
+\@CoilCircleBRadius=3.15cm
+\@CoilCircleSRadius=2.95cm
+\@Amplitude=0.1cm
+\def\@WaveNumber{20}%波浪数量
+%%
+%外圈
+\fill[ColorB!50,draw=ColorB!7.5,line width=2.5mm]
+plot[smooth,domain=0:360,samples=360,variable=\t]
+({(\@CoilCircleBRadius+\@Amplitude+\@Amplitude*sin(\@WaveNumber*\t-90))*cos(\t)},%
+{(\@CoilCircleBRadius+\@Amplitude+\@Amplitude*sin(\@WaveNumber*\t-90))*sin(\t)})--cycle;
+%内圈
+\fill[ColorB!7.5](0,0)circle(\@CoilCircleSRadius);
+%%%%
+\newdimen\@TempRad
+\@TempRad=2.8cm
+\draw[ColorB!50,line width=2.5pt](0,0)circle(\@TempRad);
+\@TempRad=2.7cm
+\draw[ColorB!50,line width=2.5pt,loosely dotted,line cap=round](0,0)circle(\@TempRad);
+\@TempRad=2.6cm
+\draw[ColorB!50,line width=2.5pt](0,0)circle(\@TempRad);
+%%%%
+\newdimen\@ArrowSep
+\newdimen\@ArrowCircleRadius
+\def\@ArrowNumber{21}
+\@ArrowCircleRadius=2.4cm
+\@ArrowSep=\dimeval{6.283185307\@ArrowCircleRadius/(\@ArrowNumber-1)}
+%%
+\draw[decorate,draw=none,fill=ColorB!50,rounded corners=0.5mm,decoration={shape backgrounds,shape width=8.0mm,shape height=4.5mm,shape=signal,shape sep=\@ArrowSep},
+signal from=west,signal to=east](0,0)circle(\@ArrowCircleRadius);
+%%%%
+\@TempRad=2.2cm
+\draw[ColorB!50,line width=2.5pt](0,0)circle(\@TempRad);
+\newdimen\@FilledCircleRadius
+\@FilledCircleRadius=2.0cm
+\fill[ColorB!50](0,0)circle(\@FilledCircleRadius);
+%%%%
+\newdimen\@TextCircleRadius
+\@TextCircleRadius=1.45cm
+\def\theta{180}
+\path[postaction={%
+decoration={%
+text along path,%
+text format delimiters={[}{]},%
+text={[\bfseries\sffamily\FontSizeSet{28}]APPROVED TEXTBOOK},%
+text color=ColorB!7.5,%
+text align={fit to path stretching spaces}%
+},decorate}]({cos(\theta)*\@TextCircleRadius},{sin(\theta)*\@TextCircleRadius})arc(\theta:{180-\theta}:\@TextCircleRadius);
+%%%%
+\node[inner sep=0mm,outer sep=0mm,font=\FontSizeSet{100},text=ColorB!7.5](L)at(0,0){\faBookOpen};
+%%%%
+\node[inner sep=0mm,outer sep=0mm,font={\bfseries\sffamily\FontSizeSet[1.0]{20}},text=ColorB!7.5,anchor=north,align=center,text width=6.0cm](T)at([yshift=-2.5mm]L.south){ALL RIGHTS RESERVED};
+\endgroup}}
+%%
 %%绘制空白页面样式%%
 \newcommand{\@Sub@PageStyle}{%
 \AddToShipoutPictureBG*{%
 \AtPageLowerLeft{%
 \begin{tikzpicture}[remember picture]
-\draw[ColorB!7.5,fill=ColorB!7.5](0,0)rectangle(\paperwidth,\paperheight);
-%\node[opacity=0.075](L)at(\paperwidth/2,\paperheight/2){\tikz{\BookPressLogo}};
+\path[fill=ColorB!7.5](0,0)rectangle(\paperwidth,\paperheight);
+\node at(\paperwidth/2,\paperheight/2){\WaterMark};
 \end{tikzpicture}}}
 }
 %%
@@ -1228,8 +1300,8 @@ BoldFont=FZCukai.ttf]
 \end{tikzpicture}}
 %%
 %%定义小半圆%%
-\newcommand{\@HalfCircle@Label}[2]{
-\tikz{\draw[#1,fill=#1,sharp corners](0,0)arc(90:-90:#2)--cycle;}}
+\newcommand{\@HalfCircle@Label}[2]{%
+\tikz{\path[fill=#1,sharp corners](0,0)arc(90:-90:#2)--cycle;}}
 %%
 %%奇数页布局%%
 \NewDocumentCommand{\@Part@Star@OddPage@Style}{ +m }{%
@@ -1505,6 +1577,7 @@ BoldFont=FZCukai.ttf]
 [\global\partintro{}%清空\partintro
 \global\partimage{}%清空\partimage
 \global\partsubtitle{}]%清空\partsubtitle
+
 %%间距设置%%
 \titlespacing*{\part}{0pt}{0pt}{0pt}
 %%页面风格设置%%
@@ -1520,8 +1593,7 @@ BoldFont=FZCukai.ttf]
 \OriginPart[#2]{#3\@mkboth{\@subtitle}{\@subtitle}}
 \extramarks{\partlabelfront{\sffamily\thepart}\partlabelback\quad#2}{\partlabelfront{\sffamily\thepart}\partlabelback\quad#2}%
 \else%
-\phantomsection%
-\OriginPart*{#3\@mkboth{\@subtitle}{\@subtitle}\addcontentsline{toc}{part}{#2}}%
+\OriginPart*{\phantomsection\addcontentsline{toc}{part}{#2}#3\@mkboth{\@subtitle}{\@subtitle}}%
 \extramarks{#2}{#2}
 \fi}
 }
@@ -1579,7 +1651,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
 \begin{pgfonlayer}{@Chapter@Top}
 %%编号%%
-\draw[ColorA,fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
+\path[fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
 \begin{varwidth}{\@DefaultTextwidth/3}
 \@change@minipage@footnote%
 \strut#1\strut
@@ -1652,7 +1724,7 @@ BoldFont=FZCukai.ttf]
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
 \begin{pgfonlayer}{@Chapter@Top}
 %%编号%%
-\draw[ColorA,fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north west,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
+\path[fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north west,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
 \begin{varwidth}{\@DefaultTextwidth/3}%
 \@change@minipage@footnote%
 \strut#1\strut
@@ -2016,7 +2088,7 @@ BoldFont=FZCukai.ttf]
 \SectionFont%
 \newdimen\@Section@LabelRadius%
 \@Section@LabelRadius=\dimexpr\baselineskip/2\relax%
-\draw[ColorA,fill=ColorA](0,0)circle(\@Section@LabelRadius);
+\path[fill=ColorA](0,0)circle(\@Section@LabelRadius);
 \node[circle,outer sep=0mm,inner sep=0mm,font=\SectionFont\sffamily,text=white]at(0,0){\maxsizebox{2\@Section@LabelRadius}{!}{\thesection}};
 \endgroup}%
 \hspace{2.0mm}%
@@ -2029,7 +2101,7 @@ BoldFont=FZCukai.ttf]
 \SectionFont%
 \newdimen\@Section@Star@LabelRadius%
 \@Section@Star@LabelRadius=\dimexpr\baselineskip/2\relax%
-\draw[ColorB!75,fill=ColorB!75](0,0)circle(\@Section@Star@LabelRadius);
+\path[fill=ColorB!75](0,0)circle(\@Section@Star@LabelRadius);
 \draw[white,fill=ColorB,line width=2.75pt](0,0)circle(7*\@Section@Star@LabelRadius/12);
 \endgroup}
 }{5.0mm}{#1}
@@ -2040,12 +2112,11 @@ BoldFont=FZCukai.ttf]
 \RenewDocumentCommand{\section}{s +O{#3} +m}{%
 \clearpage%
 \IfBooleanTF{#1}
-{\OriginSection*{#3\markright{#2}}}
+{\OriginSection*{#3\markright{#2}}}%
 {\if@mainmatter%
 \OriginSection[#2]{#3}%
 \else%
-\phantomsection
-\OriginSection*{#3\markright{#2}\addcontentsline{toc}{section}{#2}}%
+\OriginSection*{\phantomsection\addcontentsline{toc}{section}{#2}#3\markright{#2}}%
 \fi}}
 
 %%小节标题样式%%
@@ -2083,7 +2154,7 @@ BoldFont=FZCukai.ttf]
 %%
 \begin{pgfonlayer}{@Subsection@Bottom}
 \path[fill=ColorA,rounded corners=\@Subsection@Radius](L.north west)rectangle(L.south east);
-\draw[white,fill=white]([yshift=-\@Subsection@Radius]L.north east)circle(\@Subsection@BRadius);
+\path[fill=white]([yshift=-\@Subsection@Radius]L.north east)circle(\@Subsection@BRadius);
 \ifdim\@Subsection@NameHeight>\dimexpr2\@Subsection@Radius\relax
 \path[fill=ColorB!7.5](N.north east)[sharp corners]--(N.north west)[rounded corners=\@Subsection@Radius]--(N.south west)--(N.south east)--cycle;
 \else
@@ -2146,8 +2217,8 @@ BoldFont=FZCukai.ttf]
 \fi
 %%
 \coordinate(CC)at([yshift=-\@Subsection@Star@Radius]L.north west);
-\draw[white,fill=white,sharp corners](CC)circle(\@Subsection@Star@BRadius);
-\draw[ColorA,fill=ColorA](CC)circle(\@Subsection@Star@SRadius);
+\path[fill=white,sharp corners](CC)circle(\@Subsection@Star@BRadius);
+\path[fill=ColorA](CC)circle(\@Subsection@Star@SRadius);
 \draw[white,line width=4.0pt,fill=ColorA](CC)circle(2*\@Subsection@Star@Radius/3);
 \end{pgfonlayer}
 \end{tikzpicture}}%
@@ -2173,8 +2244,7 @@ BoldFont=FZCukai.ttf]
 {\if@mainmatter%
 \OriginSubsection[#2]{#3}%
 \else%
-\phantomsection
-\OriginSubsection*{#3\addcontentsline{toc}{subsection}{#2}}%
+\OriginSubsection*{\phantomsection\addcontentsline{toc}{subsection}{#2}#3}%
 \fi}}
 %%%%
 %%点样式%%
@@ -2203,6 +2273,16 @@ BoldFont=FZCukai.ttf]
 }{4.0mm}{#1}
 %%间距设置%%
 \titlespacing*{\subsubsection}{0pt}{5.0mm}{5.0mm}
+%%%%
+\NewCommandCopy{\OriginSubsubsection}{\subsubsection}
+\RenewDocumentCommand{\subsubsection}{s +O{#3} +m}{%
+\IfBooleanTF{#1}
+{\OriginSubsubsection*{#3}}
+{\if@mainmatter%
+\OriginSubsubsection[#2]{#3}%
+\else%
+\OriginSubsubsection*{\phantomsection\addcontentsline{toc}{subsubsection}{#2}#3}%
+\fi}}
 
 %%修改段落样式%%
 \renewcommand{\paragraph}{
@@ -3101,8 +3181,8 @@ underlay boxed title={%
 \newdimen\@BoxTitle@Radius%
 \@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[#2,fill=#2,ultra thick,rounded corners=\@BoxTitle@Radius](title.north west)rectangle(title.south east);
-\draw[white,fill=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle(\@BoxTitle@Radius-2.0pt);
-\draw[#2,fill=#2]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle(\@BoxTitle@Radius/2);
+\path[fill=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle(\@BoxTitle@Radius-2.0pt);
+\path[fill=#2]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle(\@BoxTitle@Radius/2);
 %%%%
 \draw[#2,fill=#2,ultra thin]([xshift=-\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]frame.north east)circle({2*\@BoxTitle@Radius/3});
 \draw[#2!90,fill=#2!90,ultra thin]([xshift=-3*\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]frame.north east)circle({2*\@BoxTitle@Radius/3});
@@ -3175,9 +3255,9 @@ underlay boxed title={%
 \newdimen\@BoxTitle@Radius%
 \@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \begin{tcbclipinterior}
-\fill[#4!7.5,draw=#4!7.5](frame.south west)rectangle([xshift=2.0em]frame.north west);
-\draw[#4!7.5,fill=#4!7.5](frame.north east)rectangle(title.south west);
-\draw[#4,fill=#4](title.north west)--(title.north east)[rounded corners=5.0pt]--(title.south east)[sharp corners]--(title.south west)--cycle;
+\path[fill=#4!7.5](frame.south west)rectangle([xshift=2.0em]frame.north west);
+\path[fill=#4!7.5](frame.north east)rectangle(title.south west);
+\path[fill=#4](title.north west)--(title.north east)[rounded corners=5.0pt]--(title.south east)[sharp corners]--(title.south west)--cycle;
 \end{tcbclipinterior}
 \node[font=\BoxTitleFont,text=#4,anchor=east,outer sep=0mm,inner xsep=5.0mm](ST)at([yshift={-\tcboxedtitleheight/2}]interior.north east){
 \begin{varwidth}{\linewidth/3}
@@ -3186,7 +3266,7 @@ underlay boxed title={%
 \end{varwidth}};},
 overlay middle and last={
 \begin{tcbclipinterior}
-\fill[#4!7.5,draw=#4!7.5](frame.south west)rectangle([xshift=1.9em]frame.north west);
+\path[fill=#4!7.5](frame.south west)rectangle([xshift=1.9em]frame.north west);
 \end{tcbclipinterior}},
 code={\setlength{\linenumbersep}{7.5mm}%修改行号与正文的间距
 }
@@ -3268,7 +3348,7 @@ underlay boxed title={%
 \@BoxTitle@Radius=\dimexpr\baselineskip/2\relax%0.85
 \draw[white,fill=white,line width=10.0pt,rounded corners=\@BoxTitle@Radius](title.north east)rectangle(title.south west);
 %%%%
-\fill[white,draw=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({5*\@BoxTitle@Radius/3});
+\path[fill=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({5*\@BoxTitle@Radius/3});
 \draw[#5,fill=#5!90,line width=2.0pt]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({8*\@BoxTitle@Radius/7});
 %%%%
 \pgfgetnodeheight(title)\@BoxTitle@Height
@@ -3452,7 +3532,7 @@ underlay boxed title={%
 \draw[white,fill=white,line width=10.0pt,rounded corners=\@BoxTitle@Radius](title.north east)rectangle(title.south west);
 \draw[#5!90,fill=#5!90,line width=2.0pt,rounded corners=\@BoxTitle@Radius](title.north east)rectangle(title.south west);
 %%%%
-\fill[white,draw=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({5*\@BoxTitle@Radius/3});
+\path[fill=white]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({5*\@BoxTitle@Radius/3});
 \draw[#5,fill=white,line width=2.75pt]([xshift=\@BoxTitle@Radius,yshift=-\@BoxTitle@Radius]title.north west)circle({8*\@BoxTitle@Radius/7});
 %%%%
 \pgfgetnodeheight(title)\@BoxTitle@Height
@@ -3620,12 +3700,9 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 \coordinate(G)at([xshift=-\@FrameWidth,yshift=-\@FrameWidth]current page.north east);
 \coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]current page.north west);
 %%背景%%
-\draw[ColorB!7.5,fill=ColorB!7.5,sharp corners](D)rectangle(B);
+\path[fill=ColorB!7.5,sharp corners](D)rectangle(B);
 %%
-\path[fill=ColorB!15]
-(A)--(B)--(C)--(D)--cycle
-(E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
-\path[pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorB!30]
+\path[preaction={fill=ColorB!15},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorB!30]
 (A)--(B)--(C)--(D)--cycle
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 \end{tikzpicture}%
