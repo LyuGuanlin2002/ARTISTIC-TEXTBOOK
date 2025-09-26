@@ -228,6 +228,12 @@ BoldItalicFont=FZCukai.ttf
 Path=fonts/,
 BoldFont=FZCukai.ttf]
 
+%%水印字体设置
+\newCJKfontfamily\shuiyin{WaterMarkFont.ttf}[
+Path=fonts/,
+BoldFont=WaterMarkFont.ttf]
+
+
 %%取消弹性段间距%%
 \setlength{\parskip}{0pt}
 \setlength{\topskip}{0pt}
@@ -257,6 +263,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\FontSizeSet}[2][1.5]{\fontsize{#2}{\fpeval{#1*#2}}\selectfont}
 %%字号设置%%
 \newcommand{\TitlepageNormalFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{15pt}}%标题页正常字体
+\newcommand{\TitlepageStripeFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{16pt}}%标题页条带字体
 \newcommand{\TitlepageTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{40pt}}%标题页主标题字体
 \newcommand{\TitlepageSubtitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{30pt}}%标题页次标题字体
 \newcommand{\TitlepageEnglishFont}{\upshape\sffamily\bfseries\FontSizeSet[1.2]{18pt}}%标题页英文标题字体
@@ -280,15 +287,13 @@ BoldFont=FZCukai.ttf]
 \newcommand{\TocSectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%目录节字体
 \newcommand{\TocSubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%目录小节字体
 \newcommand{\TocSubsubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%目录小小节字体
-\newcommand{\LofFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%图列表字体
-\newcommand{\LotFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%表列表字体
+\newcommand{\LoftFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%图表列表字体
 \newcommand{\LTitleFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{14pt}}%小目录标题
 \newcommand{\TocLChapterFont}{\upshape\rmfamily\bfseries\FontSizeSet[1.2]{14pt}}%小目录章字体
 \newcommand{\TocLSectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小目录节字体
 \newcommand{\TocLSubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小目录小节字体
 \newcommand{\TocLSubsubsectionFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小目录小小节字体
-\newcommand{\LofLFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小图列表字体
-\newcommand{\LotLFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小表列表字体
+\newcommand{\LoftLFont}{\upshape\rmfamily\FontSizeSet[1.2]{14pt}}%小图表列表字体
 \newcommand{\ContentPageNumFont}{\upshape\sffamily\FontSizeSet{14pt}}%目录页码字体
 \newcommand{\CiteNumFont}{\upshape\rmfamily}%引用字体
 \newcommand{\LineNumFont}{\upshape\sffamily\bfseries\FontSizeSet{11pt}}%行号字体
@@ -305,6 +310,7 @@ BoldFont=FZCukai.ttf]
 \newcommand{\MainFont}{\FontSizeSet[1.4]{14pt}}%正文字体
 
 %%%%%%%%%%%%%%%%%%%% 页面布局设定宏包 %%%%%%%%%%%%%%%%%%%%
+\usepackage{setspace}%行距设置
 %%边注宽度设置%%
 \gdef\@MarginColumn@Ratio{0.25}
 \gdef\@MainColumn@Ratio{\fpeval{1-\@MarginColumn@Ratio}}
@@ -726,16 +732,23 @@ BoldFont=FZCukai.ttf]
 \end{multicols}%
 \fi}
 
-%%设置星级%%
-\NewDocumentCommand{\score}{m m O{ColorB}}{
-\begingroup%
+%%题目难度星级%%
+\NewDocumentCommand{\score}{m O{5}}{%
 \tikz[baseline]{%
-\foreach \i in {1,...,#1}{
-\pgfmathparse{\i<=#2 ? "#3" : "white"}
-\edef\circlecolor{\pgfmathresult}
-\draw(\i*1.25em,0)node[name=circle\i,circle,inner sep=0mm,minimum size=0.35cm,draw=#3,very thick,fill=\circlecolor]{};}
-}%
-\endgroup}
+\pgfmathsetmacro\pgfxa{1+#1}%
+\tikzstyle{scorestars}=[star,star points=5,star point ratio=2.25,draw=ColorA,line width=0.045em,rounded corners=0.1em,inner sep=0.15em,anchor=outer point 3]%
+\foreach \i in {1,...,#2}{%
+\pgfmathparse{\i<=#1 ? "ColorA" : "white"}
+\edef\starcolor{\pgfmathresult}
+\draw(\i*1.0em,0)node[name=star\i,scorestars,fill=\starcolor]{};}
+\pgfmathparse{#1>int(#1) ? int(1+#1) : 0}
+\let\partstar=\pgfmathresult
+\ifnum\partstar>0
+\pgfmathsetmacro\starpart{#1-(int(#1)}
+\path[clip]($(star\partstar.outer point 3)!(star\partstar.outer point 2)!(star\partstar.outer point 4)$)rectangle($(star\partstar.outer point 2 |- star\partstar.outer point 1)!\starpart!(star\partstar.outer point 1 -| star\partstar.outer point 5)$);
+\fill(\partstar*1.0em,0)node[scorestars,fill=ColorA]{};
+\fi}
+}
 
 %%设置答题卡%%
 \NewDocumentCommand{\AnswerSheet}{+O{选择题答题区域} m m O{\linewidth} O{0.7cm}}{
@@ -769,8 +782,7 @@ BoldFont=FZCukai.ttf]
 }{\relax}
 }}
 \end{tikzpicture}
-\end{flushleft}
-}
+\end{flushleft}}
 %%%%%%%%%%%%%%%%%% 页面样式 %%%%%%%%%%%%%%%%%%%%%%%%
 %%定义部分总数（序言、前言视作一个部分，目录、插图目录、表格目录视作一个部分，绪论、有编号部分、无编号部分以及后记）,编译两次可以得到正确的页面框架%%
 \AtBeginDocument{%
@@ -779,7 +791,7 @@ BoldFont=FZCukai.ttf]
 \extramarks{\protect\@seriesname}{\protect\@seriesname}%默认页面底部标记
 \MainFont%默认正文字体
 }
-%%%%
+%%修改文档类中的各类标题、标签%%
 \newcommand{\partlabelfront}{第}
 \newcommand{\partlabelback}{部分}
 \newcommand{\chapterlabelfront}{第}
@@ -790,6 +802,54 @@ BoldFont=FZCukai.ttf]
 \newcommand{\subsectionlabelback}{}
 \newcommand{\subsubsectionlabelfront}{要点}
 \newcommand{\subsubsectionlabelback}{}
+\newcommand{\exercisetitle}{课后习题}
+\newcommand{\thinkingtitle}{思考题}
+\newcommand{\improvetitle}{复习与提高}
+\newcommand{\basictitle}{基础巩固}
+\newcommand{\complextitle}{综合提升}
+\newcommand{\timetext}{用时：}
+\newcommand{\notetitle}{笔记区}
+\newcommand{\listeningtitle}{听力模块}
+\newcommand{\readingtitle}{阅读模块}
+\newcommand{\speakingtitle}{口语模块}
+\newcommand{\writingtitle}{写作模块}
+\newcommand{\homeworktitle}{作业习题}
+\newcommand{\answertitle}{解答}
+\newcommand{\analysistitle}{解析}
+\newcommand{\exampletitle}{例题}
+\newcommand{\varianttitle}{变式}
+\newcommand{\chapterpointtitle}{本章要点}
+\newcommand{\sectionpointtitle}{本节导言}
+\newcommand{\concepttitle}{基础概念、公式和定理}
+\newcommand{\outlinetitle}{本节提要}
+\newcommand{\warningtitle}{易错点警示}
+\newcommand{\discussiontitle}{思考与讨论}
+\newcommand{\checktitle}{随堂练习}
+\newcommand{\displaytitle}{演示与实验}
+\newcommand{\methodtitle}{方法与技巧}
+\newcommand{\mindtitle}{科学思维}
+\newcommand{\definitiontitle}{定义}
+\newcommand{\theoremtitle}{定理}
+\newcommand{\axiomtitle}{公理}
+\newcommand{\lemmatitle}{引理}
+\newcommand{\corollarytitle}{推论}
+\newcommand{\propositiontitle}{命题}
+\newcommand{\linktitle}{拓展链接}
+\newcommand{\historytitle}{科学发展史}
+\newcommand{\ststitle}{科学·技术·社会}
+\newcommand{\informationtitle}{资料卡片}
+\newcommand{\applicationtitle}{案例分析}
+\newcommand{\reviewtitle}{知识回顾}
+\newcommand{\prooftitle}{证明}
+\newcommand{\solutiontitle}{参考答案}
+\newcommand{\comprehensiontitle}{阅读理解}
+\newcommand{\clozetitle}{完形填空}
+\newcommand{\articletitle}{文本解读}
+\newcommand{\vocabularytitle}{词汇解析}
+\newcommand{\codetitle}{代码示例}
+\newcommand{\relainfotitle}{相关信息}
+\newcommand{\deepthinktitle}{深入思考}
+\newcommand{\remarktitle}{重点注释}
 %%
 \renewcommand{\headrulewidth}{0pt}
 %%
@@ -1042,15 +1102,11 @@ text align={fit to path stretching spaces}%
 \node[inner sep=0mm,outer sep=0mm,font={\bfseries\sffamily\FontSizeSet[1.0]{20}},text=ColorB!7.5,anchor=north,align=center,text width=6.0cm](T)at([yshift=-2.5mm]L.south){ALL RIGHTS RESERVED};
 \endgroup}}
 %%
-%%绘制空白页面样式%%
 \newcommand{\@Sub@PageStyle}{%
-\AddToShipoutPictureBG*{%
-\AtPageLowerLeft{%
-\begin{tikzpicture}[remember picture]
-\path[fill=ColorB!7.5](0,0)rectangle(\paperwidth,\paperheight);
-\node at(\paperwidth/2,\paperheight/2){\WaterMark};
-\end{tikzpicture}}}
-}
+\begin{tikzpicture}[remember picture,overlay]
+\path[fill=ColorB!7.5](current page.south west)rectangle(current page.north east);
+\node at(current page.center){\WaterMark};
+\end{tikzpicture}}
 %%
 %%重定义空白页面样式%%
 \fancypagestyle{SubPage}{%
@@ -2089,7 +2145,7 @@ text align={fit to path stretching spaces}%
 \newdimen\@Section@LabelRadius%
 \@Section@LabelRadius=\dimexpr\baselineskip/2\relax%
 \path[fill=ColorA](0,0)circle(\@Section@LabelRadius);
-\node[circle,outer sep=0mm,inner sep=0mm,font=\SectionFont\sffamily,text=white]at(0,0){\maxsizebox{2\@Section@LabelRadius}{!}{\thesection}};
+\node[circle,outer sep=0mm,inner sep=0mm,font=\SectionFont\sffamily,text=white]{\maxsizebox{2\@Section@LabelRadius}{!}{\thesection}};
 \endgroup}%
 \hspace{2.0mm}%
 \sectionlabelback}{7.5mm}{#1}
@@ -2123,7 +2179,7 @@ text align={fit to path stretching spaces}%
 %%编号小节标题样式%%
 \NewDocumentCommand{\@SubsectionStyle}{ +m +m +m }{%
 \noindent%
-\begin{tikzpicture}%
+\begin{tikzpicture}[use as bounding box]%
 \SubsectionFont%
 \newdimen\@Subsection@Radius%
 \newdimen\@Subsection@BRadius%
@@ -2175,7 +2231,7 @@ text align={fit to path stretching spaces}%
 \newdimen\@left@white@line@width
 \@left@white@line@width=4.5pt%
 \xllap{\@left@white@line@width}{%
-\begin{tikzpicture}%
+\begin{tikzpicture}[use as bounding box]%
 \SubsectionFont%
 \newdimen\@Subsection@Star@Radius%
 \newdimen\@Subsection@Star@BRadius%
@@ -2293,7 +2349,7 @@ text align={fit to path stretching spaces}%
 %%练习标题设置%%
 \NewDocumentCommand{\ComplexHeading}{m +m +m}{%
 \begin{flushleft}%
-\begin{tikzpicture}%
+\begin{tikzpicture}[use as bounding box]%
 \SubsectionFont%
 \newdimen\@ComplexHeading@Radius%
 %%
@@ -2338,7 +2394,7 @@ text align={fit to path stretching spaces}%
 %%%%
 \NewDocumentCommand{\AdjustiveHeading}{ +m }{
 \begin{center}
-\begin{tikzpicture}%
+\begin{tikzpicture}[use as bounding box]%
 \HeadingFont%
 \newdimen\@AdjustiveHeading@Radius%
 %%
@@ -2362,22 +2418,18 @@ text align={fit to path stretching spaces}%
 %%索引分组标题样式%%
 \NewDocumentCommand{\LongHeading}{+m}{%
 \begin{center}%
-\begin{tikzpicture}%
+\begin{tikzpicture}[use as bounding box]%
 \node[font=\HeadingFont,align=center,text=ColorA,draw=ColorB!7.5,fill=ColorB!7.5,ultra thick,rounded corners,inner xsep=2.5mm,inner ysep=0mm,minimum width=\linewidth](P){\strut#1\strut};
 \end{tikzpicture}%
 \end{center}%
 }
 %%%%
 %%习题标题设置%%
-\def\@Exercise@Title{课后习题}
-\def\@Thinking@Title{思考题}
-\def\@Improve@Title{复习与提高}
-%%%%
 \NewDocumentCommand{\Exercise}{s}{%
 \IfBooleanTF{#1}{%
-\subsection*{\@Exercise@Title}%
+\subsection*{\exercisetitle}%
 }{%
-\subsection*{\@Exercise@Title%
+\subsection*{\exercisetitle%
 \if@mainmatter%
 ~\sffamily\environmentmark\the@prenumber%
 \fi}%
@@ -2386,9 +2438,9 @@ text align={fit to path stretching spaces}%
 %%%%
 \NewDocumentCommand{\Thinking}{s}{%
 \IfBooleanTF{#1}{%
-\subsection*{\@Thinking@Title}%
+\subsection*{\thinkingtitle}%
 }{%
-\subsection*{\@Thinking@Title%
+\subsection*{\thinkingtitle%
 \if@mainmatter%
 ~\sffamily\environmentmark\the@prenumber%
 \fi}%
@@ -2397,9 +2449,9 @@ text align={fit to path stretching spaces}%
 %%%%
 \NewDocumentCommand{\Improve}{s}{%
 \IfBooleanTF{#1}{%
-\subsection*{\@Improve@Title}%
+\subsection*{\improvetitle}%
 }{%
-\subsection*{\@Improve@Title%
+\subsection*{\improvetitle%
 \if@mainmatter%
 ~\sffamily\thechapter%
 \fi}%
@@ -2407,22 +2459,22 @@ text align={fit to path stretching spaces}%
 }
 %%%%
 \newcommand{\Basis}{%
-\ComplexHeading{基础巩固}{\hfill 用时：\underline{\qquad}}{\faPen}%
+\ComplexHeading{\basictitle}{\hfill\timetext\underline{\qquad}}{\faPen}%
 }
-%%%%
 \newcommand{\Complex}{%
-\ComplexHeading{综合提升}{\hfill 用时：\underline{\qquad}}{\faStar}%
+\ComplexHeading{\complextitle}{\hfill\timetext\underline{\qquad}}{\faStar}%
 }
 %%%%
 \newcommand{\NoteArea}[1][0pt]{%
-\marginnote{\LongHeading{\faPenSquare~~笔记区}}[#1]
+\marginnote{\LongHeading{\faPenSquare~~\notetitle}}[#1]
 }
-%%
-\newcommand{\Listening}{\AdjustiveHeading{\faMusic~~听力模块}}
-\newcommand{\Reading}{\AdjustiveHeading{\faBookReader~~阅读模块}}
-\newcommand{\Speaking}{\AdjustiveHeading{\faHeadSideMask~~口语模块}}
-\newcommand{\Writing}{\AdjustiveHeading{\faPenNib~~写作模块}}
-\newcommand{\Homework}{\section*{作业习题}}
+%%%%
+\newcommand{\Listening}{\AdjustiveHeading{\faMusic~~\listeningtitle}}
+\newcommand{\Reading}{\AdjustiveHeading{\faBookReader~~\readingtitle}}
+\newcommand{\Speaking}{\AdjustiveHeading{\faHeadSideMask~~\speakingtitle}}
+\newcommand{\Writing}{\AdjustiveHeading{\faPenNib~~\writingtitle}}
+%%%%
+\newcommand{\Homework}{\section*{\homeworktitle}}
 
 %%%%%%%%%%%%%%%%%% 环境、文档层次和目录 %%%%%%%%%%%%%%%%%%%%%
 %%定义不同文档部分的页码标识%%
@@ -2453,6 +2505,7 @@ text align={fit to path stretching spaces}%
 \def\@matter@page@mark{B}%Back
 \pagenumbering{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%以下为本文档类内置栏目，请谨慎修改%%
 %%环境层级计数器：数值为1对应chapter，数值为2对应section%%
 \newcounter{@Environment@Depth}
@@ -2467,7 +2520,13 @@ text align={fit to path stretching spaces}%
 %随后立即将环境内的文档层次计数器值设置为outercounter的值
 \setcounter{#1}{\value{#3}}
 }
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\@Toc@ChapLabel@Set}[2]{%
+\def\chapterlabelfront{#1}%
+\def\chapterlabelback{#2}%
+\@Toc@ChapLabelLen@Set}
+%%%%
 %%修改环境内的章样式
 \newcommand{\@Change@ChapterStyle@InEnv}[3]{%
 %%修改环境内的计数器格式
@@ -2475,14 +2534,19 @@ text align={fit to path stretching spaces}%
 %%将环境外的章节标签储存在临时变量中
 \edef\@temp@chapterlabelfront{\chapterlabelfront}
 \edef\@temp@chapterlabelback{\chapterlabelback}
-%%修改环境内和目录文件内的章节标签
-\def\chapterlabelfront{#2}%
-\addtocontents{toc}{\protect\def\protect\chapterlabelfront{#2}}%
-\def\chapterlabelback{#3}%
-\addtocontents{toc}{\protect\def\protect\chapterlabelback{#3}}%
 %%修改环境内超链接唯一标识符
 \def\theHchapter{\environmentmark\thechapter}
+%%修改环境内和目录文件内的章节标签及其长度参数
+\@Toc@ChapLabel@Set{#2}{#3}
+\addtocontents{toc}{\protect\@Toc@ChapLabel@Set{#2}{#3}}
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\@Toc@SecLabel@Set}[2]{%
+\def\sectionlabelfront{#1}%
+\def\sectionlabelback{#2}%
+\@Toc@SecLabelLen@Set}
+%%%%
 %%修改环境内的节样式
 \newcommand{\@Change@SectionStyle@InEnv}[3]{%
 %%修改环境内的计数器格式
@@ -2490,14 +2554,19 @@ text align={fit to path stretching spaces}%
 %%将环境外的章节标签储存在临时变量中
 \edef\@temp@sectionlabelfront{\sectionlabelfront}
 \edef\@temp@sectionlabelback{\sectionlabelback}
-%%修改环境内和目录文件内的章节标签
-\def\sectionlabelfront{#2}%
-\addtocontents{toc}{\protect\def\protect\sectionlabelfront{#2}}%
-\def\sectionlabelback{#3}%
-\addtocontents{toc}{\protect\def\protect\sectionlabelback{#3}}%
 %%修改环境内超链接唯一标识符
 \def\theHsection{\environmentmark\the@prenumber}
+%%修改环境内和目录文件内的章节标签及其长度参数
+\@Toc@SecLabel@Set{#2}{#3}
+\addtocontents{toc}{\protect\@Toc@SecLabel@Set{#2}{#3}}
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\@Toc@SubsecLabel@Set}[2]{%
+\def\subsectionlabelfront{#1}%
+\def\subsectionlabelback{#2}%
+\@Toc@SubsecLabelLen@Set}
+%%%%
 %%修改环境内的小节样式
 \newcommand{\@Change@SubsectionStyle@InEnv}[3]{%
 %%修改环境内的计数器格式
@@ -2505,14 +2574,19 @@ text align={fit to path stretching spaces}%
 %%将环境外的章节标签储存在临时变量中
 \edef\@temp@subsectionlabelfront{\subsectionlabelfront}
 \edef\@temp@subsectionlabelback{\subsectionlabelback}
-%%修改环境内和目录文件内的章节标签
-\def\subsectionlabelfront{#2}%
-\addtocontents{toc}{\protect\def\protect\subsectionlabelfront{#2}}%
-\def\subsectionlabelback{#3}%
-\addtocontents{toc}{\protect\def\protect\subsectionlabelback{#3}}%
 %%修改环境内超链接唯一标识符
 \def\theHsubsection{\environmentmark\the@prenumber.\thesubsection}
+%%修改环境内和目录文件内的章节标签及其长度参数
+\@Toc@SubsecLabel@Set{#2}{#3}
+\addtocontents{toc}{\protect\@Toc@SubsecLabel@Set{#2}{#3}}%
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\@Toc@SubsubLabel@Set}[2]{%
+\def\subsubsectionlabelfront{#1}%
+\def\subsubsectionlabelback{#2}%
+\@Toc@SubsubLabelLen@Set}
+%%%%
 %%修改环境内的小小节样式
 \newcommand{\@Change@SubsubsectionStyle@InEnv}[3]{%
 %%修改环境内的计数器格式
@@ -2520,69 +2594,85 @@ text align={fit to path stretching spaces}%
 %%将环境外的章节标签储存在临时变量中
 \edef\@temp@subsubsectionlabelfront{\subsubsectionlabelfront}
 \edef\@temp@subsubsectionlabelback{\subsubsectionlabelback}
-%%修改环境内和目录文件内的章节标签
-\def\subsubsectionlabelfront{#2}%
-\addtocontents{toc}{\protect\def\protect\subsubsectionlabelfront{#2}}%
-\def\subsubsectionlabelback{#3}%
-\addtocontents{toc}{\protect\def\protect\subsubsectionlabelback{#3}}%
 %%修改环境内超链接唯一标识符
 \def\theHsubsubsection{\environmentmark\the@prenumber.\thesubsection.\thesubsubsection}
+%%修改环境内和目录文件内的章节标签及其长度参数
+\@Toc@SubsubLabel@Set{#2}{#3}
+\addtocontents{toc}{\protect\@Toc@SubsubLabel@Set{#2}{#3}}%
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\@Lof@Label@Set}[1]{\def\environmentmark{#1}}
+%%%%
+\newcommand{\@Lot@Label@Set}[1]{\def\environmentmark{#1}}
 %%修改环境内的图表样式
 \newcommand{\@Change@FigureTableStyle@InEnv}[1]{%
 %%将环境外的章节标签储存在临时变量中
 \edef\@temp@environmentmark{\environmentmark}
-%%修改环境内和目录文件内的章节标签
-\def\environmentmark{#1}%
-\addtocontents{lof}{\protect\def\protect\environmentmark{#1}}
-\addtocontents{lot}{\protect\def\protect\environmentmark{#1}}
+%%修改环境内和目录文件内的图表标签
+\@Lof@Label@Set{#1}
+\@Lot@Label@Set{#1}
+\addtocontents{lof}{\protect\@Lof@Label@Set{#1}}
+\addtocontents{lot}{\protect\@Lot@Label@Set{#1}}
 %%修改环境内超链接唯一标识符
 \def\theHfigure{\environmentmark\the@prenumber.\thefigure}
 \def\theHfigure{\environmentmark\the@prenumber.\thetable}
 }
-%%在环境末尾恢复章标签样式
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%在环境末尾恢复章标签样式及其长度参数
 \newcommand{\@Restore@ChapterLabel@OutEnv}{%
-\addtocontents{toc}{\protect\def\protect\chapterlabelfront{\@temp@chapterlabelfront}}
-\addtocontents{toc}{\protect\def\protect\chapterlabelback{\@temp@chapterlabelback}}
+\addtocontents{toc}{\protect\@Toc@ChapLabel@Set{\@temp@chapterlabelfront}{\@temp@chapterlabelback}}
 }
-%%在环境末尾恢复节标签样式
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%在环境末尾恢复节标签样式及其长度参数
 \newcommand{\@Restore@SectionLabel@OutEnv}{%
-\addtocontents{toc}{\protect\def\protect\sectionlabelfront{\@temp@sectionlabelfront}}
-\addtocontents{toc}{\protect\def\protect\sectionlabelback{\@temp@sectionlabelback}}
+\addtocontents{toc}{\protect\@Toc@SecLabel@Set{\@temp@sectionlabelfront}{\@temp@sectionlabelback}}
 }
-%%在环境末尾恢复小节标签样式
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%在环境末尾恢复小节标签样式及其长度参数
 \newcommand{\@Restore@SubsectionLabel@OutEnv}{%
-\addtocontents{toc}{\protect\def\protect\subsectionlabelfront{\@temp@subsectionlabelfront}}
-\addtocontents{toc}{\protect\def\protect\subsectionlabelback{\@temp@subsectionlabelback}}
+\addtocontents{toc}{\protect\@Toc@SubsecLabel@Set{\@temp@subsectionlabelfront}{\@temp@subsectionlabelback}}
 }
-%%在环境末尾恢复小小节标签样式
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%在环境末尾恢复小小节标签样式及其长度参数
 \newcommand{\@Restore@SubsubsectionLabel@OutEnv}{%
-\addtocontents{toc}{\protect\def\protect\subsubsectionlabelfront{\@temp@subsubsectionlabelfront}}
-\addtocontents{toc}{\protect\def\protect\subsubsectionlabelback{\@temp@subsubsectionlabelback}}
+\addtocontents{toc}{\protect\@Toc@SubsubLabel@Set{\@temp@subsubsectionlabelfront}{\@temp@subsubsectionlabelback}}
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%在环境末尾恢复图表标签样式
 \newcommand{\@Restore@FigureTableLabel@OutEnv}{%
-\addtocontents{lof}{\protect\def\protect\environmentmark{\@temp@environmentmark}}
-\addtocontents{lot}{\protect\def\protect\environmentmark{\@temp@environmentmark}}
+\addtocontents{lof}{\protect\@Lof@Label@Set{\@temp@environmentmark}}
+\addtocontents{lot}{\protect\@Lot@Label@Set{\@temp@environmentmark}}
 }
-
-%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%定义在toc，lof，lot文件中添加空白行的命令，以便增加这些文件的可读性%%
+\newcommand{\@AddBlankLine}{%
+\addtocontents{toc}{}
+\addtocontents{lof}{}
+\addtocontents{lot}{}
+}
 %%设置附录章环境%%
-\newcounter{@Outer@AppendixChap@Chapter}%储存环境前的章计数器数值
-\newcounter{@Inner@AppendixChap@Chapter}%储存环境中的章计数器数值
-\setcounter{@Inner@AppendixChap@Chapter}{0}%将环境中的章计数器值置零
+\newcounter{@Outer@AppendixChap@Chapter}%环境外计数器
+\newcounter{@Inner@AppendixChap@Chapter}%环境中计数器
 %%
-\newcounter{@Outer@AppendixChap@Section}%储存环境前的节计数器数值
-\newcounter{@Inner@AppendixChap@Section}%储存环境中的节计数器数值
-\setcounter{@Inner@AppendixChap@Section}{0}%将环境中的节计数器值置零
+\newcounter{@Outer@AppendixChap@Section}%环境外计数器
+\newcounter{@Inner@AppendixChap@Section}%环境中计数器
 %%
-\newcounter{@Outer@AppendixChap@Subsection}%储存环境前的小节计数器数值
-\newcounter{@Inner@AppendixChap@Subsection}%储存环境中的小节计数器数值
-\setcounter{@Inner@AppendixChap@Subsection}{0}%将环境中的小节计数器值置零
+\newcounter{@Outer@AppendixChap@Subsection}%环境外计数器
+\newcounter{@Inner@AppendixChap@Subsection}%环境中计数器
 %%
-\newcounter{@Outer@AppendixChap@Subsubsection}%储存环境前的小小节计数器数值
-\newcounter{@Inner@AppendixChap@Subsubsection}%储存环境中的小小节计数器数值
-\setcounter{@Inner@AppendixChap@Subsubsection}{0}%将环境中的小小节计数器值置零
+\newcounter{@Outer@AppendixChap@Subsubsection}%环境外计数器
+\newcounter{@Inner@AppendixChap@Subsubsection}%环境中计数器
 %%
 \newenvironment{Appendix}{%
 %%判断环境所在位置的环境层级计数器的数值，若为2，则说明本环境嵌套于一个section层级的环境中，需要报错；若为1，则说明本环境嵌套于另一个chapter层级的环境中，需要报错；若为0，则说明本环境不嵌套于任何一个类似的环境中，可以运行%%
@@ -2605,6 +2695,7 @@ text align={fit to path stretching spaces}%
 %%确保hyperref知道计数器变化
 \hypersetup{pageanchor=true}
 %%储存环境外的章节计数器、标签和图标标签，修改环境内的章节计数器、标签和图标标签，并修改超链接唯一标识符
+\@AddBlankLine
 \@Change@FigureTableStyle@InEnv{}
 \@Change@ChapterStyle@InEnv{\Alph{chapter}}{附录}{}
 \@Change@SectionStyle@InEnv{\alph{section}}{附节}{}
@@ -2628,20 +2719,19 @@ text align={fit to path stretching spaces}%
 \@Restore@SubsectionLabel@OutEnv
 \@Restore@SubsubsectionLabel@OutEnv
 \@Restore@FigureTableLabel@OutEnv
+\@AddBlankLine
 }
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%设置附录节环境%%
-\newcounter{@Outer@AppendixSect@Section}%储存环境前的节计数器数值
-\newcounter{@Inner@AppendixSect@Section}%储存环境中的节计数器数值
-\setcounter{@Inner@AppendixSect@Section}{0}%将环境中的节计数器值置零
+\newcounter{@Outer@AppendixSect@Section}%环境外计数器
+\newcounter{@Inner@AppendixSect@Section}%环境中计数器
 %%
-\newcounter{@Outer@AppendixSect@Subsection}%储存环境前的小节计数器数值
-\newcounter{@Inner@AppendixSect@Subsection}%储存环境中的小节计数器数值
-\setcounter{@Inner@AppendixSect@Subsection}{0}%将环境中的小节计数器值置零
+\newcounter{@Outer@AppendixSect@Subsection}%环境外计数器
+\newcounter{@Inner@AppendixSect@Subsection}%环境中计数器
 %%
-\newcounter{@Outer@AppendixSect@Subsubsection}%储存环境前的小小节计数器数值
-\newcounter{@Inner@AppendixSect@Subsubsection}%储存环境中的小小节计数器数值
-\setcounter{@Inner@AppendixSect@Subsubsection}{0}%将环境中的小小节计数器值置零
+\newcounter{@Outer@AppendixSect@Subsubsection}%环境外计数器
+\newcounter{@Inner@AppendixSect@Subsubsection}%环境中计数器
 %%
 \newenvironment{Appendix*}{%
 %%判断环境所在位置的环境层级计数器的数值，若为2，则说明本环境嵌套于一个section层级的环境中，需要报错；若为0，则说明本环境不嵌套于任何一个类似的环境中，可以运行%%
@@ -2665,6 +2755,7 @@ text align={fit to path stretching spaces}%
 %%确保hyperref知道计数器变化
 \hypersetup{pageanchor=true}
 %%储存环境外的章节计数器、标签和图标标签，修改环境内的章节计数器、标签和图标标签，并修改超链接唯一标识符
+\@AddBlankLine
 \@Change@SectionStyle@InEnv{\alph{section}}{附录}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{小节}{}
 \@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
@@ -2686,21 +2777,21 @@ text align={fit to path stretching spaces}%
 \@Restore@SectionLabel@OutEnv
 \@Restore@SubsectionLabel@OutEnv
 \@Restore@SubsubsectionLabel@OutEnv
-\@Restore@FigureTableLabel@OutEnv}
-
-%%
+\@Restore@FigureTableLabel@OutEnv
+\@AddBlankLine
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%设置测验环境%%
-\newcounter{@Outer@Quiz@Section}%储存环境前的节计数器数值
-\newcounter{@Inner@Quiz@Section}%储存环境中的节计数器数值
-\setcounter{@Inner@Quiz@Section}{0}%将环境中的节计数器值置零
+\newcounter{@Outer@Quiz@Section}%环境外计数器
+\newcounter{@Inner@Quiz@Section}%环境中计数器
 %%
-\newcounter{@Outer@Quiz@Subsection}%储存环境前的小节计数器数值
-\newcounter{@Inner@Quiz@Subsection}%储存环境中的小节计数器数值
-\setcounter{@Inner@Quiz@Subsection}{0}%将环境中的小节计数器值置零
+\newcounter{@Outer@Quiz@Subsection}%环境外计数器
+\newcounter{@Inner@Quiz@Subsection}%环境中计数器
 %%
-\newcounter{@Outer@Quiz@Subsubsection}%储存环境前的小小节计数器数值
-\newcounter{@Inner@Quiz@Subsubsection}%储存环境中的小小节计数器数值
-\setcounter{@Inner@Quiz@Subsubsection}{0}%将环境中的小小节计数器值置零
+\newcounter{@Outer@Quiz@Subsubsection}%环境外计数器
+\newcounter{@Inner@Quiz@Subsubsection}%环境中计数器
+%%
 \newenvironment{Quiz}{%
 %%判断环境所在位置的环境层级计数器的数值，若为2，则说明本环境嵌套于另一个同为section层级的环境中，需要报错；若为1，则说明本环境嵌套于另一个chapter层级的环境中，正常运行%%
 \ifnum\value{@Environment@Depth}=2
@@ -2727,6 +2818,7 @@ text align={fit to path stretching spaces}%
 %%确保hyperref知道计数器变化
 \hypersetup{pageanchor=true}
 %%储存环境外的章节计数器、标签和图标标签，并修改环境内的章节计数器、标签和图标标签
+\@AddBlankLine
 \@Change@SectionStyle@InEnv{\arabic{section}}{测验}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{题组}{}
 \@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{第}{题}
@@ -2753,21 +2845,20 @@ text align={fit to path stretching spaces}%
 \@Restore@SubsectionLabel@OutEnv
 \@Restore@SubsubsectionLabel@OutEnv
 \@Restore@FigureTableLabel@OutEnv
+\@AddBlankLine
 }
-%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%设置专题环境%%
-\newcounter{@Outer@Topic@Section}%储存环境前的节计数器数值
-\newcounter{@Inner@Topic@Section}%储存环境中的节计数器数值
-\setcounter{@Inner@Topic@Section}{0}%将环境中的节计数器值置零
+\newcounter{@Outer@Topic@Section}%环境外计数器
+\newcounter{@Inner@Topic@Section}%环境中计数器
 %%
-\newcounter{@Outer@Topic@Subsection}%储存环境前的小节计数器数值
-\newcounter{@Inner@Topic@Subsection}%储存环境中的小节计数器数值
-\setcounter{@Inner@Topic@Subsection}{0}%将环境中的小节计数器值置零
+\newcounter{@Outer@Topic@Subsection}%环境外计数器
+\newcounter{@Inner@Topic@Subsection}%环境中计数器
 %%
-\newcounter{@Outer@Topic@Subsubsection}%储存环境前的小小节计数器数值
-\newcounter{@Inner@Topic@Subsubsection}%储存环境中的小小节计数器数值
-\setcounter{@Inner@Topic@Subsubsection}{0}%将环境中的小小节计数器值置零
+\newcounter{@Outer@Topic@Subsubsection}%环境外计数器
+\newcounter{@Inner@Topic@Subsubsection}%环境中计数器
+%%
 \newenvironment{Topic}{%
 %%判断环境所在位置的环境层级计数器的数值，若为2，则说明本环境嵌套于另一个同为section层级的环境中，需要报错；若为1，则说明本环境嵌套于另一个chapter层级的环境中，正常运行%%
 \ifnum\value{@Environment@Depth}=2
@@ -2790,6 +2881,7 @@ text align={fit to path stretching spaces}%
 %%确保hyperref知道计数器变化
 \hypersetup{pageanchor=true}
 %%储存环境外的章节计数器、标签和图标标签，修改环境内的章节计数器、标签和图标标签，并修改超链接唯一标识符
+\@AddBlankLine
 \@Change@SectionStyle@InEnv{\arabic{section}}{专题}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{考点}{}
 \@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
@@ -2812,20 +2904,20 @@ text align={fit to path stretching spaces}%
 \@Restore@SubsectionLabel@OutEnv
 \@Restore@SubsubsectionLabel@OutEnv
 \@Restore@FigureTableLabel@OutEnv
+\@AddBlankLine
 }
-%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%设置课题环境%%
-\newcounter{@Outer@Project@Section}%储存环境前的节计数器数值
-\newcounter{@Inner@Project@Section}%储存环境中的节计数器数值
-\setcounter{@Inner@Project@Section}{0}%将环境中的节计数器值置零
+\newcounter{@Outer@Project@Section}%环境外计数器
+\newcounter{@Inner@Project@Section}%环境中计数器
 %%
-\newcounter{@Outer@Project@Subsection}%储存环境前的小节计数器数值
-\newcounter{@Inner@Project@Subsection}%储存环境中的小节计数器数值
-\setcounter{@Inner@Project@Subsection}{0}%将环境中的小节计数器值置零
+\newcounter{@Outer@Project@Subsection}%环境外计数器
+\newcounter{@Inner@Project@Subsection}%环境中计数器
 %%
-\newcounter{@Outer@Project@Subsubsection}%储存环境前的小小节计数器数值
-\newcounter{@Inner@Project@Subsubsection}%储存环境中的小小节计数器数值
-\setcounter{@Inner@Project@Subsubsection}{0}%将环境中的小小节计数器值置零
+\newcounter{@Outer@Project@Subsubsection}%环境外计数器
+\newcounter{@Inner@Project@Subsubsection}%环境中计数器
+%%
 \newenvironment{Project}{%
 %%判断环境所在位置的环境层级计数器的数值，若为2，则说明本环境嵌套于另一个同为section层级的环境中，需要报错；若为1，则说明本环境嵌套于另一个chapter层级的环境中，正常运行%%
 \ifnum\value{@Environment@Depth}=2
@@ -2848,6 +2940,7 @@ text align={fit to path stretching spaces}%
 %%确保hyperref知道计数器变化
 \hypersetup{pageanchor=true}
 %%储存环境外的章节计数器、标签和图标标签，修改环境内的章节计数器、标签和图标标签，并修改超链接唯一标识符
+\@AddBlankLine
 \@Change@SectionStyle@InEnv{\arabic{section}}{课题}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{活动}{}
 \@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
@@ -2870,13 +2963,13 @@ text align={fit to path stretching spaces}%
 \@Restore@SubsectionLabel@OutEnv
 \@Restore@SubsubsectionLabel@OutEnv
 \@Restore@FigureTableLabel@OutEnv
+\@AddBlankLine
 }
-%%%%
-%%目录页码右侧空格%%
-\contentsmargin{4.5mm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%标签绘制%%
 \NewDocumentCommand{\@PartTocStyle}{ +m +m }{%
-\begin{tikzpicture}%
+\begin{tikzpicture}[baseline,use as bounding box]%
 \TocPartFont%
 \newdimen\@PartToc@Radius%
 %%
@@ -2892,7 +2985,7 @@ text align={fit to path stretching spaces}%
 \end{varwidth}};
 \pgfgetnodewidth(L)\@PartToc@LabelWidth
 \pgfgetnodeheight(L)\@PartToc@LabelHeight
-%%+1.0mm
+%%
 \node[text=ColorA,inner xsep=\@PartToc@Radius,inner ysep=0mm,outer sep=0mm,minimum width=\linewidth-\@PartToc@LabelWidth,anchor=north west](N)at(L.north east){%
 \begin{minipage}{\linewidth-\@PartToc@LabelWidth-2\@PartToc@Radius}
 \@change@minipage@footnote%
@@ -2912,69 +3005,139 @@ text align={fit to path stretching spaces}%
 \path[fill=ColorA](L.south west)[sharp corners]--(L.south east)--(L.north east)[rounded corners=\@PartToc@Radius]--(L.north west)--cycle;
 \fi
 \end{pgfonlayer}
-\end{tikzpicture}
-}
+\end{tikzpicture}}
 
 %%%%
 %%编号部分目录样式%%
-\NewDocumentCommand{\@Toc@Part@Numbered}{+m}{\contentslabel[\@PartTocStyle{\partlabelfront{\sffamily\thecontentslabel}\partlabelback}{#1\hfill\sffamily\thecontentspage}]{1.25cm}}
+\NewDocumentCommand{\@Toc@Part@Numbered}{+m}{%
+\contentslabel[%
+\@PartTocStyle{\partlabelfront\makebox[1.625em]{\sffamily\thecontentslabel}\partlabelback}{#1\hfill\sffamily\thecontentspage}]%
+{0mm}}
 %%
 %%不编号部分目录样式%%
-\NewDocumentCommand{\@Toc@Part@Unnumbered}{+m}{\contentslabel[\@PartTocStyle{#1}{\hfill\sffamily\thecontentspage}]{1.25cm}}
+\NewDocumentCommand{\@Toc@Part@Unnumbered}{+m}{%
+\contentslabel[%
+\@PartTocStyle{#1}{\hfill\sffamily\thecontentspage}]%
+{0mm}}
 %%
 %%部分目录样式%%
-\titlecontents{part}[1.25cm]{}
+\titlecontents{part}[0mm]{}
 {\@Toc@Part@Numbered}
 {\@Toc@Part@Unnumbered}{}
 [\addvspace{5.0pt}]
-%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Toc@Label@Mgn}%标签左侧的空白距离
+\newlength{\@Toc@LabelName@Sep}%目录标签和名称之间的空白距离
+\setlength{\@Toc@Label@Mgn}{4.5mm}
+\setlength{\@Toc@LabelName@Sep}{7.5mm}
+%%
+\contentsmargin{\@Toc@Label@Mgn}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Toc@ChapLabel@Wd}%章标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
+\newlength{\@Toc@ChapLabel@Ind}%章标签左侧的缩进距离
+%%定义目录中章标签相关的长度参数%%
+\newcommand{\@Toc@ChapLabelLen@Set}{%
+\settowidth{\@Toc@ChapLabel@Wd}{\TocChapterFont\chapterlabelfront\hbox to 1.625em{}\chapterlabelback}
+\addtolength{\@Toc@ChapLabel@Wd}{\@Toc@LabelName@Sep}
+\setlength{\@Toc@ChapLabel@Ind}{\@Toc@ChapLabel@Wd+\@Toc@Label@Mgn}
+}
 %%章目录样式%%
-\titlecontents{chapter}[2.5cm]
-{\color{ColorA}\TocChapterFont}
-{\color{ColorA}\contentslabel[\chapterlabelfront{\sffamily\thecontentslabel}\chapterlabelback]{2.0cm}}
-{\color{ColorA}\hspace*{-2.0cm}}%不编号章节
-{\titlerule*[6pt]{ }\color{ColorA}\ContentPageNumFont\thecontentspage}
-[\addvspace{5.0pt}]
-%%%%
+\@Toc@ChapLabelLen@Set
+\titlecontents{chapter}[\@Toc@ChapLabel@Ind]
+{\TocChapterFont\color{ColorA}}
+{\contentslabel[\chapterlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\chapterlabelback]{\@Toc@ChapLabel@Wd}}
+{\hspace*{-\@Toc@ChapLabel@Wd}}%不编号章节
+{\hfill\ContentPageNumFont\thecontentspage}
+[\addvspace{2.5pt}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Toc@SecLabel@Wd}%节标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
+\newlength{\@Toc@SecLabel@Ind}%节标签左侧的缩进距离
+%%定义目录中节标签相关的长度参数%%
+\newcommand{\@Toc@SecLabelLen@Set}{%
+\settowidth{\@Toc@SecLabel@Wd}{\TocSectionFont\sectionlabelfront\hbox to 1.625em{}\sectionlabelback}
+\addtolength{\@Toc@SecLabel@Wd}{\@Toc@LabelName@Sep}
+\setlength{\@Toc@SecLabel@Ind}{\@Toc@SecLabel@Wd+\@Toc@Label@Mgn+5.0mm}
+}
 %%节目录样式%%
-\titlecontents{section}[3.0cm]
+\@Toc@SecLabelLen@Set
+\titlecontents{section}[\@Toc@SecLabel@Ind]
 {\TocSectionFont}
-{\contentslabel[\sectionlabelfront{\sffamily\thecontentslabel}\sectionlabelback]{2.0cm}}
-{\hspace*{-2.0cm}}%不编号章节
-{\titlerule*[6pt]{ }\ContentPageNumFont\thecontentspage}
-[\addvspace{5.0pt}]
-%%%%
+{\contentslabel[\sectionlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\sectionlabelback]{\@Toc@SecLabel@Wd}}
+{\hspace*{-\@Toc@SecLabel@Wd}}%不编号章节
+{\hfill\ContentPageNumFont\thecontentspage}
+[\addvspace{2.5pt}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Toc@SubsecLabel@Wd}%节标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
+\newlength{\@Toc@SubsecLabel@Ind}%节标签左侧的缩进距离
+%%定义目录中小节标签相关的长度参数%%
+\newcommand{\@Toc@SubsecLabelLen@Set}{%
+\settowidth{\@Toc@SubsecLabel@Wd}{\TocSubsectionFont\subsectionlabelfront\hbox to 1.625em{}\subsectionlabelback}
+\addtolength{\@Toc@SubsecLabel@Wd}{\@Toc@LabelName@Sep}
+\setlength{\@Toc@SubsecLabel@Ind}{\@Toc@SubsecLabel@Wd+\@Toc@Label@Mgn+10.0mm}
+}
 %%小节目录样式%%
-\titlecontents{subsection}[3.5cm]
+\@Toc@SubsecLabelLen@Set
+\titlecontents{subsection}[\@Toc@SubsecLabel@Ind]
 {\TocSubsectionFont}
-{\contentslabel[\subsectionlabelfront{\sffamily\thecontentslabel}\subsectionlabelback]{2.0cm}}
-{\hspace*{-2.0cm}}%不编号章节
-{\titlerule*[6pt]{ }\ContentPageNumFont\thecontentspage}
-[\addvspace{5.0pt}]
-%%%%
+{\contentslabel[\subsectionlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\subsectionlabelback]{\@Toc@SubsecLabel@Wd}}
+{\hspace*{-\@Toc@SubsecLabel@Wd}}%不编号章节
+{\hfill\ContentPageNumFont\thecontentspage}
+[\addvspace{2.5pt}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Toc@SubsubLabel@Wd}%节标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
+\newlength{\@Toc@SubsubLabel@Ind}%节标签左侧的缩进距离
+%%定义目录中小小节标签相关的长度参数%%
+\newcommand{\@Toc@SubsubLabelLen@Set}{%
+\settowidth{\@Toc@SubsubLabel@Wd}{\TocSubsubsectionFont\subsubsectionlabelfront\hbox to 1.625em{}\subsubsectionlabelback}
+\addtolength{\@Toc@SubsubLabel@Wd}{\@Toc@LabelName@Sep}
+\setlength{\@Toc@SubsubLabel@Ind}{\@Toc@SubsubLabel@Wd+\@Toc@Label@Mgn+15.0mm}
+}
 %%小小节目录样式%%
-\titlecontents{subsubsection}[4.0cm]
+\@Toc@SubsubLabelLen@Set
+\titlecontents{subsubsection}[\@Toc@SubsubLabel@Ind]
 {\TocSubsubsectionFont}
-{\contentslabel[\subsubsectionlabelfront{\sffamily\thecontentslabel}\subsubsectionlabelback]{2.0cm}}
-{\hspace*{-2.0cm}}%不编号章节
-{\titlerule*[6pt]{ }\ContentPageNumFont\thecontentspage}
-[\addvspace{5.0pt}]
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\contentslabel[\subsubsectionlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\subsubsectionlabelback]{\@Toc@SubsubLabel@Wd}}
+{\hspace*{-\@Toc@SubsubLabel@Wd}}%不编号章节
+{\hfill\ContentPageNumFont\thecontentspage}
+[\addvspace{2.5pt}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Loft@LabelName@Sep}
+\setlength{\@Loft@LabelName@Sep}{7.5mm}
+%%
+\newlength{\@Lof@Label@Wd}%节标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
+\newlength{\@Lof@Label@Ind}%节标签左侧的缩进距离
+%%定义目录中小小节标签相关的长度参数%%
+\newcommand{\@Lof@LabelLen@Set}{%
+\settowidth{\@Lof@Label@Wd}{\LoftFont\figurename\hbox to 3.0em{}}
+\addtolength{\@Lof@Label@Wd}{\@Loft@LabelName@Sep}
+\setlength{\@Lof@Label@Ind}{\@Lof@Label@Wd}
+}
 %%图片目录样式%%
-\titlecontents{figure}[3.0cm]
-{\LofFont}
-{\contentslabel[\figurename{\sffamily \environmentmark\thecontentslabel}]{2.7cm}}
-{\hspace*{-2.7cm}}%不编号图表
-{\titlerule*[6pt]{ }\ContentPageNumFont\thecontentspage}
-[\addvspace{5.0pt}]
-%%%%
+\@Lof@LabelLen@Set
+\titlecontents{figure}[\@Lof@Label@Ind]
+{\LoftFont}
+{\contentslabel[\figurename\hbox to 3.0em{\hfil\sffamily \environmentmark\thecontentslabel\hfil}]{\@Lof@Label@Wd}}
+{\hspace*{-\@Lof@Label@Wd}}%不编号图表
+{\hfill\ContentPageNumFont\thecontentspage}
+[\addvspace{2.5pt}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\@Lot@Label@Wd}%节标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
+\newlength{\@Lot@Label@Ind}%节标签左侧的缩进距离
+%%定义目录中小小节标签相关的长度参数%%
+\newcommand{\@Lot@LabelLen@Set}{%
+\settowidth{\@Lot@Label@Wd}{\LoftFont\tablename\hbox to 3.0em{}}
+\addtolength{\@Lot@Label@Wd}{\@Loft@LabelName@Sep}
+\setlength{\@Lot@Label@Ind}{\@Lot@Label@Wd}
+}
 %%表格目录样式%%
-\titlecontents{table}[3.0cm]
-{\LotFont}
-{\contentslabel[\tablename{\sffamily \environmentmark\thecontentslabel}]{2.7cm}}
-{\hspace*{-2.7cm}}%不编号图表
-{\titlerule*[6pt]{ }\ContentPageNumFont\thecontentspage}
-[\addvspace{5.0pt}]
+\@Lot@LabelLen@Set
+\titlecontents{table}[\@Lot@Label@Ind]
+{\LoftFont}
+{\contentslabel[\tablename\hbox to 3.0em{\hfil\sffamily \environmentmark\thecontentslabel\hfil}]{\@Lot@Label@Wd}}
+{\hspace*{-\@Lot@Label@Wd}}%不编号图表
+{\hfill\ContentPageNumFont\thecontentspage}
+[\addvspace{2.5pt}]
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%部分页上的小目录章样式%%
 \titlecontents{lchapter}[0.75cm]
@@ -3004,14 +3167,14 @@ text align={fit to path stretching spaces}%
 %%部分页上的小图目录样式%%
 \titlecontents{lfigure}[0.9cm]
 {\color{ColorB}\TocLSectionFont}
-{\contentslabel[\LofLFont\faGenderless]{0.5cm}}
-{\contentslabel[\LofLFont\faGenderless]{0.5cm}}%不编号章节
+{\contentslabel[\LoftLFont\faGenderless]{0.5cm}}
+{\contentslabel[\LoftLFont\faGenderless]{0.5cm}}%不编号章节
 {}[\addvspace{5.0pt}]
 %%部分页上的小图目录样式%%
 \titlecontents{ltable}[0.9cm]
 {\color{ColorB}\TocLSectionFont}
-{\contentslabel[\LotLFont\faGenderless]{0.5cm}}
-{\contentslabel[\LotLFont\faGenderless]{0.5cm}}%不编号章节
+{\contentslabel[\LoftLFont\faGenderless]{0.5cm}}
+{\contentslabel[\LoftLFont\faGenderless]{0.5cm}}%不编号章节
 {}[\addvspace{5.0pt}]
 
 %%%%%%%%%%%%%%%%%% 例题与盒子定义 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -3082,13 +3245,13 @@ text align={fit to path stretching spaces}%
 %%解答%%
 \newenvironment{Answer}{%
 \medskip%
-\@AnswerStyle{解答}{ColorG}%
+\@AnswerStyle{\answertitle}{ColorG}%
 \hspace*{0.5em}\vspace*{0.25em}%
 }{\medskip}
 %%%%
 \newenvironment{Answer*}{%
 \medskip%
-\@AnswerStyle{解析}{ColorF}%
+\@AnswerStyle{\analysistitle}{ColorF}%
 \hspace*{0.5em}\vspace*{0.25em}%
 }{\medskip}
 
@@ -3098,7 +3261,7 @@ text align={fit to path stretching spaces}%
 \medskip%
 \if@mainmatter%
 \stepcounter{@example}%
-\@ExampleStyle{例题}{\environmentmark\the@prenumber.\the@example}{ColorA}%
+\@ExampleStyle{\exampletitle}{\environmentmark\the@prenumber.\the@example}{ColorA}%
 \else%
 \@AnswerStyle{\@Example@Name}{ColorA}%
 \fi%
@@ -3116,7 +3279,7 @@ text align={fit to path stretching spaces}%
 \medskip%
 \if@mainmatter%
 \stepcounter{@variant}%
-\@ExampleStyle{变式}{\environmentmark\the@prenumber.\the@variant}{ColorB}%
+\@ExampleStyle{\varianttitle}{\environmentmark\the@prenumber.\the@variant}{ColorB}%
 \else%
 \@AnswerStyle{\@Variant@Name}{ColorB}%
 \fi%
@@ -3298,11 +3461,11 @@ before title={\@change@minipage@footnote}
 %%
 \DeclareTColorBox{box0}{O{} +m O{ColorB}}{ItemBox=#2/#3,#1}
 
-\newenvironment{Point}{\begin{box0}{本章要点}[ColorA]}{\end{box0}}
-\newenvironment{Point*}{\begin{box0}{本节导言}[ColorA]}{\end{box0}}
+\newenvironment{Point}{\begin{box0}{\chapterpointtitle}[ColorA]}{\end{box0}}
+\newenvironment{Point*}{\begin{box0}{\sectionpointtitle}[ColorA]}{\end{box0}}
 
-\newenvironment{Case}{\begin{box0}{基础概念、公式和定理}[ColorB]}{\end{box0}}
-\newenvironment{Case*}{\begin{box0}{本节提要}[ColorB]}{\end{box0}}
+\newenvironment{Case}{\begin{box0}{\concepttitle}[ColorB]}{\end{box0}}
+\newenvironment{Case*}{\begin{box0}{\outlinetitle}[ColorB]}{\end{box0}}
 %%%%
 
 %%设置易错点盒子%%
@@ -3328,10 +3491,10 @@ underlay boxed title={%
 #1}
 
 %%%%
-\DeclareDocumentEnvironment{Warning}{ +O{} +O{} }{\begin{box1}{易错点警示}[#1][#2][ColorF][\faExclamation]}{\end{box1}}
-\DeclareDocumentEnvironment{Discussion}{ +O{} +O{}}{\begin{box1}[lowerbox=ignored]{思考与讨论}[#1][#2][ColorC][\faQuestion]}
+\DeclareDocumentEnvironment{Warning}{ +O{} +O{} }{\begin{box1}{\warningtitle}[#1][#2][ColorF][\faExclamation]}{\end{box1}}
+\DeclareDocumentEnvironment{Discussion}{ +O{} +O{}}{\begin{box1}[lowerbox=ignored]{\discussiontitle}[#1][#2][ColorC][\faQuestion]}
 {\end{box1}}
-\DeclareDocumentEnvironment{Check}{ +O{} +O{} }{\begin{box1}[step=@check]{随堂练习{\sffamily\the@check}}[#1][#2][ColorI][\faCheck]}
+\DeclareDocumentEnvironment{Check}{ +O{} +O{} }{\begin{box1}[step=@check]{\checktitle{\sffamily\the@check}}[#1][#2][ColorI][\faCheck]}
 {\end{box1}}
 
 %%设置演示盒子%%
@@ -3371,9 +3534,9 @@ underlay boxed title={%
 #1}
 
 %%%%
-\DeclareDocumentEnvironment{Display}{ +O{} +O{} }{\begin{box2}{演示与实验}[#1][#2][ColorB][\faLayerGroup]}{\end{box2}}
-\DeclareDocumentEnvironment{Method}{ +O{} +O{} }{\begin{box2}{方法与技巧}[#1][#2][ColorD][\faPodcast]}{\end{box2}}
-\DeclareDocumentEnvironment{Mind}{ +O{} +O{} }{\begin{box2}{科学思维}[#1][#2][ColorC][\faAtom]}{\end{box2}}
+\DeclareDocumentEnvironment{Display}{ +O{} +O{} }{\begin{box2}{\displaytitle}[#1][#2][ColorB][\faLayerGroup]}{\end{box2}}
+\DeclareDocumentEnvironment{Method}{ +O{} +O{} }{\begin{box2}{\methodtitle}[#1][#2][ColorD][\faPodcast]}{\end{box2}}
+\DeclareDocumentEnvironment{Mind}{ +O{} +O{} }{\begin{box2}{\mindtitle}[#1][#2][ColorC][\faAtom]}{\end{box2}}
 
 %%简化序号命令%%
 \newcommand{\the@prenumber}{\thechapter.\thesection}
@@ -3405,7 +3568,7 @@ underlay boxed title={%
 \DeclareDocumentEnvironment{Definition}{ +O{} +O{} }{\begin{box3}[phantom={%
 \if@mainmatter%
 \refstepcounter{@definition}
-\fi}]{定义%
+\fi}]{\definitiontitle%
 \if@mainmatter%
 {~\sffamily\environmentmark\the@prenumber.\the@definition}%
 \fi}
@@ -3414,7 +3577,7 @@ underlay boxed title={%
 \DeclareDocumentEnvironment{Theorem}{ +O{} +O{} }{\begin{box3}[phantom={%
 \if@mainmatter%
 \refstepcounter{@theorem}
-\fi}]{定理%
+\fi}]{\theoremtitle%
 \if@mainmatter%
 {~\sffamily\environmentmark\the@prenumber.\the@theorem}%
 \fi}
@@ -3423,7 +3586,7 @@ underlay boxed title={%
 \DeclareDocumentEnvironment{Axiom}{ +O{} +O{} }{\begin{box3}[phantom={%
 \if@mainmatter%
 \refstepcounter{@axiom}
-\fi}]{公理%
+\fi}]{\axiomtitle%
 \if@mainmatter%
 {~\sffamily\environmentmark\the@prenumber.\the@axiom}%
 \fi}
@@ -3431,9 +3594,9 @@ underlay boxed title={%
 %%%%
 
 %%不编号定义盒子%%
-\DeclareDocumentEnvironment{Definition*}{ +O{} +O{} }{\begin{box3}{定义}[#1][#2][ColorA][\faCrosshairs]}{\end{box3}}
-\DeclareDocumentEnvironment{Theorem*}{ +O{} +O{} }{\begin{box3}{定理}[#1][#2][ColorB][\faCrosshairs]}{\end{box3}}
-\DeclareDocumentEnvironment{Axiom*}{ +O{} +O{} }{\begin{box3}{公理}[#1][#2][ColorI][\faCompactDisc]}{\end{box3}}
+\DeclareDocumentEnvironment{Definition*}{ +O{} +O{} }{\begin{box3}{\definitiontitle}[#1][#2][ColorA][\faCrosshairs]}{\end{box3}}
+\DeclareDocumentEnvironment{Theorem*}{ +O{} +O{} }{\begin{box3}{\theoremtitle}[#1][#2][ColorB][\faCrosshairs]}{\end{box3}}
+\DeclareDocumentEnvironment{Axiom*}{ +O{} +O{} }{\begin{box3}{\axiomtitle}[#1][#2][ColorI][\faCompactDisc]}{\end{box3}}
 %%%%
 
 %%设置引理盒子%%
@@ -3460,7 +3623,7 @@ underlay boxed title={%
 \DeclareDocumentEnvironment{Lemma}{ +O{} +O{}}{\begin{box4}[phantom={%
 \if@mainmatter%
 \refstepcounter{@lemma}
-\fi}]{引理%
+\fi}]{\lemmatitle%
 \if@mainmatter%
 {~\sffamily\environmentmark\the@prenumber.\the@lemma}%
 \fi}
@@ -3470,7 +3633,7 @@ underlay boxed title={%
 \if@mainmatter%
 \refstepcounter{@corollary}
 \fi
-}]{推论%
+}]{\corollarytitle%
 \if@mainmatter%
 {~\sffamily\environmentmark\the@prenumber.\the@corollary}%
 \fi}
@@ -3480,16 +3643,16 @@ underlay boxed title={%
 \if@mainmatter%
 \refstepcounter{@proposition}
 \fi
-}]{命题%
+}]{\propositiontitle%
 \if@mainmatter%
 {~\sffamily\environmentmark\the@prenumber.\the@proposition}%
 \fi}
 [#1][#2][ColorH][\faGlobe]}{\end{box4}}
 %%%%
 %%不编号引理盒子%%
-\DeclareDocumentEnvironment{Lemma*}{ +O{} +O{} }{\begin{box4}{引理}[#1][#2][ColorE][\faGlobe]}{\end{box4}}
-\DeclareDocumentEnvironment{Corollary*}{ +O{} +O{} }{\begin{box4}{推论}[#1][#2][ColorG][\faCompactDisc]}{\end{box4}}
-\DeclareDocumentEnvironment{Proposition*}{ +O{} +O{} }{\begin{box4}{命题}[#1][#2][ColorH][\faGlobe]}{\end{box4}}
+\DeclareDocumentEnvironment{Lemma*}{ +O{} +O{} }{\begin{box4}{\lemmatitle}[#1][#2][ColorE][\faGlobe]}{\end{box4}}
+\DeclareDocumentEnvironment{Corollary*}{ +O{} +O{} }{\begin{box4}{\corollarytitle}[#1][#2][ColorG][\faCompactDisc]}{\end{box4}}
+\DeclareDocumentEnvironment{Proposition*}{ +O{} +O{} }{\begin{box4}{\propositiontitle}[#1][#2][ColorH][\faGlobe]}{\end{box4}}
 %%%%
 %设置拓展盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
@@ -3511,10 +3674,10 @@ underlay boxed title={%
 \endgroup},
 #1}
 
-\DeclareDocumentEnvironment{Link}{ +O{} +O{} }{\begin{box5}{拓展链接}[#1][#2][ColorE][\faLink]}{\end{box5}}
-\DeclareDocumentEnvironment{History}{ +O{} +O{} }{\begin{box5}{科学发展史}[#1][#2][ColorC][\faCalendar*]}
+\DeclareDocumentEnvironment{Link}{ +O{} +O{} }{\begin{box5}{\linktitle}[#1][#2][ColorE][\faLink]}{\end{box5}}
+\DeclareDocumentEnvironment{History}{ +O{} +O{} }{\begin{box5}{\historytitle}[#1][#2][ColorC][\faCalendar*]}
 {\end{box5}}
-\DeclareDocumentEnvironment{STS}{ +O{} +O{} }{\begin{box5}{科学·技术·社会}[#1][#2][ColorH][\faCog]}
+\DeclareDocumentEnvironment{STS}{ +O{} +O{} }{\begin{box5}{\ststitle}[#1][#2][ColorH][\faCog]}
 {\end{box5}}
 
 %%设置案例盒子%%
@@ -3554,19 +3717,19 @@ underlay boxed title={%
 \endgroup},
 #1}
 
-\DeclareDocumentEnvironment{Information}{ +O{} +O{} }{\begin{box6}{资料卡片}[#1][#2][ColorI][\faFile*]}{\end{box6}}
-\DeclareDocumentEnvironment{Application}{ +O{} +O{} }{\begin{box6}{案例分析}[#1][#2][ColorA][\faTools]}{\end{box6}}
-\DeclareDocumentEnvironment{Review}{ +O{} +O{} }{\begin{box6}{知识回顾}[#1][#2][ColorC][\faFan]}{\end{box6}}
+\DeclareDocumentEnvironment{Information}{ +O{} +O{} }{\begin{box6}{\informationtitle}[#1][#2][ColorI][\faFile*]}{\end{box6}}
+\DeclareDocumentEnvironment{Application}{ +O{} +O{} }{\begin{box6}{\applicationtitle}[#1][#2][ColorA][\faTools]}{\end{box6}}
+\DeclareDocumentEnvironment{Review}{ +O{} +O{} }{\begin{box6}{\reviewtitle}[#1][#2][ColorC][\faFan]}{\end{box6}}
 
 %%设置色块盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
 \makesavenoteenv{box7}
 %%
 \DeclareTColorBox{box7}{ +O{} +O{} }{BlockBox=#2,#1}
+
+\newenvironment{Proof}{\begin{box7}[][\faBars~~\prooftitle]}{\end{box7}}
 %%
-\newenvironment{Proof}{\begin{box7}[][\faBars~~证明]}{\end{box7}}
-%%
-\newenvironment{Solution}{\begin{box7}[][\faBars~~参考答案]}{\end{box7}}
+\newenvironment{Solution}{\begin{box7}[][\faBars~~\solutiontitle]}{\end{box7}}
 %%
 \DeclareDocumentEnvironment{Block}{ +O{} }{\begin{box7}[][#1]}{\end{box7}}
 
@@ -3588,34 +3751,35 @@ underlay boxed title={%
 %%
 \DeclareTColorBox{box8}{+O{} +m +O{} +O{} O{ColorA} O{}}{CodeBox=#2/#3/#4/#5/#6,#1}
 
-\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{阅读理解{\sffamily\the@comprehension}}[#1][#2][ColorB]\@Paragraph@Number}{\end{box8}}
+\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{\comprehensiontitle{\sffamily\the@comprehension}}[#1][#2][ColorB]\@Paragraph@Number}{\end{box8}}
 %%
-\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{完形填空{\sffamily\the@cloze}}[#1][#2][ColorA]\@Paragraph@Number}{\end{box8}}
+\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{\clozetitle{\sffamily\the@cloze}}[#1][#2][ColorA]\@Paragraph@Number}{\end{box8}}
 %%
-\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{文本解读}[#1][#2][ColorC]\@Paragraph@Number}{\end{box8}}
+\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{\articletitle}[#1][#2][ColorC]\@Paragraph@Number}{\end{box8}}
 %%
-\NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{词汇解析}[#1][#2][ColorE]}{\end{box8}}
+\NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{\vocabularytitle}[#1][#2][ColorE]}{\end{box8}}
+
 %%%%
 \newtcblisting{PythonBox}[1][]{
-CodeBox={代码示例}/#1/{}/ColorA/{\uppercase{\sffamily python}},
+CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=python}
-
+%%
 \newtcblisting{CppBox}[1][]{
-CodeBox={代码示例}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
+CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=cpp}
-
+%%
 \newtcblisting{JavaBox}[1][]{
-CodeBox={代码示例}/#1/{}/ColorC/{\uppercase{\sffamily java}},
+CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=java}
 
 \newtcblisting{CodeBox}[3][]{
-CodeBox={代码示例}/#1/{}/#3/{\uppercase{\sffamily#2}},
+CodeBox={\codetitle}/#1/{}/#3/{\uppercase{\sffamily#2}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=#2}
@@ -3643,10 +3807,10 @@ fontlower=\MarginNoteFont,
 %%+m表示允许换行、空行的参数%%
 \DeclareDocumentCommand{\RelaInfo}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{\begin{box10}{\faCommentDots~~相关信息}{ColorH}
+{\marginnote{\begin{box10}{\faCommentDots~~\relainfotitle}{ColorH}
 #2
 \end{box10}}[#3]
-}{\begin{box9}{\faCommentDots~~相关信息}[ColorH]
+}{\begin{box9}{\faCommentDots~~\relainfotitle}[ColorH]
 #2
 \end{box9}
 \gobble{#3}}
@@ -3654,10 +3818,10 @@ fontlower=\MarginNoteFont,
 %%%%
 \DeclareDocumentCommand{\DeepThink}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{\begin{box10}{\faTh~~深入思考}{ColorB!90!black}
+{\marginnote{\begin{box10}{\faTh~~\deepthinktitle}{ColorB!90!black}
 #2
 \end{box10}}[#3]
-}{\begin{box9}{\faTh~~深入思考}[ColorB!90!black]
+}{\begin{box9}{\faTh~~\deepthinktitle}[ColorB!90!black]
 #2
 \end{box9}
 \gobble{#3}}
@@ -3665,10 +3829,10 @@ fontlower=\MarginNoteFont,
 %%%%
 \DeclareDocumentCommand{\Remark}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{\begin{box10}{\faChrome~~重点注释}{ColorF}
+{\marginnote{\begin{box10}{\faChrome~~\remarktitle}{ColorF}
 #2
 \end{box10}}[#3]
-}{\begin{box9}{\faChrome~~重点注释}[ColorF]
+}{\begin{box9}{\faChrome~~\remarktitle}[ColorF]
 #2
 \end{box9}
 \gobble{#3}}
@@ -3689,6 +3853,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 \setlength{\parindent}{0em}
 \begin{tikzpicture}[remember picture,overlay]%
 \newdimen\@GutterWidth
+%%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
 %%
 \coordinate(A)at(current page.north west);
@@ -3702,7 +3867,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 %%背景%%
 \path[fill=ColorB!7.5,sharp corners](D)rectangle(B);
 %%
-\path[preaction={fill=ColorB!15},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorB!30]
+\path[fill=ColorB!15]
 (A)--(B)--(C)--(D)--cycle
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 \end{tikzpicture}%
@@ -3729,7 +3894,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 %%版本号%%
 \ifdefvoid{\@version}{}{%
 \vskip0.75cm%
-{\TitlepageNormalFont 第{\@version}版\\}}%
+{\TitlepageNormalFont 第 \@version 版\\}}%
 \vskip1.0cm%
 %%作者%%
 {\TitlepageNormalFont%
