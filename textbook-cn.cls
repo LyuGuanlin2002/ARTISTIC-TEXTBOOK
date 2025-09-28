@@ -553,14 +553,16 @@ BoldFont=WaterMarkFont.ttf]
 
 %%%%%%%%%%%%%%%%%%%% 盒子和列表宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage[most]{tcolorbox}%彩色盒子
-\tcbuselibrary{xparse,minted}
+%\tcbuselibrary{xparse,minted}
+\tcbuselibrary{xparse}
 \makesavenoteenv{tcolorbox}%确保tcb环境内的脚注正确生成
 \RequirePackage{empheq}%数学公式盒子
 \RequirePackage{adjustbox,varwidth}%自动调整字体大小的盒子%固定可变长度盒子
 \makesavenoteenv{varwidth}%确保varwidth环境内的脚注正确生成
 \RequirePackage{enumitem,hlist}%控制列表环境格式%对齐列表环境
-\RequirePackage{listings,minted}%伪代码环境
-\usemintedstyle{xcode}
+\RequirePackage{listings}%伪代码环境
+%\RequirePackage{listings,minted}%伪代码环境
+%\usemintedstyle{xcode}
 %为了使宏包minted正常工作，需要在xelatex编译器参数中添加-shell-escape
 \RequirePackage{lineno}%行号宏包
 \modulolinenumbers[5]%每5行显示一个行号
@@ -601,7 +603,7 @@ BoldFont=WaterMarkFont.ttf]
 %%定义改进的\llap，使其能够指定其中内容向左偏移的距离%%
 \DeclareRobustCommand{\xllap}[2]{\hb@xt@\z@{\hskip-#1 #2}}
 %%定义改进的\rlap，使其能够指定其中内容向右偏移的距离%%
-\DeclareRobustCommand{\xrlap}[2]{\hb@xt@\z@{#2\hskip-#1}}
+\DeclareRobustCommand{\xrlap}[2]{\hb@xt@\z@{\hskip#1 #2}}
 %%测量节点node尺寸%%
 \def\pgfgetnodeheight(#1)#2{
 \begin{pgfinterruptboundingbox}
@@ -2160,7 +2162,7 @@ text align={fit to path stretching spaces}%
 \path[fill=ColorB!75](0,0)circle(\@Section@Star@LabelRadius);
 \draw[white,fill=ColorB,line width=2.75pt](0,0)circle(7*\@Section@Star@LabelRadius/12);
 \endgroup}
-}{5.0mm}{#1}
+}{4.0mm}{#1}
 %%间距设置%%
 \titlespacing*{\section}{0pt}{0pt}{2.0cm}
 %%修改section断页方式%%
@@ -2343,7 +2345,7 @@ text align={fit to path stretching spaces}%
 %%修改段落样式%%
 \renewcommand{\paragraph}{
 \@startsection{paragraph}{4}{\z@}
-{3.25ex \@plus1.0ex \@minus0.2ex}{-1em}
+{3.25ex \@plus1.0ex \@minus0.2ex}{-1.0em}
 {\ParagraphNameFont\color{ColorA}}}
 %%%%
 %%练习标题设置%%
@@ -2458,7 +2460,7 @@ text align={fit to path stretching spaces}%
 }%
 }
 %%%%
-\newcommand{\Basis}{%
+\newcommand{\Basic}{%
 \ComplexHeading{\basictitle}{\hfill\timetext\underline{\qquad}}{\faPen}%
 }
 \newcommand{\Complex}{%
@@ -3026,12 +3028,12 @@ text align={fit to path stretching spaces}%
 {\@Toc@Part@Unnumbered}{}
 [\addvspace{5.0pt}]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newlength{\@Toc@Label@Mgn}%标签左侧的空白距离
+\newlength{\@Toc@LabelPage@Mgn}%标签左侧和页码右侧的空白距离
 \newlength{\@Toc@LabelName@Sep}%目录标签和名称之间的空白距离
-\setlength{\@Toc@Label@Mgn}{4.5mm}
+\settowidth{\@Toc@LabelPage@Mgn}{\TocPartFont\hspace*{\baselineskip/2}}
 \setlength{\@Toc@LabelName@Sep}{7.5mm}
 %%
-\contentsmargin{\@Toc@Label@Mgn}
+\contentsmargin{\@Toc@LabelPage@Mgn}%设置页码的边距
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newlength{\@Toc@ChapLabel@Wd}%章标签的总宽度，包括文字宽度和标签-名称之间的间距宽度
 \newlength{\@Toc@ChapLabel@Ind}%章标签左侧的缩进距离
@@ -3039,7 +3041,7 @@ text align={fit to path stretching spaces}%
 \newcommand{\@Toc@ChapLabelLen@Set}{%
 \settowidth{\@Toc@ChapLabel@Wd}{\TocChapterFont\chapterlabelfront\hbox to 1.625em{}\chapterlabelback}
 \addtolength{\@Toc@ChapLabel@Wd}{\@Toc@LabelName@Sep}
-\setlength{\@Toc@ChapLabel@Ind}{\@Toc@ChapLabel@Wd+\@Toc@Label@Mgn}
+\setlength{\@Toc@ChapLabel@Ind}{\@Toc@ChapLabel@Wd+\@Toc@LabelPage@Mgn}
 }
 %%章目录样式%%
 \@Toc@ChapLabelLen@Set
@@ -3056,7 +3058,7 @@ text align={fit to path stretching spaces}%
 \newcommand{\@Toc@SecLabelLen@Set}{%
 \settowidth{\@Toc@SecLabel@Wd}{\TocSectionFont\sectionlabelfront\hbox to 1.625em{}\sectionlabelback}
 \addtolength{\@Toc@SecLabel@Wd}{\@Toc@LabelName@Sep}
-\setlength{\@Toc@SecLabel@Ind}{\@Toc@SecLabel@Wd+\@Toc@Label@Mgn+5.0mm}
+\setlength{\@Toc@SecLabel@Ind}{\@Toc@SecLabel@Wd+\@Toc@LabelPage@Mgn+5.0mm}
 }
 %%节目录样式%%
 \@Toc@SecLabelLen@Set
@@ -3073,7 +3075,7 @@ text align={fit to path stretching spaces}%
 \newcommand{\@Toc@SubsecLabelLen@Set}{%
 \settowidth{\@Toc@SubsecLabel@Wd}{\TocSubsectionFont\subsectionlabelfront\hbox to 1.625em{}\subsectionlabelback}
 \addtolength{\@Toc@SubsecLabel@Wd}{\@Toc@LabelName@Sep}
-\setlength{\@Toc@SubsecLabel@Ind}{\@Toc@SubsecLabel@Wd+\@Toc@Label@Mgn+10.0mm}
+\setlength{\@Toc@SubsecLabel@Ind}{\@Toc@SubsecLabel@Wd+\@Toc@LabelPage@Mgn+10.0mm}
 }
 %%小节目录样式%%
 \@Toc@SubsecLabelLen@Set
@@ -3090,7 +3092,7 @@ text align={fit to path stretching spaces}%
 \newcommand{\@Toc@SubsubLabelLen@Set}{%
 \settowidth{\@Toc@SubsubLabel@Wd}{\TocSubsubsectionFont\subsubsectionlabelfront\hbox to 1.625em{}\subsubsectionlabelback}
 \addtolength{\@Toc@SubsubLabel@Wd}{\@Toc@LabelName@Sep}
-\setlength{\@Toc@SubsubLabel@Ind}{\@Toc@SubsubLabel@Wd+\@Toc@Label@Mgn+15.0mm}
+\setlength{\@Toc@SubsubLabel@Ind}{\@Toc@SubsubLabel@Wd+\@Toc@LabelPage@Mgn+15.0mm}
 }
 %%小小节目录样式%%
 \@Toc@SubsubLabelLen@Set
@@ -3114,6 +3116,7 @@ text align={fit to path stretching spaces}%
 }
 %%图片目录样式%%
 \@Lof@LabelLen@Set
+\addtocontents{lof}{\protect\setlength\protect{\@Toc@LabelPage@Mgn}{0mm}}%在目录文件lof中设置右边距（即页码边距）为0
 \titlecontents{figure}[\@Lof@Label@Ind]
 {\LoftFont}
 {\contentslabel[\figurename\hbox to 3.0em{\hfil\sffamily \environmentmark\thecontentslabel\hfil}]{\@Lof@Label@Wd}}
@@ -3131,6 +3134,7 @@ text align={fit to path stretching spaces}%
 }
 %%表格目录样式%%
 \@Lot@LabelLen@Set
+\addtocontents{lot}{\protect\setlength\protect{\@Toc@LabelPage@Mgn}{0mm}}%在目录文件lot中设置右边距（即页码边距）为0
 \titlecontents{table}[\@Lot@Label@Ind]
 {\LoftFont}
 {\contentslabel[\tablename\hbox to 3.0em{\hfil\sffamily \environmentmark\thecontentslabel\hfil}]{\@Lot@Label@Wd}}
@@ -3759,30 +3763,30 @@ underlay boxed title={%
 %%
 \NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{\vocabularytitle}[#1][#2][ColorE]}{\end{box8}}
 
-%%%%
-\newtcblisting{PythonBox}[1][]{
-CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-listing only,listing engine=minted,
-minted language=python}
-%%
-\newtcblisting{CppBox}[1][]{
-CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-listing only,listing engine=minted,
-minted language=cpp}
-%%
-\newtcblisting{JavaBox}[1][]{
-CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-listing only,listing engine=minted,
-minted language=java}
-
-\newtcblisting{CodeBox}[3][]{
-CodeBox={\codetitle}/#1/{}/#3/{\uppercase{\sffamily#2}},
-minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-listing only,listing engine=minted,
-minted language=#2}
+%%%%%
+%\newtcblisting{PythonBox}[1][]{
+%CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
+%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+%listing only,listing engine=minted,
+%minted language=python}
+%%%
+%\newtcblisting{CppBox}[1][]{
+%CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
+%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+%listing only,listing engine=minted,
+%minted language=cpp}
+%%%
+%\newtcblisting{JavaBox}[1][]{
+%CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
+%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+%listing only,listing engine=minted,
+%minted language=java}
+%
+%\newtcblisting{CodeBox}[3][]{
+%CodeBox={\codetitle}/#1/{}/#3/{\uppercase{\sffamily#2}},
+%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+%listing only,listing engine=minted,
+%minted language=#2}
 
 %%%%
 %设置注释盒子%%
