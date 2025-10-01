@@ -307,7 +307,7 @@ BoldFont=WaterMarkFont.ttf]
 \newcommand{\MarginNoteFont}{\itshape\kaiti\FontSizeSet[1.2]{13pt}}%边注字体
 \newcommand{\FootNoteFont}{\itshape\kaiti\FontSizeSet[1.2]{13pt}}%脚注字体
 \newcommand{\ItemFont}{\kaiti}%列表字体
-\newcommand{\MainFont}{\FontSizeSet[1.4]{14pt}}%正文字体
+\newcommand{\MainFont}{\upshape\rmfamily\FontSizeSet[1.4]{14pt}}%正文字体
 
 %%%%%%%%%%%%%%%%%%%% 页面布局设定宏包 %%%%%%%%%%%%%%%%%%%%
 \usepackage{setspace}%行距设置
@@ -326,7 +326,7 @@ BoldFont=WaterMarkFont.ttf]
 \setlength{\@botlen}{2.5cm}
 %%%%
 \RequirePackage{geometry}
-\geometry{letterpaper,headsep=0.75cm,footskip=0.75cm,inner=\@innerlen,outer=\@outerlen,top=\@toplen,bottom=\@botlen,columnsep=0.75cm,reversemarginpar,heightrounded}
+\geometry{letterpaper,headsep=0.75cm,footskip=0.75cm,inner=\@innerlen,outer=\@outerlen,top=\@toplen,bottom=\@botlen,columnsep=1.25cm,reversemarginpar,heightrounded}
 %%
 \setlength{\textwidth}{\paperwidth-\@outerlen-\@innerlen}
 \setlength{\marginparwidth}{\dimeval{\@MarginColumn@Ratio\textwidth}}
@@ -810,7 +810,7 @@ BoldFont=WaterMarkFont.ttf]
 \newcommand{\basictitle}{基础巩固}
 \newcommand{\complextitle}{综合提升}
 \newcommand{\timetext}{用时：}
-\newcommand{\notetitle}{笔记区}
+\newcommand{\notetitle}{笔记区域}
 \newcommand{\listeningtitle}{听力模块}
 \newcommand{\readingtitle}{阅读模块}
 \newcommand{\speakingtitle}{口语模块}
@@ -2421,7 +2421,10 @@ text align={fit to path stretching spaces}%
 \NewDocumentCommand{\LongHeading}{+m}{%
 \begin{center}%
 \begin{tikzpicture}[use as bounding box]%
-\node[font=\HeadingFont,align=center,text=ColorA,draw=ColorB!7.5,fill=ColorB!7.5,ultra thick,rounded corners,inner xsep=2.5mm,inner ysep=0mm,minimum width=\linewidth](P){\strut#1\strut};
+\HeadingFont%
+\newdimen\@LongHeading@Radius%
+\@LongHeading@Radius=\dimexpr\baselineskip/2\relax%
+\node[text=ColorA,draw=ColorB!7.5,fill=ColorB!7.5,ultra thick,rounded corners=\@LongHeading@Radius,inner xsep=0mm,inner ysep=0mm,minimum width=\linewidth,align=center](P){\strut#1\strut};
 \end{tikzpicture}%
 \end{center}%
 }
@@ -2459,22 +2462,21 @@ text align={fit to path stretching spaces}%
 \fi}%
 }%
 }
-%%%%
+%%作业习题标题%%
 \newcommand{\Basic}{%
 \ComplexHeading{\basictitle}{\hfill\timetext\underline{\qquad}}{\faPen}%
 }
 \newcommand{\Complex}{%
 \ComplexHeading{\complextitle}{\hfill\timetext\underline{\qquad}}{\faStar}%
 }
-%%%%
-\newcommand{\NoteArea}[1][0pt]{%
-\marginnote{\LongHeading{\faPenSquare~~\notetitle}}[#1]
-}
-%%%%
-\newcommand{\Listening}{\AdjustiveHeading{\faMusic~~\listeningtitle}}
-\newcommand{\Reading}{\AdjustiveHeading{\faBookReader~~\readingtitle}}
-\newcommand{\Speaking}{\AdjustiveHeading{\faHeadSideMask~~\speakingtitle}}
-\newcommand{\Writing}{\AdjustiveHeading{\faPenNib~~\writingtitle}}
+%%笔记区域标题%%
+\newcommand{\NoteArea}[1][0pt]{\marginnote{\LongHeading{\faArrowAltCircleDown~\notetitle}}[#1]}
+
+%%模块标题%%
+\newcommand{\Listening}{\AdjustiveHeading{\parbox{1.0em}{\faMusic}~~\listeningtitle}}
+\newcommand{\Reading}{\AdjustiveHeading{\parbox{1.0em}{\faBookReader}~~\readingtitle}}
+\newcommand{\Speaking}{\AdjustiveHeading{\parbox{1.0em}{\faMicrophone}~~\speakingtitle}}
+\newcommand{\Writing}{\AdjustiveHeading{\parbox{1.0em}{\faPenNib}~~\writingtitle}}
 %%%%
 \newcommand{\Homework}{\section*{\homeworktitle}}
 
@@ -3299,7 +3301,7 @@ text align={fit to path stretching spaces}%
 %%%%
 %%设置注释盒子样式%%
 \tcbset{NoteBox/.style args={#1/#2}{
-empty,breakable,
+empty,%breakable,%边注内盒子不要加载此参数，会导致行距异常
 boxsep=0mm,
 top=0mm,bottom=0mm,left=0mm,right=0mm,
 bottomtitle=2.5mm,
@@ -3795,6 +3797,7 @@ underlay boxed title={%
 %%
 \DeclareTColorBox{box9}{ +O{} +m O{ColorA} }{%
 NoteBox=#2/#3,
+breakable,%非边注盒子需要此参数
 fontupper=\MainFont\kaiti\itshape,
 fontlower=\MainFont\kaiti\itshape,
 #1}
@@ -3802,7 +3805,7 @@ fontlower=\MainFont\kaiti\itshape,
 \makesavenoteenv{box10}
 %%
 \DeclareTColorBox{box10}{ +O{} +m m }{%
-NoteBox=#2/#3,
+NoteBox=#2/#3,%边注内盒子不要加载breakable参数，会导致行距异常
 fontupper=\MarginNoteFont,
 fontlower=\MarginNoteFont,
 #1}
@@ -3811,7 +3814,9 @@ fontlower=\MarginNoteFont,
 %%+m表示允许换行、空行的参数%%
 \DeclareDocumentCommand{\RelaInfo}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{\begin{box10}{\faCommentDots~~\relainfotitle}{ColorH}
+{\marginnote{%
+\parindent=0pt%
+\begin{box10}{\faCommentDots~~\relainfotitle}{ColorH}
 #2
 \end{box10}}[#3]
 }{\begin{box9}{\faCommentDots~~\relainfotitle}[ColorH]
@@ -3822,7 +3827,9 @@ fontlower=\MarginNoteFont,
 %%%%
 \DeclareDocumentCommand{\DeepThink}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{\begin{box10}{\faTh~~\deepthinktitle}{ColorB!90!black}
+{\marginnote{%
+\parindent=0pt%
+\begin{box10}{\faTh~~\deepthinktitle}{ColorB!90!black}
 #2
 \end{box10}}[#3]
 }{\begin{box9}{\faTh~~\deepthinktitle}[ColorB!90!black]
@@ -3833,10 +3840,12 @@ fontlower=\MarginNoteFont,
 %%%%
 \DeclareDocumentCommand{\Remark}{ s +m O{0pt} }
 {\IfBooleanTF{#1}
-{\marginnote{\begin{box10}{\faChrome~~\remarktitle}{ColorF}
+{\marginnote{%
+\parindent=0pt%
+\begin{box10}{\faBurn~~\remarktitle}{ColorF}
 #2
 \end{box10}}[#3]
-}{\begin{box9}{\faChrome~~\remarktitle}[ColorF]
+}{\begin{box9}{\faBurn~~\remarktitle}[ColorF]
 #2
 \end{box9}
 \gobble{#3}}
