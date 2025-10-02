@@ -3116,7 +3116,7 @@ text align={fit to path stretching spaces}%
 \newlength{\@Lof@Label@Ind}%节标签左侧的缩进距离
 %%定义目录中小小节标签相关的长度参数%%
 \newcommand{\@Lof@LabelLen@Set}{%
-\settowidth{\@Lof@Label@Wd}{\LoftFont\figurename\hbox to 3.0em{}}
+\settowidth{\@Lof@Label@Wd}{\LoftFont\figurename 99.99.99}
 \addtolength{\@Lof@Label@Wd}{\@Loft@LabelName@Sep}
 \setlength{\@Lof@Label@Ind}{\@Lof@Label@Wd}
 }
@@ -3125,7 +3125,7 @@ text align={fit to path stretching spaces}%
 \addtocontents{lof}{\protect\setlength\protect{\@Toc@LabelPage@Mgn}{0mm}}%在目录文件lof中设置右边距（即页码边距）为0
 \titlecontents{figure}[\@Lof@Label@Ind]
 {\LoftFont}
-{\contentslabel[\figurename\hbox to 3.0em{\hfil\sffamily \environmentmark\thecontentslabel\hfil}]{\@Lof@Label@Wd}}
+{\contentslabel[{\makebox[\@Lof@Label@Wd-\@Loft@LabelName@Sep]{\figurename\hfill{\sffamily\environmentmark\thecontentslabel}}}]{\@Lof@Label@Wd}}
 {\hspace*{-\@Lof@Label@Wd}}%不编号图表
 {\hfill\ContentPageNumFont\thecontentspage}
 [\addvspace{2.5pt}]
@@ -3134,7 +3134,7 @@ text align={fit to path stretching spaces}%
 \newlength{\@Lot@Label@Ind}%节标签左侧的缩进距离
 %%定义目录中小小节标签相关的长度参数%%
 \newcommand{\@Lot@LabelLen@Set}{%
-\settowidth{\@Lot@Label@Wd}{\LoftFont\tablename\hbox to 3.0em{}}
+\settowidth{\@Lot@Label@Wd}{\LoftFont\tablename 99.99.99}
 \addtolength{\@Lot@Label@Wd}{\@Loft@LabelName@Sep}
 \setlength{\@Lot@Label@Ind}{\@Lot@Label@Wd}
 }
@@ -3143,7 +3143,7 @@ text align={fit to path stretching spaces}%
 \addtocontents{lot}{\protect\setlength\protect{\@Toc@LabelPage@Mgn}{0mm}}%在目录文件lot中设置右边距（即页码边距）为0
 \titlecontents{table}[\@Lot@Label@Ind]
 {\LoftFont}
-{\contentslabel[\tablename\hbox to 3.0em{\hfil\sffamily \environmentmark\thecontentslabel\hfil}]{\@Lot@Label@Wd}}
+{\contentslabel[{\makebox[\@Lot@Label@Wd-\@Loft@LabelName@Sep]{\tablename\hfill{\sffamily\environmentmark\thecontentslabel}}}]{\@Lot@Label@Wd}}
 {\hspace*{-\@Lot@Label@Wd}}%不编号图表
 {\hfill\ContentPageNumFont\thecontentspage}
 [\addvspace{2.5pt}]
