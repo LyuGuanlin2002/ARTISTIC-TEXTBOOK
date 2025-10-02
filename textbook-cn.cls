@@ -171,7 +171,7 @@
 %%%%%%%%%%%%%%%%%%%% 字体设置 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage[fontset=none]{ctex}%中文文本
 %%%%
-\xeCJKsetup{
+\xeCJKsetup{%
 CJKecglue={\hspace{0.25em plus 0.1em minus 0.08em}}%中英文间距微调推荐值
 }
 %%%%
@@ -3013,9 +3013,13 @@ text align={fit to path stretching spaces}%
 
 %%%%
 %%编号部分目录样式%%
+\newlength{\@Toc@PartLabel@Wd}%部分标签的总宽度
+%%定义目录中章标签相关的长度参数%%
+\settowidth{\@Toc@PartLabel@Wd}{\TocPartFont\partlabelfront 99 \partlabelback}%用99占位代表一个两位数的宽度，数字前后的空格不可以删除
+%%%%
 \NewDocumentCommand{\@Toc@Part@Numbered}{+m}{%
 \contentslabel[%
-\@PartTocStyle{\partlabelfront\makebox[1.625em]{\sffamily\thecontentslabel}\partlabelback}{#1\hfill\sffamily\thecontentspage}]%
+\@PartTocStyle{\makebox[\@Toc@PartLabel@Wd]{\partlabelfront\hfill{\sffamily\thecontentslabel}\hfill\partlabelback}}{#1\hfill\sffamily\thecontentspage}]%
 {0mm}}
 %%
 %%不编号部分目录样式%%
@@ -3041,7 +3045,7 @@ text align={fit to path stretching spaces}%
 \newlength{\@Toc@ChapLabel@Ind}%章标签左侧的缩进距离
 %%定义目录中章标签相关的长度参数%%
 \newcommand{\@Toc@ChapLabelLen@Set}{%
-\settowidth{\@Toc@ChapLabel@Wd}{\TocChapterFont\chapterlabelfront\hbox to 1.625em{}\chapterlabelback}
+\settowidth{\@Toc@ChapLabel@Wd}{\TocChapterFont\chapterlabelfront 99 \chapterlabelback}%用99占位代表一个两位数的宽度，数字前后的空格不可以删除
 \addtolength{\@Toc@ChapLabel@Wd}{\@Toc@LabelName@Sep}
 \setlength{\@Toc@ChapLabel@Ind}{\@Toc@ChapLabel@Wd+\@Toc@LabelPage@Mgn}
 }
@@ -3049,7 +3053,7 @@ text align={fit to path stretching spaces}%
 \@Toc@ChapLabelLen@Set
 \titlecontents{chapter}[\@Toc@ChapLabel@Ind]
 {\TocChapterFont\color{ColorA}}
-{\contentslabel[\chapterlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\chapterlabelback]{\@Toc@ChapLabel@Wd}}
+{\contentslabel[{\makebox[\@Toc@ChapLabel@Wd-\@Toc@LabelName@Sep]{\chapterlabelfront\hfill{\sffamily\thecontentslabel}\hfill\chapterlabelback}}]{\@Toc@ChapLabel@Wd}}
 {\hspace*{-\@Toc@ChapLabel@Wd}}%不编号章节
 {\hfill\ContentPageNumFont\thecontentspage}
 [\addvspace{2.5pt}]
@@ -3058,7 +3062,7 @@ text align={fit to path stretching spaces}%
 \newlength{\@Toc@SecLabel@Ind}%节标签左侧的缩进距离
 %%定义目录中节标签相关的长度参数%%
 \newcommand{\@Toc@SecLabelLen@Set}{%
-\settowidth{\@Toc@SecLabel@Wd}{\TocSectionFont\sectionlabelfront\hbox to 1.625em{}\sectionlabelback}
+\settowidth{\@Toc@SecLabel@Wd}{\TocSectionFont\sectionlabelfront 99 \sectionlabelback}%用99占位代表一个两位数的宽度，数字前后的空格不可以删除
 \addtolength{\@Toc@SecLabel@Wd}{\@Toc@LabelName@Sep}
 \setlength{\@Toc@SecLabel@Ind}{\@Toc@SecLabel@Wd+\@Toc@LabelPage@Mgn+5.0mm}
 }
@@ -3066,7 +3070,7 @@ text align={fit to path stretching spaces}%
 \@Toc@SecLabelLen@Set
 \titlecontents{section}[\@Toc@SecLabel@Ind]
 {\TocSectionFont}
-{\contentslabel[\sectionlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\sectionlabelback]{\@Toc@SecLabel@Wd}}
+{\contentslabel[{\makebox[\@Toc@SecLabel@Wd-\@Toc@LabelName@Sep]{\sectionlabelfront\hfill{\sffamily\thecontentslabel}\hfill\sectionlabelback}}]{\@Toc@SecLabel@Wd}}
 {\hspace*{-\@Toc@SecLabel@Wd}}%不编号章节
 {\hfill\ContentPageNumFont\thecontentspage}
 [\addvspace{2.5pt}]
@@ -3075,7 +3079,7 @@ text align={fit to path stretching spaces}%
 \newlength{\@Toc@SubsecLabel@Ind}%节标签左侧的缩进距离
 %%定义目录中小节标签相关的长度参数%%
 \newcommand{\@Toc@SubsecLabelLen@Set}{%
-\settowidth{\@Toc@SubsecLabel@Wd}{\TocSubsectionFont\subsectionlabelfront\hbox to 1.625em{}\subsectionlabelback}
+\settowidth{\@Toc@SubsecLabel@Wd}{\TocSubsectionFont\subsectionlabelfront 99 \subsectionlabelback}%用99占位代表一个两位数的宽度，数字前后的空格不可以删除
 \addtolength{\@Toc@SubsecLabel@Wd}{\@Toc@LabelName@Sep}
 \setlength{\@Toc@SubsecLabel@Ind}{\@Toc@SubsecLabel@Wd+\@Toc@LabelPage@Mgn+10.0mm}
 }
@@ -3083,7 +3087,7 @@ text align={fit to path stretching spaces}%
 \@Toc@SubsecLabelLen@Set
 \titlecontents{subsection}[\@Toc@SubsecLabel@Ind]
 {\TocSubsectionFont}
-{\contentslabel[\subsectionlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\subsectionlabelback]{\@Toc@SubsecLabel@Wd}}
+{\contentslabel[{\makebox[\@Toc@SubsecLabel@Wd-\@Toc@LabelName@Sep]{\subsectionlabelfront\hfill{\sffamily\thecontentslabel}\hfill\subsectionlabelback}}]{\@Toc@SubsecLabel@Wd}}
 {\hspace*{-\@Toc@SubsecLabel@Wd}}%不编号章节
 {\hfill\ContentPageNumFont\thecontentspage}
 [\addvspace{2.5pt}]
@@ -3092,7 +3096,7 @@ text align={fit to path stretching spaces}%
 \newlength{\@Toc@SubsubLabel@Ind}%节标签左侧的缩进距离
 %%定义目录中小小节标签相关的长度参数%%
 \newcommand{\@Toc@SubsubLabelLen@Set}{%
-\settowidth{\@Toc@SubsubLabel@Wd}{\TocSubsubsectionFont\subsubsectionlabelfront\hbox to 1.625em{}\subsubsectionlabelback}
+\settowidth{\@Toc@SubsubLabel@Wd}{\TocSubsubsectionFont\subsubsectionlabelfront 99 \subsubsectionlabelback}%用99占位代表一个两位数的宽度，数字前后的空格不可以删除
 \addtolength{\@Toc@SubsubLabel@Wd}{\@Toc@LabelName@Sep}
 \setlength{\@Toc@SubsubLabel@Ind}{\@Toc@SubsubLabel@Wd+\@Toc@LabelPage@Mgn+15.0mm}
 }
@@ -3100,7 +3104,7 @@ text align={fit to path stretching spaces}%
 \@Toc@SubsubLabelLen@Set
 \titlecontents{subsubsection}[\@Toc@SubsubLabel@Ind]
 {\TocSubsubsectionFont}
-{\contentslabel[\subsubsectionlabelfront\hbox to 1.625em{\hfil\sffamily\thecontentslabel\hfil}\subsubsectionlabelback]{\@Toc@SubsubLabel@Wd}}
+{\contentslabel[{\makebox[\@Toc@SubsubLabel@Wd-\@Toc@LabelName@Sep]{\subsubsectionlabelfront\hfill{\sffamily\thecontentslabel}\hfill\subsubsectionlabelback}}]{\@Toc@SubsubLabel@Wd}}
 {\hspace*{-\@Toc@SubsubLabel@Wd}}%不编号章节
 {\hfill\ContentPageNumFont\thecontentspage}
 [\addvspace{2.5pt}]
