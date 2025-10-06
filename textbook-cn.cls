@@ -633,9 +633,11 @@ BoldFont=WaterMarkFont.ttf]
 %%%%%%%%%%%%%%%%%%%% 计数器宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{totcount}%获取计数器的最大值
 %%定义计数器%%
-\newcounter{@Chapter@Number}%记录所有chapter的数量，包括\chapter*
-\newcounter{@Total@Chapter@Number}%记录侧标数
-\regtotcounter{@Total@Chapter@Number}%获取侧标数最大值，需要编译两次才能正确获取
+\newcounter{@Chapter@Number}%记录当前chapter的序数，包括\chapter*
+\regtotcounter{@Chapter@Number}%获取页面侧标总数，需要编译两次才能正确获取
+%%%%
+\newcounter{@Part@Number}%记录当前part的序数，包括\part*
+\regtotcounter{@Part@Number}%获取章节页侧标总数，需要编译两次才能正确获取
 %%%%
 \newcounter{@example}[section]
 \newcounter{@variant}[section]
@@ -662,26 +664,28 @@ BoldFont=WaterMarkFont.ttf]
 \setlength{\itemsep}{0mm}
 \setlength{\labelsep}{0mm}
 \setlength{\leftmargini}{0mm}
+%%列表颜色设置%%
+\colorlet{ListColor}{ColorA}
 %%设置不编号点样式%%
-\newcommand*{\UnnumberedLabel}{%
+\newcommand{\UnnumberedLabel}{%
 \tikz[baseline=-0.4em]{%
-\draw[ColorA,fill=white,ultra thick](0,0)circle(0.5em);
-\draw[ColorA,fill=ColorA](0,0)circle(0.25em);
+\draw[ListColor,fill=white,ultra thick](0,0)circle(0.45em);
+\draw[ListColor,fill=ListColor](0,0)circle(0.225em);
 }}
 %%设置编号点样式%%
 \newcommand*{\NumberedLabel}[1]{%
 \tikz[baseline=-0.4em]{%
-\node[circle,fill=ColorA,draw=ColorA,ultra thick,minimum size=1.0em,align=center,inner sep=0mm,outer sep=0mm,font=\ListNumFont,text=white]{\maxsizebox{0.9em}{!}{#1}};}}
+\node[circle,fill=ListColor,draw=ListColor,ultra thick,minimum size=1.0em,align=center,inner sep=0mm,outer sep=0mm,font=\ListNumFont,text=white]{\maxsizebox{0.9em}{!}{#1}};}}
 %%%%
 %%无编号列表环境%%
-\NewDocumentEnvironment{UnnumberedItem}{O{1}}{%
+\NewDocumentEnvironment{UnnumberedItem}{O{1} +O{}}{%
 \setlist[itemize]{labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\UnnumberedLabel}%
 \ifnum#1=1%
-\begin{itemize}%
+\begin{itemize}[#2]%
 \else%
 \begin{multicols}{#1}%
 \ItemFont%
-\begin{itemize}%
+\begin{itemize}[#2]%
 \fi%
 }{%
 \ifnum#1=1%
@@ -692,14 +696,14 @@ BoldFont=WaterMarkFont.ttf]
 \fi}
 
 %%编号列表环境%%
-\NewDocumentEnvironment{NumberedItem}{O{1}}{%
+\NewDocumentEnvironment{NumberedItem}{O{1} +O{}}{%
 \setlist[enumerate]{labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\arabic*}}%
 \ifnum#1=1%
-\begin{enumerate}%
+\begin{enumerate}[#2]%
 \else%
 \begin{multicols}{#1}%
 \ItemFont%
-\begin{enumerate}%
+\begin{enumerate}[#2]%
 \fi%
 }{%
 \ifnum#1=1%
@@ -714,14 +718,14 @@ BoldFont=WaterMarkFont.ttf]
 \newcounter{@temp@item}[section]
 \setcounter{@temp@item}{0}
 %%%%
-\NewDocumentEnvironment{QuestionItem}{O{1}}{%
-\setlist[enumerate]{labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ColorA}\arabic*.}}%
+\NewDocumentEnvironment{QuestionItem}{O{1} +O{}}{%
+\setlist[enumerate]{labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ListColor}\arabic*.}}%
 \ifnum#1=1%
-\begin{enumerate}%
+\begin{enumerate}[#2]%
 \setcounter{enumi}{\value{@temp@item}}%
 \else%
 \begin{multicols}{#1}%
-\begin{enumerate}%
+\begin{enumerate}[#2]%
 \setcounter{enumi}{\value{@temp@item}}%
 \fi%
 }{%
@@ -891,16 +895,16 @@ BoldFont=WaterMarkFont.ttf]
 \@ThumbStartHeight=6.0cm%
 \@ThumbRangeHeight=\dimexpr\paperheight-2\@ThumbStartHeight\relax%
 %%侧标位置更新%%
-\ifnum\totvalue{@Total@Chapter@Number}=0
+\ifnum\totvalue{@Chapter@Number}=0
 \@ChapterPercentLength=\dimeval{\paperheight/2}
 \else
-\ifnum\totvalue{@Total@Chapter@Number}=1
+\ifnum\totvalue{@Chapter@Number}=1
 \@ChapterPercentLength=\dimeval{\paperheight/2}
 \else
 \ifnum\value{@Chapter@Number}=0
 \@ChapterPercentLength=\@ThumbStartHeight
 \else
-\def\@ChapterPercent{\fpeval{(\value{@Chapter@Number}-1)/(\totvalue{@Total@Chapter@Number}-1)}}
+\def\@ChapterPercent{\fpeval{(\value{@Chapter@Number}-1)/(\totvalue{@Chapter@Number}-1)}}
 \@ChapterPercentLength=\dimeval{\@ThumbStartHeight+\@ChapterPercent\@ThumbRangeHeight}
 \fi\fi\fi
 %%
@@ -1619,7 +1623,8 @@ text align={fit to path stretching spaces}%
 %%编号部分页%%
 \titleformat{\part}
 {}{}{0mm}
-{\startcontents[parts]%开启小目录
+{\stepcounter{@Part@Number}%
+\startcontents[parts]%开启小目录
 \@PartStyle{\partlabelfront{\sffamily\thepart}\partlabelback}{#1}%部分样式
 \thispagestyle{empty}%部分页的页面样式为空白
 }
@@ -1628,7 +1633,8 @@ text align={fit to path stretching spaces}%
 %%不编号部分页%%
 \titleformat{name=\part,numberless}
 {}{}{0mm}
-{\startcontents[parts]%开启小目录
+{\stepcounter{@Part@Number}%
+\startcontents[parts]%开启小目录
 \@PartStarStyle{#1}%部分样式
 \thispagestyle{empty}%部分页的页面样式为空白
 }
@@ -1640,10 +1646,33 @@ text align={fit to path stretching spaces}%
 \titlespacing*{\part}{0pt}{0pt}{0pt}
 %%页面风格设置%%
 \assignpagestyle{\part}{SubPage}%部分页后面的空白页样式设置
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%定义一个接口，读取aux文件时会调用它来存储到内部命令%%
+\NewDocumentCommand{\@Part@Name}{m +m}{%
+%#1：部分编号，#2：部分名称
+\expandafter\gdef\csname partname@#1\endcsname{#2}%
+%\partname@#1为部分名称，但其名称中包含数字（数字表示“部分的序数”，包括编号和不编号部分），不便于使用，因此需要后续的命令对此进行封装。
+}
+%%存储函数：将长度\partname@#1封装进命令\@Part@Name{#1}{#2}中，并写入aux文件%%
+\NewDocumentCommand{\@store@partname}{+m}{%
+\begingroup%
+\def\@temp@aux{%
+\noexpand\@Part@Name{\the@Part@Number}{#1}%
+}%
+%第一个参数表示部分的序数，第二个参数为部分名称
+\immediate\write\@auxout{\@temp@aux}%写入aux文件
+\endgroup}
+%%读取函数：从aux文件中读取\partname@#1的值，并赋给\@Chap@PartThumb%%
+\newcommand{\@use@partname}[1]{%
+\ifcsname partname@#1\endcsname%
+\def\@Chap@PartThumb{\csname partname@#1\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%为\part*添加短页眉%%
 \NewCommandCopy{\OriginPart}{\part}
-\RenewDocumentCommand{\part}{s +O{#3} +m}{
+\RenewDocumentCommand{\part}{s +O{#3} +m}{%
 \IfBooleanTF{#1}
 {\OriginPart*{#3\@mkboth{\@subtitle}{\@subtitle}}
 \extramarks{#2}{#2}
@@ -1654,6 +1683,7 @@ text align={fit to path stretching spaces}%
 \OriginPart*{\phantomsection\addcontentsline{toc}{part}{#2}#3\@mkboth{\@subtitle}{\@subtitle}}%
 \extramarks{#2}{#2}
 \fi}
+\@store@partname{#2}%将部分名短标题和部分序数写入aux文件中，务必放在part定义的最后
 }
 
 %%章节页样式%%
@@ -1766,6 +1796,72 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
+%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
+\ifnum\totvalue{@Part@Number}>0
+%%如果\@chapterimage为空则添加章节页侧标%%
+\expandafter\ifblank\expandafter{\@chapterimage}{%
+\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north east);
+\newdimen\@Chap@PartIndex@Ht
+\newdimen\@Chap@PartIndex@XShift
+\newdimen\@Chap@PartIndex@Sep
+\@Chap@PartIndex@Ht=2.75cm
+%%%%
+%%一页最多可以容纳的侧标数目%%
+\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
+%%考虑没有部分层次的位置（比如前言位置）的情况%%
+\ifnum\value{@Part@Number}<1
+\pgfmathsetmacro{\tempn}{0}
+\else
+\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
+\fi
+%%一页中第一个侧标的序号%%
+\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
+%%一页中最后一个侧标的序号%%
+\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
+\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
+\else
+\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
+\fi
+%%%%
+\foreach \i in {\beginnum,...,\endnum}{%
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@XShift=0.25cm
+\colorlet{PartIndexDrawColor}{ColorA}
+\colorlet{PartIndexFillColor}{ColorA}
+\colorlet{PartIndexTextColor}{white}
+\else
+\@Chap@PartIndex@XShift=0cm
+\colorlet{PartIndexDrawColor}{ColorB!22.5}
+\colorlet{PartIndexFillColor}{ColorB!7.5}
+\colorlet{PartIndexTextColor}{ColorB!22.5}
+\fi
+%%%%
+%%从aux文件中读取部分名称%%
+\ifcsname partname@\i\endcsname%
+\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi
+%%%%
+\ifnum\i=\beginnum
+\coordinate(SP)at(S0);
+\fi
+%%
+\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=90](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick](S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west);
+%%
+%%若本次循环的序数比部分序数少1或等于部分序数%%
+\ifnum\i=\numexpr\value{@Part@Number}-1\relax
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\@Chap@PartIndex@Sep=0pt
+\fi\fi
+\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south west);
+}}{\relax}
+\fi
 \end{pgfonlayer}
 \else
 \coordinate(A)at(current page.north east);
@@ -1839,6 +1935,72 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
+%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
+\ifnum\totvalue{@Part@Number}>0
+%%如果\@chapterimage为空则添加章节页侧标%%
+\expandafter\ifblank\expandafter{\@chapterimage}{%
+\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north west);
+\newdimen\@Chap@PartIndex@Ht
+\newdimen\@Chap@PartIndex@XShift
+\newdimen\@Chap@PartIndex@Sep
+\@Chap@PartIndex@Ht=2.75cm
+%%%%
+%%一页最多可以容纳的侧标数目%%
+\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
+%%考虑没有部分层次的位置（比如前言位置）的情况%%
+\ifnum\value{@Part@Number}<1
+\pgfmathsetmacro{\tempn}{0}
+\else
+\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
+\fi
+%%一页中第一个侧标的序号%%
+\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
+%%一页中最后一个侧标的序号%%
+\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
+\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
+\else
+\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
+\fi
+%%%%
+\foreach \i in {\beginnum,...,\endnum}{%
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@XShift=0.25cm
+\colorlet{PartIndexDrawColor}{ColorA}
+\colorlet{PartIndexFillColor}{ColorA}
+\colorlet{PartIndexTextColor}{white}
+\else
+\@Chap@PartIndex@XShift=0cm
+\colorlet{PartIndexDrawColor}{ColorB!22.5}
+\colorlet{PartIndexFillColor}{ColorB!7.5}
+\colorlet{PartIndexTextColor}{ColorB!22.5}
+\fi
+%%%%
+%%从aux文件中读取部分名称%%
+\ifcsname partname@\i\endcsname%
+\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi
+%%%%
+\ifnum\i=\beginnum
+\coordinate(SP)at(S0);
+\fi
+%%
+\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=270](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick](S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east);
+%%
+%%若本次循环的序数比部分序数少1或等于部分序数%%
+\ifnum\i=\numexpr\value{@Part@Number}-1\relax
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\@Chap@PartIndex@Sep=0pt
+\fi\fi
+\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south east);
+}}{\relax}
+\fi
 \end{pgfonlayer}
 \fi
 \end{tikzpicture}
@@ -1957,6 +2119,72 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
+%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
+\ifnum\totvalue{@Part@Number}>0
+%%如果\@chapterimage为空则添加章节页侧标%%
+\expandafter\ifblank\expandafter{\@chapterimage}{%
+\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north east);
+\newdimen\@Chap@PartIndex@Ht
+\newdimen\@Chap@PartIndex@XShift
+\newdimen\@Chap@PartIndex@Sep
+\@Chap@PartIndex@Ht=2.75cm
+%%%%
+%%一页最多可以容纳的侧标数目%%
+\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
+%%考虑没有部分层次的位置（比如前言位置）的情况%%
+\ifnum\value{@Part@Number}<1
+\pgfmathsetmacro{\tempn}{0}
+\else
+\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
+\fi
+%%一页中第一个侧标的序号%%
+\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
+%%一页中最后一个侧标的序号%%
+\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
+\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
+\else
+\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
+\fi
+%%%%
+\foreach \i in {\beginnum,...,\endnum}{%
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@XShift=0.25cm
+\colorlet{PartIndexDrawColor}{ColorA}
+\colorlet{PartIndexFillColor}{ColorA}
+\colorlet{PartIndexTextColor}{white}
+\else
+\@Chap@PartIndex@XShift=0cm
+\colorlet{PartIndexDrawColor}{ColorB!22.5}
+\colorlet{PartIndexFillColor}{ColorB!7.5}
+\colorlet{PartIndexTextColor}{ColorB!22.5}
+\fi
+%%%%
+%%从aux文件中读取部分名称%%
+\ifcsname partname@\i\endcsname%
+\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi
+%%%%
+\ifnum\i=\beginnum
+\coordinate(SP)at(S0);
+\fi
+%%
+\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=90](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick](S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west);
+%%
+%%若本次循环的序数比部分序数少1或等于部分序数%%
+\ifnum\i=\numexpr\value{@Part@Number}-1\relax
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\@Chap@PartIndex@Sep=0pt
+\fi\fi
+\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south west);
+}}{\relax}
+\fi
 \end{pgfonlayer}
 \else
 %%坐标点%%
@@ -2046,15 +2274,80 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
+%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
+\ifnum\totvalue{@Part@Number}>0
+%%如果\@chapterimage为空则添加章节页侧标%%
+\expandafter\ifblank\expandafter{\@chapterimage}{%
+\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north west);
+\newdimen\@Chap@PartIndex@Ht
+\newdimen\@Chap@PartIndex@XShift
+\newdimen\@Chap@PartIndex@Sep
+\@Chap@PartIndex@Ht=2.75cm
+%%%%
+%%一页最多可以容纳的侧标数目%%
+\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
+%%考虑没有部分层次的位置（比如前言位置）的情况%%
+\ifnum\value{@Part@Number}<1
+\pgfmathsetmacro{\tempn}{0}
+\else
+\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
+\fi
+%%一页中第一个侧标的序号%%
+\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
+%%一页中最后一个侧标的序号%%
+\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
+\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
+\else
+\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
+\fi
+%%%%
+\foreach \i in {\beginnum,...,\endnum}{%
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@XShift=0.25cm
+\colorlet{PartIndexDrawColor}{ColorA}
+\colorlet{PartIndexFillColor}{ColorA}
+\colorlet{PartIndexTextColor}{white}
+\else
+\@Chap@PartIndex@XShift=0cm
+\colorlet{PartIndexDrawColor}{ColorB!22.5}
+\colorlet{PartIndexFillColor}{ColorB!7.5}
+\colorlet{PartIndexTextColor}{ColorB!22.5}
+\fi
+%%%%
+%%从aux文件中读取部分名称%%
+\ifcsname partname@\i\endcsname%
+\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi
+%%%%
+\ifnum\i=\beginnum
+\coordinate(SP)at(S0);
+\fi
+%%
+\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=270](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick](S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east);
+%%
+%%若本次循环的序数比部分序数少1或等于部分序数%%
+\ifnum\i=\numexpr\value{@Part@Number}-1\relax
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\@Chap@PartIndex@Sep=0pt
+\fi\fi
+\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south east);
+}}{\relax}
+\fi
 \end{pgfonlayer}
 \fi
-\end{tikzpicture}
-}
+\end{tikzpicture}}
 
 %%%%%%%%%%%%%%%
 %%定义一个接口，读取aux文件时会调用它来存储到内部命令%%
 \newcommand*{\@Chapter@Page@Cut}[3]{%
-%#1：章编号，#2：长度文本
+%#1：章编号，#2，#3：长度文本
 \expandafter\gdef\csname chaptopcut@#1\endcsname{#2}%
 \expandafter\gdef\csname chapbotcut@#1\endcsname{#3}%
 %\chap***cut@#1 为一长度变量，用于储存章节页上半部分的版心高度裁剪长度，但其名称中包含数字（数字表示“章节的序数”，包括编号和不编号章节），不便于使用，因此需要后续的命令对这一长度变量进行封装。
@@ -2086,8 +2379,7 @@ text align={fit to path stretching spaces}%
 %%编号章节页%%
 \titleformat{\chapter}[block]
 {\setbaselineskip{0pt}\selectfont}{}{0mm}
-{\stepcounter{@Total@Chapter@Number}%侧标数更新
-\@ChapterStyle{\chapterlabelfront{\sffamily\thechapter}\chapterlabelback}{#1}%章样式
+{\@ChapterStyle{\chapterlabelfront{\sffamily\thechapter}\chapterlabelback}{#1}%章样式
 }[\global\chapterimage{}%清空\chapterimage
 \global\chaptersaying{}%清空\chaptersaying
 ]
@@ -2095,8 +2387,7 @@ text align={fit to path stretching spaces}%
 %%不编号章节页%%
 \titleformat{name=\chapter,numberless}[block]
 {\setbaselineskip{0pt}\selectfont}{}{0mm}
-{\stepcounter{@Total@Chapter@Number}%侧标数更新
-\@ChapterStarStyle{#1}{\@chaptersubtitle}%章样式
+{\@ChapterStarStyle{#1}{\@chaptersubtitle}%章样式
 }[\global\chaptersubtitle{}%清空\chaptersubtitle
 \global\chapterimage{}%清空\chapterimage
 \global\chaptersaying{}%清空\chaptersaying
@@ -3036,7 +3327,13 @@ text align={fit to path stretching spaces}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newlength{\@Toc@LabelPage@Mgn}%标签左侧和页码右侧的空白距离
 \newlength{\@Toc@LabelName@Sep}%目录标签和名称之间的空白距离
+%%文档中有部分层次则有页码右侧的缩进距离，否则没有%%
+\AtBeginDocument{%
+\ifnum\totvalue{@Part@Number}>0%
 \settowidth{\@Toc@LabelPage@Mgn}{\TocPartFont\hspace*{\baselineskip/2}}
+\else
+\setlength{\@Toc@LabelPage@Mgn}{0mm}
+\fi}
 \setlength{\@Toc@LabelName@Sep}{7.5mm}
 %%
 \contentsmargin{\@Toc@LabelPage@Mgn}%设置页码的边距
@@ -3050,7 +3347,7 @@ text align={fit to path stretching spaces}%
 \setlength{\@Toc@ChapLabel@Ind}{\@Toc@ChapLabel@Wd+\@Toc@LabelPage@Mgn}
 }
 %%章目录样式%%
-\@Toc@ChapLabelLen@Set
+\AtBeginDocument{\@Toc@ChapLabelLen@Set}
 \titlecontents{chapter}[\@Toc@ChapLabel@Ind]
 {\TocChapterFont\color{ColorA}}
 {\contentslabel[{\makebox[\@Toc@ChapLabel@Wd-\@Toc@LabelName@Sep]{\chapterlabelfront\hfill{\sffamily\thecontentslabel}\hfill\chapterlabelback}}]{\@Toc@ChapLabel@Wd}}
@@ -3067,7 +3364,7 @@ text align={fit to path stretching spaces}%
 \setlength{\@Toc@SecLabel@Ind}{\@Toc@SecLabel@Wd+\@Toc@LabelPage@Mgn+5.0mm}
 }
 %%节目录样式%%
-\@Toc@SecLabelLen@Set
+\AtBeginDocument{\@Toc@SecLabelLen@Set}
 \titlecontents{section}[\@Toc@SecLabel@Ind]
 {\TocSectionFont}
 {\contentslabel[{\makebox[\@Toc@SecLabel@Wd-\@Toc@LabelName@Sep]{\sectionlabelfront\hfill{\sffamily\thecontentslabel}\hfill\sectionlabelback}}]{\@Toc@SecLabel@Wd}}
@@ -3084,7 +3381,7 @@ text align={fit to path stretching spaces}%
 \setlength{\@Toc@SubsecLabel@Ind}{\@Toc@SubsecLabel@Wd+\@Toc@LabelPage@Mgn+10.0mm}
 }
 %%小节目录样式%%
-\@Toc@SubsecLabelLen@Set
+\AtBeginDocument{\@Toc@SubsecLabelLen@Set}
 \titlecontents{subsection}[\@Toc@SubsecLabel@Ind]
 {\TocSubsectionFont}
 {\contentslabel[{\makebox[\@Toc@SubsecLabel@Wd-\@Toc@LabelName@Sep]{\subsectionlabelfront\hfill{\sffamily\thecontentslabel}\hfill\subsectionlabelback}}]{\@Toc@SubsecLabel@Wd}}
@@ -3101,7 +3398,7 @@ text align={fit to path stretching spaces}%
 \setlength{\@Toc@SubsubLabel@Ind}{\@Toc@SubsubLabel@Wd+\@Toc@LabelPage@Mgn+15.0mm}
 }
 %%小小节目录样式%%
-\@Toc@SubsubLabelLen@Set
+\AtBeginDocument{\@Toc@SubsubLabelLen@Set}
 \titlecontents{subsubsection}[\@Toc@SubsubLabel@Ind]
 {\TocSubsubsectionFont}
 {\contentslabel[{\makebox[\@Toc@SubsubLabel@Wd-\@Toc@LabelName@Sep]{\subsubsectionlabelfront\hfill{\sffamily\thecontentslabel}\hfill\subsubsectionlabelback}}]{\@Toc@SubsubLabel@Wd}}
@@ -3121,7 +3418,7 @@ text align={fit to path stretching spaces}%
 \setlength{\@Lof@Label@Ind}{\@Lof@Label@Wd}
 }
 %%图片目录样式%%
-\@Lof@LabelLen@Set
+\AtBeginDocument{\@Lof@LabelLen@Set}
 \addtocontents{lof}{\protect\setlength\protect{\@Toc@LabelPage@Mgn}{0mm}}%在目录文件lof中设置右边距（即页码边距）为0
 \titlecontents{figure}[\@Lof@Label@Ind]
 {\LoftFont}
@@ -3139,7 +3436,7 @@ text align={fit to path stretching spaces}%
 \setlength{\@Lot@Label@Ind}{\@Lot@Label@Wd}
 }
 %%表格目录样式%%
-\@Lot@LabelLen@Set
+\AtBeginDocument{\@Lot@LabelLen@Set}
 \addtocontents{lot}{\protect\setlength\protect{\@Toc@LabelPage@Mgn}{0mm}}%在目录文件lot中设置右边距（即页码边距）为0
 \titlecontents{table}[\@Lot@Label@Ind]
 {\LoftFont}
@@ -3255,12 +3552,14 @@ text align={fit to path stretching spaces}%
 %%解答%%
 \newenvironment{Answer}{%
 \medskip%
+\colorlet{ListColor}{ColorG}%
 \@AnswerStyle{\answertitle}{ColorG}%
 \hspace*{0.5em}\vspace*{0.25em}%
 }{\medskip}
 %%%%
 \newenvironment{Answer*}{%
 \medskip%
+\colorlet{ListColor}{ColorF}%
 \@AnswerStyle{\analysistitle}{ColorF}%
 \hspace*{0.5em}\vspace*{0.25em}%
 }{\medskip}
@@ -3269,6 +3568,7 @@ text align={fit to path stretching spaces}%
 %%例题%%
 \newenvironment{Example}{%
 \medskip%
+\colorlet{ListColor}{ColorA}%
 \if@mainmatter%
 \stepcounter{@example}%
 \@ExampleStyle{\exampletitle}{\environmentmark\the@prenumber.\the@example}{ColorA}%
@@ -3280,6 +3580,7 @@ text align={fit to path stretching spaces}%
 %%%%
 \newenvironment{Example*}{%
 \medskip%
+\colorlet{ListColor}{ColorA}%
 \@AnswerStyle{\@Example@Name}{ColorA}%
 \hspace*{0.5em}\vspace*{0.25em}%
 }{\medskip}
@@ -3287,6 +3588,7 @@ text align={fit to path stretching spaces}%
 %%变式%%
 \newenvironment{Variant}{%
 \medskip%
+\colorlet{ListColor}{ColorB}%
 \if@mainmatter%
 \stepcounter{@variant}%
 \@ExampleStyle{\varianttitle}{\environmentmark\the@prenumber.\the@variant}{ColorB}%
@@ -3298,6 +3600,7 @@ text align={fit to path stretching spaces}%
 %%%%
 \newenvironment{Variant*}{%
 \medskip%
+\colorlet{ListColor}{ColorB}%
 \@AnswerStyle{\@Variant@Name}{ColorB}%
 \hspace*{0.5em}\vspace*{0.25em}%
 }{\medskip}
@@ -3306,6 +3609,7 @@ text align={fit to path stretching spaces}%
 %%设置注释盒子样式%%
 \tcbset{NoteBox/.style args={#1/#2}{
 empty,%breakable,%边注内盒子不要加载此参数，会导致行距异常
+code={\colorlet{ListColor}{#2}},
 boxsep=0mm,
 top=0mm,bottom=0mm,left=0mm,right=0mm,
 bottomtitle=2.5mm,
@@ -3327,6 +3631,7 @@ segmentation at break=false
 %%%%
 \tcbset{ItemBox/.style args={#1/#2}{
 empty,breakable,
+code={\colorlet{ListColor}{#2}},
 boxsep=3.0mm,
 top=2.0mm,bottom=-3.0mm,left=-3.0mm,right=-3.0mm,
 varwidth boxed title={2\linewidth/3},
@@ -3370,6 +3675,7 @@ grow to left by=-2.0pt,
 rounded corners,arc=5.0pt,boxrule=2.25pt,
 colback=white,colframe=#4!75,%colframe=white,
 %frame style={left color=#4!50,right color=#4!50,middle color=#4},
+code={\colorlet{ListColor}{#4}},
 boxsep=3.0mm,
 top=1.5mm,bottom=1.5mm,left=2.0mm,right=2.0mm,
 varwidth boxed title={2\linewidth/3},
@@ -3400,6 +3706,7 @@ pad after break=5.0mm,
 rounded corners,arc=5.0pt,boxrule=2.25pt,
 colback=white,colframe=#4!75,%colframe=white,
 %frame style={left color=#4!50,right color=#4!50,middle color=#4},
+code={\colorlet{ListColor}{#4}},
 boxsep=3.0mm,
 top=1.5mm,bottom=1.5mm,left=2.0em+0.5mm,right=2.0mm,
 before=\par\bigskip,after=\par\bigskip,
