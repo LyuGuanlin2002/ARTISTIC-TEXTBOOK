@@ -157,6 +157,71 @@
 \definecolor{ColorI}{RGB}{166,201,92}
 }
 \ifdefstring{\TextBook@themecolor}{iris}{\SetIrisTheme}{\relax}
+%%梵高收获主题%%
+\newcommand{\SetHarvestTheme}{%
+\definecolor{ColorA}{RGB}{150,99,52}
+\definecolor{ColorB}{RGB}{196,151,67}
+\definecolor{ColorC}{RGB}{154,119,66}
+\definecolor{ColorD}{RGB}{48,76,99}
+\definecolor{ColorE}{RGB}{99,154,151}
+\definecolor{ColorF}{RGB}{93,127,131}
+\definecolor{ColorG}{RGB}{155,154,97}
+\definecolor{ColorH}{RGB}{184,160,142}
+\definecolor{ColorI}{RGB}{211,198,156}
+}
+\ifdefstring{\TextBook@themecolor}{harvest}{\SetHarvestTheme}{\relax}
+%%梵高庄园主题%%
+\newcommand{\SetVineyardTheme}{%
+\definecolor{ColorA}{RGB}{124,24,11}
+\definecolor{ColorB}{RGB}{210,83,62}
+\definecolor{ColorC}{RGB}{197,103,69}
+\definecolor{ColorD}{RGB}{75,129,154}
+\definecolor{ColorE}{RGB}{77,108,135}
+\definecolor{ColorF}{RGB}{118,167,201}
+\definecolor{ColorG}{RGB}{214,170,74}
+\definecolor{ColorH}{RGB}{195,150,58}
+\definecolor{ColorI}{RGB}{66,75,109}
+}
+\ifdefstring{\TextBook@themecolor}{vineyard}{\SetVineyardTheme}{\relax}
+%%梵高向日葵主题%%
+\newcommand{\SetSunflowerTheme}{%
+\definecolor{ColorA}{RGB}{159,113,3}
+\definecolor{ColorB}{RGB}{177,109,38}
+\definecolor{ColorC}{RGB}{127,68,29}
+\definecolor{ColorD}{RGB}{152,127,71}
+\definecolor{ColorE}{RGB}{56,116,53}
+\definecolor{ColorF}{RGB}{156,176,66}
+\definecolor{ColorG}{RGB}{114,118,124}
+\definecolor{ColorH}{RGB}{185,161,111}
+\definecolor{ColorI}{RGB}{206,194,72}
+}
+\ifdefstring{\TextBook@themecolor}{sunflower}{\SetSunflowerTheme}{\relax}
+%%梵高丝柏树主题%%
+\newcommand{\SetCypressesTheme}{%
+\definecolor{ColorA}{RGB}{53,77,19}
+\definecolor{ColorB}{RGB}{62,113,103}
+\definecolor{ColorC}{RGB}{182,177,85}
+\definecolor{ColorD}{RGB}{224,188,156}
+\definecolor{ColorE}{RGB}{104,112,40}
+\definecolor{ColorF}{RGB}{91,142,148}
+\definecolor{ColorG}{RGB}{52,104,100}
+\definecolor{ColorH}{RGB}{131,160,177}
+\definecolor{ColorI}{RGB}{32,47,68}
+}
+\ifdefstring{\TextBook@themecolor}{cypresses}{\SetCypressesTheme}{\relax}
+%%莫奈印象日出主题%%
+\newcommand{\SetSunriseTheme}{%
+\definecolor{ColorA}{RGB}{211,104,81}
+\definecolor{ColorB}{RGB}{201,155,144}
+\definecolor{ColorC}{RGB}{173,134,102}
+\definecolor{ColorD}{RGB}{95,136,139}
+\definecolor{ColorE}{RGB}{63,92,79}
+\definecolor{ColorF}{RGB}{189,157,138}
+\definecolor{ColorG}{RGB}{135,131,115}
+\definecolor{ColorH}{RGB}{129,90,59}
+\definecolor{ColorI}{RGB}{107,127,125}
+}
+\ifdefstring{\TextBook@themecolor}{sunrise}{\SetSunriseTheme}{\relax}
 
 %%定义书籍信息%%
 \newcommand{\serieslogo}[1]{\long\def\@serieslogo{#1}}
@@ -410,6 +475,9 @@ BoldFont=WaterMarkFont.ttf]
 %%定义非浮动体标签%%
 \newcommand{\nonfloatfigcaption}{\setcaptiontype{figure}\caption} 
 \newcommand{\nonfloattabcaption}{\setcaptiontype{table}\caption}
+
+\RequirePackage{tabularray}
+\UseTblrLibrary{amsmath,hook,tikz,diagbox,booktabs,varwidth}
 
 %%%%%%%%%%%%%%%%%%%% 目录宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage[explicit,newparttoc,notocpart*]{titlesec}%设置标题格式
@@ -806,7 +874,7 @@ BoldFont=WaterMarkFont.ttf]
 \newcommand{\sectionlabelback}{节}
 \newcommand{\subsectionlabelfront}{课时}
 \newcommand{\subsectionlabelback}{}
-\newcommand{\subsubsectionlabelfront}{要点}
+\newcommand{\subsubsectionlabelfront}{知识点}
 \newcommand{\subsubsectionlabelback}{}
 \newcommand{\exercisetitle}{课后习题}
 \newcommand{\thinkingtitle}{思考题}
@@ -935,7 +1003,7 @@ BoldFont=WaterMarkFont.ttf]
 \node[font=\PageNumberFont,text=white,anchor=south,inner ysep=2.5mm](P)at([xshift=-\@outerlen/2-\@FrameWidth/2+0.25cm,yshift=-\@PageNumHeight]B){\maxsizebox{\@PageNumWidth-4.0mm}{!}{\centering\thepage}};
 %%绘制侧标%%
 \begin{pgfonlayer}{@MainPage@Top}
-\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=east](T)at([xshift=-0.1cm,yshift=-\@ChapterPercentLength]B){%
+\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=east,minimum height=2.75cm](T)at([xshift=-0.1cm,yshift=-\@ChapterPercentLength]B){%
 \rotatebox[origin=c]{90}{%
 \begin{varwidth}{\@ThumbStartHeight}
 \@change@minipage@footnote%
@@ -948,10 +1016,10 @@ BoldFont=WaterMarkFont.ttf]
 %%%%
 %%绘制部分序号标签%%
 \begin{pgfonlayer}{@MainPage@Top}
-\node[font=\PartNumberFont,text=white,outer sep=0mm,inner xsep=3.5mm,inner ysep=2.5mm,anchor=south](PTN)at([yshift=0.1cm]I){%
+\node[font=\PartNumberFont,text=white,outer sep=0mm,inner xsep=3.5mm,inner ysep=2.5mm,anchor=south,minimum width=2.75cm](PTN)at([yshift=0.1cm]I){%
 \begin{varwidth}{\@DefaultTextwidth/3}%
 \@change@minipage@footnote%
-\centering\strut\firstrightxmark\strut
+\centering\strut\firstrightxmark\strut%
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
@@ -992,7 +1060,7 @@ BoldFont=WaterMarkFont.ttf]
 \node[font=\PageNumberFont,text=white,anchor=south,inner ysep=2.5mm](P)at([xshift=\@FrameWidth/2+\@outerlen/2-0.25cm,yshift=-\@PageNumHeight]B){\maxsizebox{\@PageNumWidth-4.0mm}{!}{\centering\thepage}};
 %%绘制侧标%%
 \begin{pgfonlayer}{@MainPage@Top}
-\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=west](T)at([xshift=0.1cm,yshift=-\@ChapterPercentLength]B){%
+\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=west,minimum height=2.75cm](T)at([xshift=0.1cm,yshift=-\@ChapterPercentLength]B){%
 \rotatebox[origin=c]{-90}{%
 \begin{varwidth}{\@ThumbStartHeight}
 \@change@minipage@footnote%
@@ -1005,10 +1073,10 @@ BoldFont=WaterMarkFont.ttf]
 %%%%
 %%绘制部分序号标签%%
 \begin{pgfonlayer}{@MainPage@Top}
-\node[font=\PartNumberFont,text=white,outer sep=0mm,inner xsep=3.5mm,inner ysep=2.5mm,anchor=south](PTN)at([yshift=0.1cm]I){%
+\node[font=\PartNumberFont,text=white,outer sep=0mm,inner xsep=3.5mm,inner ysep=2.5mm,anchor=south,minimum width=2.75cm](PTN)at([yshift=0.1cm]I){%
 \begin{varwidth}{\@DefaultTextwidth/3}%
 \@change@minipage@footnote%
-\centering\strut\firstleftxmark\strut
+\centering\strut\firstrightxmark\strut%
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
@@ -1108,16 +1176,152 @@ text align={fit to path stretching spaces}%
 \node[inner sep=0mm,outer sep=0mm,font={\bfseries\sffamily\FontSizeSet[1.0]{20}},text=ColorB!7.5,anchor=north,align=center,text width=6.0cm](T)at([yshift=-2.5mm]L.south){ALL RIGHTS RESERVED};
 \endgroup}}
 %%
-\newcommand{\@Sub@PageStyle}{%
+\newcommand{\@Part@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]
 \path[fill=ColorB!7.5](current page.south west)rectangle(current page.north east);
 \node at(current page.center){\WaterMark};
 \end{tikzpicture}}
 %%
-%%重定义空白页面样式%%
-\fancypagestyle{SubPage}{%
+%%定义部分页面样式%%
+\fancypagestyle{PartPage}{%
 \fancyhf{}%清除所有页眉页脚
-\fancyfoot[C]{\@Sub@PageStyle}%
+\fancyfoot[C]{\@Part@PageStyle}%
+}
+%%%%
+\newcommand{\@Chapter@PageStyle}{%
+%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
+\ifnum\totvalue{@Part@Number}>0
+\newdimen\@Chap@PartIndex@Ht
+\newdimen\@Chap@PartIndex@XShift
+\newdimen\@Chap@PartIndex@Sep
+\@Chap@PartIndex@Ht=2.75cm
+%%%%
+%%一页最多可以容纳的侧标数目%%
+\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
+%%考虑没有部分层次的位置（比如前言位置）的情况%%
+\ifnum\value{@Part@Number}<1
+\pgfmathsetmacro{\tempn}{0}
+\else
+\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
+\fi
+%%一页中第一个侧标的序号%%
+\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
+%%一页中最后一个侧标的序号%%
+\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
+\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
+\else
+\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
+\fi
+%%%%
+\begin{tikzpicture}[remember picture,overlay]
+\ifodd\value{page}
+\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north east);
+%%%%
+\foreach \i in {\beginnum,...,\endnum}{%
+%%颜色设置%%
+\@Chap@PartIndex@XShift=0cm
+\colorlet{PartIndexDrawColor}{ColorB!22.5}
+\colorlet{PartIndexFillColor}{ColorB!7.5}
+\colorlet{PartIndexTextColor}{ColorB!22.5}
+%%判断是否“部分终止”，如果是，则不改变侧标的颜色和尺寸%%
+\if@PartStop
+\relax
+\else
+%%当循环到当前章节所在部分序数时，对侧标颜色等进行设置%%
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@XShift=0.15cm
+\colorlet{PartIndexDrawColor}{ColorA}
+\colorlet{PartIndexFillColor}{ColorA}
+\colorlet{PartIndexTextColor}{white}
+\fi\fi
+%%%%
+%%从aux文件中读取部分名称%%
+\ifcsname partname@\i\endcsname%
+\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi
+%%%%
+\ifnum\i=\beginnum
+\coordinate(SP)at(S0);
+\fi
+%%
+\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner xsep=2.0mm,inner ysep=3.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=90](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick](S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west);
+%%
+%%若本次循环的序数比部分序数少1或等于部分序数，则对纵向偏移量进行微调%%
+\if@PartStop
+\@Chap@PartIndex@Sep=0pt
+\else
+\ifnum\i=\numexpr\value{@Part@Number}-1\relax
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\@Chap@PartIndex@Sep=0pt
+\fi\fi
+\fi
+%%
+\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south west);}
+\else
+\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north west);
+%%%%
+\foreach \i in {\beginnum,...,\endnum}{%
+%%颜色设置%%
+\@Chap@PartIndex@XShift=0cm
+\colorlet{PartIndexDrawColor}{ColorB!22.5}
+\colorlet{PartIndexFillColor}{ColorB!7.5}
+\colorlet{PartIndexTextColor}{ColorB!22.5}
+%%判断是否“部分终止”，如果是，则不改变侧标的颜色和尺寸%%
+\if@PartStop
+\relax
+\else
+%%当循环到当前章节所在部分序数时，对侧标颜色等进行设置%%
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@XShift=0.15cm
+\colorlet{PartIndexDrawColor}{ColorA}
+\colorlet{PartIndexFillColor}{ColorA}
+\colorlet{PartIndexTextColor}{white}
+\fi\fi
+%%%%
+%%从aux文件中读取部分名称%%
+\ifcsname partname@\i\endcsname%
+\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
+\else%
+\def\@Chap@PartThumb{}%
+\fi
+%%%%
+\ifnum\i=\beginnum
+\coordinate(SP)at(S0);
+\fi
+%%
+\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner xsep=2.0mm,inner ysep=3.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=270](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick](S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east);
+%%
+%%若本次循环的序数比部分序数少1或等于部分序数，则对纵向偏移量进行微调%%
+\if@PartStop
+\@Chap@PartIndex@Sep=0pt
+\else
+\ifnum\i=\numexpr\value{@Part@Number}-1\relax
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\ifnum\i=\value{@Part@Number}
+\@Chap@PartIndex@Sep=1.6pt
+\else
+\@Chap@PartIndex@Sep=0pt
+\fi\fi
+\fi
+%%
+\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south east);}
+\fi
+\end{tikzpicture}
+\fi}
+%%
+%%定义章页面样式%%
+\fancypagestyle{ChapterPage}{%
+\fancyhf{}%清除所有页眉页脚
+\fancyfoot[C]{\@Chapter@PageStyle}%
 }
 
 %%%%%%%%%%%%%%%%%%%% 书籍层次样式 %%%%%%%%%%%%%%%%%%%%%%
@@ -1620,32 +1824,33 @@ text align={fit to path stretching spaces}%
 \fi
 \end{tikzpicture}}
 %%
+\newif\if@PartStop
+\@PartStopfalse
 %%编号部分页%%
 \titleformat{\part}
 {}{}{0mm}
-{\stepcounter{@Part@Number}%
-\startcontents[parts]%开启小目录
-\@PartStyle{\partlabelfront{\sffamily\thepart}\partlabelback}{#1}%部分样式
+{\@PartStyle{\partlabelfront{\sffamily\thepart}\partlabelback}{#1}%部分样式
+\@mkboth{\@subtitle}{\@subtitle}%页眉设置
 \thispagestyle{empty}%部分页的页面样式为空白
-}
-[\global\partintro{}%清空\partintro
+}[\global\partintro{}%清空\partintro
 \global\partimage{}]%清空\partimage
 %%不编号部分页%%
 \titleformat{name=\part,numberless}
 {}{}{0mm}
-{\stepcounter{@Part@Number}%
-\startcontents[parts]%开启小目录
-\@PartStarStyle{#1}%部分样式
+{\@PartStarStyle{#1}%部分样式
+\@mkboth{\@subtitle}{\@subtitle}%页眉设置
 \thispagestyle{empty}%部分页的页面样式为空白
-}
-[\global\partintro{}%清空\partintro
+}[\global\partintro{}%清空\partintro
 \global\partimage{}%清空\partimage
 \global\partsubtitle{}]%清空\partsubtitle
-
 %%间距设置%%
 \titlespacing*{\part}{0pt}{0pt}{0pt}
 %%页面风格设置%%
-\assignpagestyle{\part}{SubPage}%部分页后面的空白页样式设置
+\assignpagestyle{\part}{PartPage}%部分页后面的空白页样式设置
+%%page参数为标题占据一整页，不可以添加文字%%
+%%top参数为标题在新的一页生成，可以添加文字%%
+%%straight参数为标题与内容连续生成，不自动换页%%
+\titleclass{\part}{page}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%定义一个接口，读取aux文件时会调用它来存储到内部命令%%
 \NewDocumentCommand{\@Part@Name}{m +m}{%
@@ -1672,18 +1877,22 @@ text align={fit to path stretching spaces}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%为\part*添加短页眉%%
 \NewCommandCopy{\OriginPart}{\part}
+%%
 \RenewDocumentCommand{\part}{s +O{#3} +m}{%
-\IfBooleanTF{#1}
-{\OriginPart*{#3\@mkboth{\@subtitle}{\@subtitle}}
-\extramarks{#2}{#2}
+\startcontents[parts]%开启小目录
+\IfBooleanTF{#1}{%
+\OriginPart*{#3}%
+\extramarks{#2}{#2}%
 }{\if@mainmatter%
-\OriginPart[#2]{#3\@mkboth{\@subtitle}{\@subtitle}}
+\OriginPart[#2]{#3}%
 \extramarks{\partlabelfront{\sffamily\thepart}\partlabelback\quad#2}{\partlabelfront{\sffamily\thepart}\partlabelback\quad#2}%
 \else%
-\OriginPart*{\phantomsection\addcontentsline{toc}{part}{#2}#3\@mkboth{\@subtitle}{\@subtitle}}%
-\extramarks{#2}{#2}
-\fi}
+\OriginPart*{\phantomsection\addcontentsline{toc}{part}{#2}#3}%
+\extramarks{#2}{#2}%
+\fi}%
+\stepcounter{@Part@Number}%
 \@store@partname{#2}%将部分名短标题和部分序数写入aux文件中，务必放在part定义的最后
+\@PartStopfalse%开启章节页侧标更新和页面底部侧标更新
 }
 
 %%章节页样式%%
@@ -1708,6 +1917,7 @@ text align={fit to path stretching spaces}%
 \newdimen\@Chapter@LabelYShift@Down
 \newdimen\@Chapter@SayingBlockHeight
 \newdimen\@DefaultTextwidth
+\newdimen\@DefaultTextheight
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
 \@Chapter@PageSize=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax
@@ -1717,6 +1927,7 @@ text align={fit to path stretching spaces}%
 \@Chapter@LabelYShift@Down=0.65cm
 \@Chapter@SayingBlockHeight=\dimexpr\@outerlen-2.5mm\relax
 \@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
+\@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax
 %%定义页面底部裁剪长度%%
 \gsetlength{\@ChapterPage@BottomCut}{\@Chapter@SayingBlockHeight-\@FrameWidth}
 %%
@@ -1766,12 +1977,19 @@ text align={fit to path stretching spaces}%
 %%%%
 \coordinate(I)at([xshift=\@outerlen-\@FrameWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
 \coordinate(J)at([xshift=-\paperwidth+\@outerlen+\@GutterWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
-%%%%
-\coordinate(K)at([xshift=-\paperwidth+\@outerlen,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
-\coordinate(L)at([yshift=-\@toplen]current page.north west);
+\coordinate(K)at([xshift=-\@GutterWidth]J);
+\coordinate(L)at([yshift=-\@toplen]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+%若标题区域高度过高（大于三分之一默认版心高度）
+\ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
+%并压缩副标题高度
+\coordinate(I)at([xshift=\paperwidth-\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(J)at([xshift=\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
+\pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+\fi
 \gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
@@ -1796,72 +2014,6 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
-%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
-\ifnum\totvalue{@Part@Number}>0
-%%如果\@chapterimage为空则添加章节页侧标%%
-\expandafter\ifblank\expandafter{\@chapterimage}{%
-\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north east);
-\newdimen\@Chap@PartIndex@Ht
-\newdimen\@Chap@PartIndex@XShift
-\newdimen\@Chap@PartIndex@Sep
-\@Chap@PartIndex@Ht=2.75cm
-%%%%
-%%一页最多可以容纳的侧标数目%%
-\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
-%%考虑没有部分层次的位置（比如前言位置）的情况%%
-\ifnum\value{@Part@Number}<1
-\pgfmathsetmacro{\tempn}{0}
-\else
-\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
-\fi
-%%一页中第一个侧标的序号%%
-\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
-%%一页中最后一个侧标的序号%%
-\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
-\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
-\else
-\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
-\fi
-%%%%
-\foreach \i in {\beginnum,...,\endnum}{%
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@XShift=0.25cm
-\colorlet{PartIndexDrawColor}{ColorA}
-\colorlet{PartIndexFillColor}{ColorA}
-\colorlet{PartIndexTextColor}{white}
-\else
-\@Chap@PartIndex@XShift=0cm
-\colorlet{PartIndexDrawColor}{ColorB!22.5}
-\colorlet{PartIndexFillColor}{ColorB!7.5}
-\colorlet{PartIndexTextColor}{ColorB!22.5}
-\fi
-%%%%
-%%从aux文件中读取部分名称%%
-\ifcsname partname@\i\endcsname%
-\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
-\else%
-\def\@Chap@PartThumb{}%
-\fi
-%%%%
-\ifnum\i=\beginnum
-\coordinate(SP)at(S0);
-\fi
-%%
-\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=90](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
-\draw[PartIndexDrawColor,ultra thick](S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west);
-%%
-%%若本次循环的序数比部分序数少1或等于部分序数%%
-\ifnum\i=\numexpr\value{@Part@Number}-1\relax
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\@Chap@PartIndex@Sep=0pt
-\fi\fi
-\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south west);
-}}{\relax}
-\fi
 \end{pgfonlayer}
 \else
 \coordinate(A)at(current page.north east);
@@ -1905,12 +2057,19 @@ text align={fit to path stretching spaces}%
 %%%%
 \coordinate(I)at([xshift=-\@outerlen+\@FrameWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
 \coordinate(J)at([xshift=\paperwidth-\@outerlen-\@GutterWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
-%%%%
-\coordinate(K)at([xshift=\paperwidth-\@outerlen,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
-\coordinate(L)at([yshift=-\@toplen]current page.north east);
+\coordinate(K)at([xshift=\@GutterWidth]J);
+\coordinate(L)at([yshift=-\@toplen]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+%若标题区域高度过高（大于三分之一默认版心高度）
+\ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
+%并压缩副标题高度
+\coordinate(I)at([xshift=-\paperwidth+\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(J)at([xshift=-\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
+\pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+\fi
 \gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
@@ -1935,72 +2094,6 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
-%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
-\ifnum\totvalue{@Part@Number}>0
-%%如果\@chapterimage为空则添加章节页侧标%%
-\expandafter\ifblank\expandafter{\@chapterimage}{%
-\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north west);
-\newdimen\@Chap@PartIndex@Ht
-\newdimen\@Chap@PartIndex@XShift
-\newdimen\@Chap@PartIndex@Sep
-\@Chap@PartIndex@Ht=2.75cm
-%%%%
-%%一页最多可以容纳的侧标数目%%
-\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
-%%考虑没有部分层次的位置（比如前言位置）的情况%%
-\ifnum\value{@Part@Number}<1
-\pgfmathsetmacro{\tempn}{0}
-\else
-\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
-\fi
-%%一页中第一个侧标的序号%%
-\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
-%%一页中最后一个侧标的序号%%
-\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
-\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
-\else
-\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
-\fi
-%%%%
-\foreach \i in {\beginnum,...,\endnum}{%
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@XShift=0.25cm
-\colorlet{PartIndexDrawColor}{ColorA}
-\colorlet{PartIndexFillColor}{ColorA}
-\colorlet{PartIndexTextColor}{white}
-\else
-\@Chap@PartIndex@XShift=0cm
-\colorlet{PartIndexDrawColor}{ColorB!22.5}
-\colorlet{PartIndexFillColor}{ColorB!7.5}
-\colorlet{PartIndexTextColor}{ColorB!22.5}
-\fi
-%%%%
-%%从aux文件中读取部分名称%%
-\ifcsname partname@\i\endcsname%
-\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
-\else%
-\def\@Chap@PartThumb{}%
-\fi
-%%%%
-\ifnum\i=\beginnum
-\coordinate(SP)at(S0);
-\fi
-%%
-\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=270](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
-\draw[PartIndexDrawColor,ultra thick](S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east);
-%%
-%%若本次循环的序数比部分序数少1或等于部分序数%%
-\ifnum\i=\numexpr\value{@Part@Number}-1\relax
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\@Chap@PartIndex@Sep=0pt
-\fi\fi
-\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south east);
-}}{\relax}
-\fi
 \end{pgfonlayer}
 \fi
 \end{tikzpicture}
@@ -2018,6 +2111,7 @@ text align={fit to path stretching spaces}%
 \newdimen\@Chapter@Star@LabelYShift@Down
 \newdimen\@Chapter@SayingBlockHeight
 \newdimen\@DefaultTextwidth
+\newdimen\@DefaultTextheight
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
 \@Chapter@PageSize=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax
@@ -2027,6 +2121,7 @@ text align={fit to path stretching spaces}%
 \@Chapter@Star@LabelYShift@Down=0.65cm
 \@Chapter@SayingBlockHeight=\dimexpr\@outerlen-2.5mm\relax
 \@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
+\@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax
 %%定义页面底部裁剪长度%%
 \gsetlength{\@ChapterPage@BottomCut}{\@Chapter@SayingBlockHeight-\@FrameWidth}
 %%
@@ -2089,12 +2184,19 @@ text align={fit to path stretching spaces}%
 %%%%
 \coordinate(I)at([xshift=\@outerlen-\@FrameWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
 \coordinate(J)at([xshift=-\paperwidth+\@outerlen+\@GutterWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
-%%%%
-\coordinate(K)at([xshift=-\paperwidth+\@outerlen,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
-\coordinate(L)at([yshift=-\@toplen]current page.north west);
+\coordinate(K)at([xshift=-\@GutterWidth]J);
+\coordinate(L)at([yshift=-\@toplen]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+%若标题区域高度过高（大于三分之一默认版心高度）
+\ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
+%并压缩副标题高度
+\coordinate(I)at([xshift=\paperwidth-\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(J)at([xshift=\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
+\pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+\fi
 \gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
@@ -2119,72 +2221,6 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
-%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
-\ifnum\totvalue{@Part@Number}>0
-%%如果\@chapterimage为空则添加章节页侧标%%
-\expandafter\ifblank\expandafter{\@chapterimage}{%
-\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north east);
-\newdimen\@Chap@PartIndex@Ht
-\newdimen\@Chap@PartIndex@XShift
-\newdimen\@Chap@PartIndex@Sep
-\@Chap@PartIndex@Ht=2.75cm
-%%%%
-%%一页最多可以容纳的侧标数目%%
-\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
-%%考虑没有部分层次的位置（比如前言位置）的情况%%
-\ifnum\value{@Part@Number}<1
-\pgfmathsetmacro{\tempn}{0}
-\else
-\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
-\fi
-%%一页中第一个侧标的序号%%
-\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
-%%一页中最后一个侧标的序号%%
-\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
-\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
-\else
-\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
-\fi
-%%%%
-\foreach \i in {\beginnum,...,\endnum}{%
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@XShift=0.25cm
-\colorlet{PartIndexDrawColor}{ColorA}
-\colorlet{PartIndexFillColor}{ColorA}
-\colorlet{PartIndexTextColor}{white}
-\else
-\@Chap@PartIndex@XShift=0cm
-\colorlet{PartIndexDrawColor}{ColorB!22.5}
-\colorlet{PartIndexFillColor}{ColorB!7.5}
-\colorlet{PartIndexTextColor}{ColorB!22.5}
-\fi
-%%%%
-%%从aux文件中读取部分名称%%
-\ifcsname partname@\i\endcsname%
-\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
-\else%
-\def\@Chap@PartThumb{}%
-\fi
-%%%%
-\ifnum\i=\beginnum
-\coordinate(SP)at(S0);
-\fi
-%%
-\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=90](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
-\draw[PartIndexDrawColor,ultra thick](S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west);
-%%
-%%若本次循环的序数比部分序数少1或等于部分序数%%
-\ifnum\i=\numexpr\value{@Part@Number}-1\relax
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\@Chap@PartIndex@Sep=0pt
-\fi\fi
-\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south west);
-}}{\relax}
-\fi
 \end{pgfonlayer}
 \else
 %%坐标点%%
@@ -2244,12 +2280,19 @@ text align={fit to path stretching spaces}%
 %%%%
 \coordinate(I)at([xshift=-\@outerlen+\@FrameWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
 \coordinate(J)at([xshift=\paperwidth-\@outerlen-\@GutterWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
-%%%%
-\coordinate(K)at([xshift=\paperwidth-\@outerlen,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
-\coordinate(L)at([yshift=-\@toplen]current page.north east);
+\coordinate(K)at([xshift=\@GutterWidth]J);
+\coordinate(L)at([yshift=-\@toplen]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+%若标题区域高度过高（大于三分之一默认版心高度）
+\ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
+%并压缩副标题高度
+\coordinate(I)at([xshift=-\paperwidth+\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(J)at([xshift=-\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
+\pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
+\fi
 \gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
@@ -2274,72 +2317,6 @@ text align={fit to path stretching spaces}%
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
-%%如果文档中包含部分层次且部分数大于0则添加章节页侧标%%
-\ifnum\totvalue{@Part@Number}>0
-%%如果\@chapterimage为空则添加章节页侧标%%
-\expandafter\ifblank\expandafter{\@chapterimage}{%
-\coordinate(S0)at([yshift=-\@toplen-\@ChapterPage@TopCut]current page.north west);
-\newdimen\@Chap@PartIndex@Ht
-\newdimen\@Chap@PartIndex@XShift
-\newdimen\@Chap@PartIndex@Sep
-\@Chap@PartIndex@Ht=2.75cm
-%%%%
-%%一页最多可以容纳的侧标数目%%
-\pgfmathsetmacro{\totalnumber}{int((\paperheight-\@toplen-\@botlen-\@ChapterPage@TopCut-\@ChapterPage@BottomCut)/\@Chap@PartIndex@Ht)}
-%%考虑没有部分层次的位置（比如前言位置）的情况%%
-\ifnum\value{@Part@Number}<1
-\pgfmathsetmacro{\tempn}{0}
-\else
-\pgfmathsetmacro{\tempn}{floor((\value{@Part@Number}-1)/\totalnumber)}
-\fi
-%%一页中第一个侧标的序号%%
-\pgfmathsetmacro{\beginnum}{int(\totalnumber*\tempn+1)}
-%%一页中最后一个侧标的序号%%
-\ifnum\numexpr\totvalue{@Part@Number}-\beginnum\relax<\numexpr\totalnumber-1\relax
-\pgfmathsetmacro{\endnum}{int(\totvalue{@Part@Number})}
-\else
-\pgfmathsetmacro{\endnum}{int(\beginnum+\totalnumber-1)}
-\fi
-%%%%
-\foreach \i in {\beginnum,...,\endnum}{%
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@XShift=0.25cm
-\colorlet{PartIndexDrawColor}{ColorA}
-\colorlet{PartIndexFillColor}{ColorA}
-\colorlet{PartIndexTextColor}{white}
-\else
-\@Chap@PartIndex@XShift=0cm
-\colorlet{PartIndexDrawColor}{ColorB!22.5}
-\colorlet{PartIndexFillColor}{ColorB!7.5}
-\colorlet{PartIndexTextColor}{ColorB!22.5}
-\fi
-%%%%
-%%从aux文件中读取部分名称%%
-\ifcsname partname@\i\endcsname%
-\def\@Chap@PartThumb{\csname partname@\i\endcsname}%
-\else%
-\def\@Chap@PartThumb{}%
-\fi
-%%%%
-\ifnum\i=\beginnum
-\coordinate(SP)at(S0);
-\fi
-%%
-\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner sep=2.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=270](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
-\draw[PartIndexDrawColor,ultra thick](S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east);
-%%
-%%若本次循环的序数比部分序数少1或等于部分序数%%
-\ifnum\i=\numexpr\value{@Part@Number}-1\relax
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\ifnum\i=\value{@Part@Number}
-\@Chap@PartIndex@Sep=1.6pt
-\else
-\@Chap@PartIndex@Sep=0pt
-\fi\fi
-\coordinate(SP)at([yshift=-\@Chap@PartIndex@Sep]S\i.south east);
-}}{\relax}
-\fi
 \end{pgfonlayer}
 \fi
 \end{tikzpicture}}
@@ -2395,15 +2372,19 @@ text align={fit to path stretching spaces}%
 %%间距设置%%
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 %%页面风格设置%%
-\assignpagestyle{\chapter}{empty}
-%%top参数为章标题占据一整页，用于章节页样式设计%%
-%%若设置为straight参数，则章标题表现类似于节标题连续放置%%
+\assignpagestyle{\chapter}{ChapterPage}
+%%page参数为标题占据一整页，不可以添加文字%%
+%%top参数为标题在新的一页生成，可以添加文字%%
+%%straight参数为标题与内容连续生成，不自动换页%%
 \titleclass{\chapter}{top}
 %%修改chapter断页方式%%
 \newcommand{\chapterbreak}{%
-\if@openright\cleardoublepage%
-\else\clearpage\fi%
-\stepcounter{@Chapter@Number}%
+\if@openright%
+\cleardoublepage%
+\else%
+\clearpage%
+\fi%
+\stepcounter{@Chapter@Number}%写入页面裁切高度时更新章计数器，后续对于不编号不写入目录的章节要减去1
 %从aux文件中读取\chap***cut@#1的值，并赋给\@ChapterPage@***Cut
 \@use@chapcut%
 %临时修改章首页的版心高度为章底部文字留出空间
@@ -2413,15 +2394,28 @@ text align={fit to path stretching spaces}%
 \AtBeginShipoutNext{%相当于\AddToHookNext{shipout/before}
 \gaddtolength{\topmargin}{-\@ChapterPage@TopCut}%
 \changetextheight{\@ChapterPage@BottomCut+\@ChapterPage@TopCut}}%
+\@PartEnd%用于控制部分目录的截止、章节页侧标的关闭以及页面底部标记恢复默认状态
 }
+%%默认此命令定义为空%%
+\def\@PartEnd{}
+%%使用此命令将给出\@PartEnd的定义%%
+\newcommand{\PartEnd}{%
+\def\@PartEnd{%
+\extramarks{\protect\@seriesname}{\protect\@seriesname}%恢复默认页面底部标记
+\@PartStoptrue%章节页侧标停止更新
+\ifnum\value{@Part@Number}>0%若使用\chapter命令时文档中已经存在部分层次则执行部分目录的停止与恢复，如不然会报错
+\stopcontents[parts]%部分目录截止
+\fi
+}}
 
 %%为\chapter*添加短页眉%%
 \NewCommandCopy{\OriginChapter}{\chapter}
 %%
 \RenewDocumentCommand{\chapter}{s +O{#3} +m}{%
-\IfBooleanTF{#1}%
-{\OriginChapter*{#3\@mkboth{#2}{#2}}}%
-{\OriginChapter[#2]{#3}}%
+\IfBooleanTF{#1}{%
+\OriginChapter*{#3}%
+\markboth{#2}{#2}%
+}{\OriginChapter[#2]{#3}}%
 %将长度\chap***cut@#1 封装进命令\@Chapter@Page@***@Cut{#1}{#2}{#3}中，并写入aux文件
 \@store@chapcut
 %清除章首页其他的额外垂直空白距离
@@ -2456,17 +2450,28 @@ text align={fit to path stretching spaces}%
 }{4.0mm}{#1}
 %%间距设置%%
 \titlespacing*{\section}{0pt}{0pt}{2.0cm}
+%%页面风格设置%%
+\assignpagestyle{\section}{MainPage}
+%%page参数为标题占据一整页，不可以添加文字%%
+%%top参数为标题在新的一页生成，可以添加文字%%
+%%straight参数为标题与内容连续生成，不自动换页%%
+\titleclass{\section}{top}
 %%修改section断页方式%%
+\newcommand{\sectionbreak}{\clearpage}
+%%%%
 \NewCommandCopy{\OriginSection}{\section}
+%%
 \RenewDocumentCommand{\section}{s +O{#3} +m}{%
-\clearpage%
-\IfBooleanTF{#1}
-{\OriginSection*{#3\markright{#2}}}%
-{\if@mainmatter%
+\IfBooleanTF{#1}{%
+\OriginSection*{#3}%
+\markright{#2}%
+}{\if@mainmatter%
 \OriginSection[#2]{#3}%
 \else%
-\OriginSection*{\phantomsection\addcontentsline{toc}{section}{#2}#3\markright{#2}}%
-\fi}}
+\OriginSection*{\phantomsection\addcontentsline{toc}{section}{#2}#3}%
+\markright{#2}%
+\fi}
+}
 
 %%小节标题样式%%
 %%编号小节标题样式%%
@@ -2505,9 +2510,11 @@ text align={fit to path stretching spaces}%
 \path[fill=ColorA,rounded corners=\@Subsection@Radius](L.north west)rectangle(L.south east);
 \path[fill=white]([yshift=-\@Subsection@Radius]L.north east)circle(\@Subsection@BRadius);
 \ifdim\@Subsection@NameHeight>\dimexpr2\@Subsection@Radius\relax
-\path[fill=ColorB!7.5](N.north east)[sharp corners]--(N.north west)[rounded corners=\@Subsection@Radius]--(N.south west)--(N.south east)--cycle;
+\expandafter\ifblank\expandafter{#2}{\relax}{%
+\path[fill=ColorB!7.5](N.north east)[sharp corners]--(N.north west)[rounded corners=\@Subsection@Radius]--(N.south west)--(N.south east)--cycle;}
 \else
-\path[fill=ColorB!7.5](N.north east)[sharp corners]--(N.north west)--(N.south west)[rounded corners=\@Subsection@Radius]--(N.south east)--cycle;
+\expandafter\ifblank\expandafter{#2}{\relax}{%
+\path[fill=ColorB!7.5](N.north east)[sharp corners]--(N.north west)--(N.south west)[rounded corners=\@Subsection@Radius]--(N.south east)--cycle;}
 \fi
 \draw[ColorA,line width=4.0pt,fill=white]([yshift=-\@Subsection@Radius]L.north east)circle(\@Subsection@Radius);
 \node[circle,text=ColorA,inner sep=0mm,outer sep=0mm](Num)at([yshift=-\@Subsection@Radius]L.north east){\maxsizebox{2\@Subsection@Radius}{!}{\sffamily#3}};
@@ -2556,11 +2563,13 @@ text align={fit to path stretching spaces}%
 %%
 \begin{pgfonlayer}{@Subsection@Star@Bottom}
 \ifdim\@Subsection@Star@NameHeight>\@Subsection@Star@LabelHeight
-\path[fill=ColorB!7.5,rounded corners=\@Subsection@Star@Radius](L.north west)rectangle(N.south east);
+\expandafter\ifblank\expandafter{#2}{\relax}{%
+\path[fill=ColorB!7.5,rounded corners=\@Subsection@Star@Radius](L.north west)rectangle(N.south east);}
 %
 \path[fill=ColorA,rounded corners=\@Subsection@Star@Radius](L.north west)rectangle(N.south west);
 \else
-\path[fill=ColorB!7.5,rounded corners=\@Subsection@Star@Radius](L.south west)rectangle(N.north east);
+\expandafter\ifblank\expandafter{#2}{\relax}{%
+\path[fill=ColorB!7.5,rounded corners=\@Subsection@Star@Radius](L.south west)rectangle(N.north east);}
 %
 \path[fill=ColorA,rounded corners=\@Subsection@Star@Radius](L.south west)rectangle(N.north west);
 \fi
@@ -2585,16 +2594,22 @@ text align={fit to path stretching spaces}%
 [\global\subsectionsubtitle{}]%清空\subsectionsubtitle
 %%间距设置%%
 \titlespacing*{\subsection}{0pt}{1.5ex plus 0.5ex minus 0.2ex}{1ex plus 0.1ex}
+%%page参数为标题占据一整页，不可以添加文字%%
+%%top参数为标题在新的一页生成，可以添加文字%%
+%%straight参数为标题与内容连续生成，不自动换页%%
+\titleclass{\subsection}{straight}
 %%%%
 \NewCommandCopy{\OriginSubsection}{\subsection}
+%%
 \RenewDocumentCommand{\subsection}{s +O{#3} +m}{%
-\IfBooleanTF{#1}
-{\OriginSubsection*{#3}}
-{\if@mainmatter%
+\IfBooleanTF{#1}{%
+\OriginSubsection*{#3}}{%
+\if@mainmatter%
 \OriginSubsection[#2]{#3}%
 \else%
 \OriginSubsection*{\phantomsection\addcontentsline{toc}{subsection}{#2}#3}%
-\fi}}
+\fi}
+}
 %%%%
 %%点样式%%
 \titleformat{\subsubsection}[hang]{\color{ColorB}\SubsubsectionFont}{%
@@ -2622,16 +2637,22 @@ text align={fit to path stretching spaces}%
 }{4.0mm}{#1}
 %%间距设置%%
 \titlespacing*{\subsubsection}{0pt}{5.0mm}{5.0mm}
+%%page参数为标题占据一整页，不可以添加文字%%
+%%top参数为标题在新的一页生成，可以添加文字%%
+%%straight参数为标题与内容连续生成，不自动换页%%
+\titleclass{\subsubsection}{straight}
 %%%%
 \NewCommandCopy{\OriginSubsubsection}{\subsubsection}
+%%
 \RenewDocumentCommand{\subsubsection}{s +O{#3} +m}{%
-\IfBooleanTF{#1}
-{\OriginSubsubsection*{#3}}
-{\if@mainmatter%
+\IfBooleanTF{#1}{%
+\OriginSubsubsection*{#3}}{%
+\if@mainmatter%
 \OriginSubsubsection[#2]{#3}%
 \else%
 \OriginSubsubsection*{\phantomsection\addcontentsline{toc}{subsubsection}{#2}#3}%
-\fi}}
+\fi}
+}
 
 %%修改段落样式%%
 \renewcommand{\paragraph}{
@@ -2721,7 +2742,8 @@ text align={fit to path stretching spaces}%
 }
 %%%%
 %%习题标题设置%%
-\NewDocumentCommand{\Exercise}{s}{%
+\NewDocumentCommand{\Exercise}{s +O{}}{%
+\subsectionsubtitle{#2}
 \IfBooleanTF{#1}{%
 \subsection*{\exercisetitle}%
 }{%
@@ -2732,7 +2754,8 @@ text align={fit to path stretching spaces}%
 }%
 }
 %%%%
-\NewDocumentCommand{\Thinking}{s}{%
+\NewDocumentCommand{\Thinking}{s +O{}}{%
+\subsectionsubtitle{#2}
 \IfBooleanTF{#1}{%
 \subsection*{\thinkingtitle}%
 }{%
@@ -2743,7 +2766,8 @@ text align={fit to path stretching spaces}%
 }%
 }
 %%%%
-\NewDocumentCommand{\Improve}{s}{%
+\NewDocumentCommand{\Improve}{s +O{}}{%
+\subsectionsubtitle{#2}
 \IfBooleanTF{#1}{%
 \subsection*{\improvetitle}%
 }{%
@@ -2995,7 +3019,7 @@ text align={fit to path stretching spaces}%
 \@Change@ChapterStyle@InEnv{\Alph{chapter}}{附录}{}
 \@Change@SectionStyle@InEnv{\alph{section}}{附节}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{小节}{}
-\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
+\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{知识点}{}
 %%简化序号命令
 \renewcommand{\the@prenumber}{\thechapter.\thesection}
 }{%
@@ -3053,7 +3077,7 @@ text align={fit to path stretching spaces}%
 \@AddBlankLine
 \@Change@SectionStyle@InEnv{\alph{section}}{附录}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{小节}{}
-\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
+\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{知识点}{}
 \@Change@FigureTableStyle@InEnv{}
 %%简化序号命令
 \renewcommand{\the@prenumber}{\thesection}
@@ -3179,7 +3203,7 @@ text align={fit to path stretching spaces}%
 \@AddBlankLine
 \@Change@SectionStyle@InEnv{\arabic{section}}{专题}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{考点}{}
-\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
+\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{知识点}{}
 \@Change@FigureTableStyle@InEnv{T}
 %%简化序号命令
 \renewcommand{\the@prenumber}{\thesection}
@@ -3238,7 +3262,7 @@ text align={fit to path stretching spaces}%
 \@AddBlankLine
 \@Change@SectionStyle@InEnv{\arabic{section}}{课题}{}
 \@Change@SubsectionStyle@InEnv{\arabic{subsection}}{活动}{}
-\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{要点}{}
+\@Change@SubsubsectionStyle@InEnv{\arabic{subsubsection}}{知识点}{}
 \@Change@FigureTableStyle@InEnv{P}
 %%简化序号命令
 \renewcommand{\the@prenumber}{\thesection}
@@ -3771,6 +3795,32 @@ segmentation at break=false,
 IfBlankTF={#1}{}{title={\strut#1\strut}},
 before title={\@change@minipage@footnote}
 }}
+%%%%
+\tcbset{FoldBox/.style args={#1}{%
+enhanced standard,breakable,empty,
+pad after break=5.0mm,
+colback=ColorB!7.5,colframe=ColorB!7.5,
+boxsep=3.0mm,
+top=1.5mm,bottom=1.5mm,left=2.0mm,right=2.0mm,
+varwidth boxed title={2\linewidth/3},
+before=\par\bigskip,after=\par\bigskip,
+fonttitle=\BoxTitleFont,coltitle=ColorA,
+title={\strut#1\strut},
+before title={\@change@minipage@footnote},
+attach boxed title to top left,
+boxed title style={size=minimal,empty,valign=center,boxsep=3.0mm,left=2.0mm,right=2.0mm,top=-1.0mm,bottom=-4.0mm},
+before upper={\setlength{\parindent}{2.0em}%
+\@change@minipage@footnote},
+before lower={\setlength{\parindent}{2.0em}%
+\@change@minipage@footnote},
+subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=ColorA,top=-3.0mm,bottom=-3.0mm},
+segmentation style={cap=round,line width=2.25pt,draw=ColorA!25,solid,shorten <= 5.0mm,shorten >= 5.0mm},
+segmentation at break=false,
+underlay boxed title={%
+\path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](title.north west)--(title.north east)--([xshift=5.0mm]title.south east)--(frame.north east)--(frame.south east)--(frame.south west)--cycle;},
+overlay middle and last={%
+\path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](frame.north west)rectangle(frame.south east);}
+}}
 
 %%设置节前盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
@@ -3811,7 +3861,16 @@ underlay boxed title={%
 \DeclareDocumentEnvironment{Warning}{ +O{} +O{} }{\begin{box1}{\warningtitle}[#1][#2][ColorF][\faExclamation]}{\end{box1}}
 \DeclareDocumentEnvironment{Discussion}{ +O{} +O{}}{\begin{box1}[lowerbox=ignored]{\discussiontitle}[#1][#2][ColorC][\faQuestion]}
 {\end{box1}}
-\DeclareDocumentEnvironment{Check}{ +O{} +O{} }{\begin{box1}[step=@check]{\checktitle{\sffamily\the@check}}[#1][#2][ColorI][\faCheck]}
+\DeclareDocumentEnvironment{Check}{ +O{} +O{} }{\begin{box1}[phantom={%
+\if@mainmatter%
+\refstepcounter{@check}
+\fi}]{\checktitle%
+\if@mainmatter%
+{\sffamily\the@check}%
+\fi}[#1][#2][ColorI][\faCheck]}
+{\end{box1}}
+%%
+\DeclareDocumentEnvironment{Check*}{ +O{} +O{} }{\begin{box1}{\checktitle}[#1][#2][ColorI][\faCheck]}
 {\end{box1}}
 
 %%设置演示盒子%%
@@ -3887,7 +3946,7 @@ underlay boxed title={%
 \refstepcounter{@definition}
 \fi}]{\definitiontitle%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@definition}%
+{\sffamily\environmentmark\the@prenumber.\the@definition}%
 \fi}
 [#1][#2][ColorA][\faCrosshairs]}{\end{box3}}
 %%%%
@@ -3896,7 +3955,7 @@ underlay boxed title={%
 \refstepcounter{@theorem}
 \fi}]{\theoremtitle%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@theorem}%
+{\sffamily\environmentmark\the@prenumber.\the@theorem}%
 \fi}
 [#1][#2][ColorB][\faCrosshairs]}{\end{box3}}
 %%%%
@@ -3905,7 +3964,7 @@ underlay boxed title={%
 \refstepcounter{@axiom}
 \fi}]{\axiomtitle%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@axiom}%
+{\sffamily\environmentmark\the@prenumber.\the@axiom}%
 \fi}
 [#1][#2][ColorI][\faCompactDisc]}{\end{box3}}
 %%%%
@@ -3942,7 +4001,7 @@ underlay boxed title={%
 \refstepcounter{@lemma}
 \fi}]{\lemmatitle%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@lemma}%
+{\sffamily\environmentmark\the@prenumber.\the@lemma}%
 \fi}
 [#1][#2][ColorE][\faGlobe]}{\end{box4}}
 %%%%
@@ -3952,7 +4011,7 @@ underlay boxed title={%
 \fi
 }]{\corollarytitle%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@corollary}%
+{\sffamily\environmentmark\the@prenumber.\the@corollary}%
 \fi}
 [#1][#2][ColorG][\faCompactDisc]}{\end{box4}}
 %%%%
@@ -3962,7 +4021,7 @@ underlay boxed title={%
 \fi
 }]{\propositiontitle%
 \if@mainmatter%
-{~\sffamily\environmentmark\the@prenumber.\the@proposition}%
+{\sffamily\environmentmark\the@prenumber.\the@proposition}%
 \fi}
 [#1][#2][ColorH][\faGlobe]}{\end{box4}}
 %%%%
@@ -4041,40 +4100,49 @@ underlay boxed title={%
 %%设置色块盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
 \makesavenoteenv{box7}
+\makesavenoteenv{box7*}
 %%
 \DeclareTColorBox{box7}{ +O{} +O{} }{BlockBox=#2,#1}
+\DeclareTColorBox{box7*}{ +O{} +O{} }{FoldBox=#2,#1}
 
-\newenvironment{Proof}{\begin{box7}[][\faBars~~\prooftitle]}{\end{box7}}
+\newenvironment{Proof}{\begin{box7*}[][\faBars~~\prooftitle]}{\end{box7*}}
 %%
-\newenvironment{Solution}{\begin{box7}[][\faBars~~\solutiontitle]}{\end{box7}}
+\newenvironment{Solution}{\begin{box7*}[][\faBars~~\solutiontitle]}{\end{box7*}}
 %%
-\DeclareDocumentEnvironment{Block}{ +O{} }{\begin{box7}[][#1]}{\end{box7}}
+\DeclareDocumentEnvironment{Block}{ +O{} }{%
+\ifblank{#1}{\begin{box7}}{\begin{box7*}[][#1]}%
+}{\ifblank{#1}{\end{box7}}{\end{box7*}}%
+}
 
 %%设置英文与代码盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
 \makesavenoteenv{box8}
-%%段编号命令
-\newcommand{\@Paragraph@Number}{%
-\newdimen\@linenumber@xshift%
-\newdimen\@linenumber@sep%
-\@linenumber@xshift=\dimexpr\parindent+1.0em\relax%
-\@linenumber@sep=7.5mm%
-\def\@parano{0}%
-\everypar{%
-\edef\@parano{\number\numexpr\@parano+1\relax}%
-\xllap{\dimexpr\@linenumber@xshift+\@linenumber@sep\relax}{\hbox to 1.0em{\hfill\linenumberfont\@parano}}%
-}}
 
-%%
 \DeclareTColorBox{box8}{+O{} +m +O{} +O{} O{ColorA} O{}}{CodeBox=#2/#3/#4/#5/#6,#1}
 
-\NewDocumentEnvironment{Comprehension}{ +O{} +O{} }{\begin{box8}[step=@comprehension]{\comprehensiontitle{\sffamily\the@comprehension}}[#1][#2][ColorB]\@Paragraph@Number}{\end{box8}}
+\NewDocumentEnvironment{Comprehension}{+O{} +O{} }{\begin{box8}[phantom={%
+\if@mainmatter%
+\refstepcounter{@comprehension}%
+\fi}]{\comprehensiontitle%
+\if@mainmatter%
+{\sffamily\the@comprehension}%
+\fi}[#1][#2][ColorB]}{\end{box8}}
 %%
-\NewDocumentEnvironment{Cloze}{ +O{} +O{} }{\begin{box8}[step=@cloze]{\clozetitle{\sffamily\the@cloze}}[#1][#2][ColorA]\@Paragraph@Number}{\end{box8}}
+\NewDocumentEnvironment{Cloze}{+O{} +O{} }{\begin{box8}[phantom={%
+\if@mainmatter%
+\refstepcounter{@cloze}%
+\fi}]{\clozetitle%
+\if@mainmatter%
+{\sffamily\the@cloze}%
+\fi}[#1][#2][ColorA]}{\end{box8}}
 %%
-\NewDocumentEnvironment{Article}{ +O{} +O{} }{\begin{box8}{\articletitle}[#1][#2][ColorC]\@Paragraph@Number}{\end{box8}}
+\NewDocumentEnvironment{Article}{+O{} +O{} }{\begin{box8}{\articletitle}[#1][#2][ColorC]}{\end{box8}}
 %%
 \NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{\vocabularytitle}[#1][#2][ColorE]}{\end{box8}}
+
+\NewDocumentEnvironment{Comprehension*}{+O{} +O{} }{\begin{box8}{\comprehensiontitle}[#1][#2][ColorB]}{\end{box8}}
+%%
+\NewDocumentEnvironment{Cloze*}{+O{} +O{} }{\begin{box8}{\clozetitle}[#1][#2][ColorA]}{\end{box8}}
 
 %%%%%
 %\newtcblisting{PythonBox}[1][]{
