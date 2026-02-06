@@ -615,6 +615,7 @@ BoldFont=WaterMarkFont.ttf]
 
 %%%%%%%%%%%%%%%%%%%% 数学符号宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{amsmath,amsfonts,amssymb,mathrsfs,array,bm,upgreek}%数学宏包
+\RequirePackage{mathptmx}%数学字体宏包
 %%定义罗马数字%%
 \newcommand{\rmnum}[1]{\romannumeral #1}
 \newcommand{\Rmnum}[1]{\expandafter\@slowromancap\romannumeral #1@}
@@ -1427,7 +1428,7 @@ text align={fit to path stretching spaces}%
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[parts]{l}{0}[0]{}%
+\printcontents[parts]{l}{0}[0]{\def\@pnumwidth{0pt}}%
 \endgroup%
 \end{multicols}}
 };
@@ -1525,7 +1526,7 @@ text align={fit to path stretching spaces}%
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[parts]{l}{0}[0]{}%
+\printcontents[parts]{l}{0}[0]{\def\@pnumwidth{0pt}}%
 \endgroup%
 \end{multicols}}
 };
@@ -1673,7 +1674,7 @@ text align={fit to path stretching spaces}%
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[parts]{l}{0}[0]{}%
+\printcontents[parts]{l}{0}[0]{\def\@pnumwidth{0pt}}%
 \endgroup%
 \end{multicols}}
 };
@@ -1783,7 +1784,7 @@ text align={fit to path stretching spaces}%
 \begingroup%
 \@erase@marginpar%
 \@erase@marginnote%
-\printcontents[parts]{l}{0}[0]{}%
+\printcontents[parts]{l}{0}[0]{\def\@pnumwidth{0pt}}%
 \endgroup%
 \end{multicols}}
 };
@@ -3797,7 +3798,7 @@ before title={\@change@minipage@footnote}
 }}
 %%%%
 \tcbset{FoldBox/.style args={#1}{%
-enhanced standard,breakable,empty,
+empty,breakable,
 pad after break=5.0mm,
 colback=ColorB!7.5,colframe=ColorB!7.5,
 boxsep=3.0mm,
