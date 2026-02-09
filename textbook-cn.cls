@@ -298,10 +298,6 @@ BoldFont=FZCukai.ttf]
 Path=fonts/,
 BoldFont=WaterMarkFont.ttf]
 
-
-%%取消弹性段间距%%
-\setlength{\parskip}{0pt}
-\setlength{\topskip}{0pt}
 %%单独修改行距命令%%
 \def\set@baselineskip#1#2{%
 \@defaultunits\@tempskipa#2pt\relax\@nnil
@@ -414,7 +410,9 @@ BoldFont=WaterMarkFont.ttf]
 \originmarginpar[{\raggedleftmarginnote\marginfont#1}]{\raggedrightmarginnote\marginfont#2}}
 
 %%脚注格式%%
-\RequirePackage{footnotehyper}
+\RequirePackage{fnpos}%脚注位置控制
+\makeFNbottom%确保脚注始终生成在版心底部，不论是否加载了\raggedbottom命令
+\RequirePackage{footnotehyper}%提供\makesavenoteenv命令以保证其他环境内的脚注编号正确生成
 \gdef\footnoterule{}
 \gdef\footnotesize{\FootNoteFont}
 %%修改minipage中的脚注计数器
@@ -644,6 +642,39 @@ BoldFont=WaterMarkFont.ttf]
 %%%%%%%%%%%%%%%%%%%% 绘图与表格宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{pifont,fontawesome5}%图标
 \RequirePackage{anyfontsize}%自由调整字体大小
+\RequirePackage{tikzducks}%鸭子绘制
+%%黑西装礼帽鸭
+\newcommand{\BlackDuck}[1][1]{%
+\tikz[scale=#1]{%
+\duck[body=brown!50!white,head=brown!50!white,bill=Chocolate,eye=white,beard=white!80!brown,%
+tshirt=black,buttons=white,tophat=black,wine=red!70!black]%
+}}
+%%蓝衣长发鸭
+\newcommand{\BlueDuck}[1][1]{%
+\tikz[scale=#1]{%
+\duck[laughing,%
+longhair=red!50!black,body=Melon,head=Melon,bill=Chocolate,eye=white,%
+tshirt=CornflowerBlue!80!black,buttons=CornflowerBlue!40!black,bowtie=red!80!black,handbag=red!70!black]%
+}}
+%%眼睛博士鸭
+\newcommand{\RedDuck}[2][1]{%
+\tikz[scale=#1]{%
+\duck[laughing,%
+body=Tan!70!white,head=Tan!70!white,bill=Chocolate,eye=white,%
+tshirt=white,jacket=red!50!black,tie=DodgerBlue!60!black,%
+graduate=gray!20!black,tassel=red!70!black,%
+squareglasses=blue!50!black,%
+signpost=\scalebox{#1}{\bfseries\sffamily\color{red!50!black}#2},signcolour=brown!70!gray,signback=white!80!brown]%
+}}
+%%撞色拼接鸭
+\newcommand{\MixedDuck}[1][1]{%
+\tikz[scale=#1]{%
+\duck[body=BurlyWood!60,head=BurlyWood!60,bill=Chocolate,eye=white,%
+tshirt=white,jacket=LightSkyBlue!80!gray,beret=red!50!black,%
+stripes={\stripes[color=LightSkyBlue!40!black,width=0.46,distance=3]},%
+book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!black]%
+}}
+%%%%
 \RequirePackage{pgfplots,tikz,tikzpagenodes,tkz-euclide,eso-pic}%绘图
 \pgfplotsset{compat=1.18}
 \usetikzlibrary{fit,calc,math,scopes,backgrounds,positioning,intersections,shadows,shadings,fadings,arrows,arrows.meta,patterns,patterns.meta,shapes.geometric,decorations,decorations.pathmorphing,decorations.text,decorations.shapes,shapes.symbols}
@@ -729,10 +760,6 @@ BoldFont=WaterMarkFont.ttf]
 \renewcommand{\thesubsubsection}{\arabic{subsubsection}}
 
 %%%%%%%%%%%%%%%%%%%% 列表环境 %%%%%%%%%%%%%%%%%%%%%%
-%%列表长度设置%%
-\setlength{\itemsep}{0mm}
-\setlength{\labelsep}{0mm}
-\setlength{\leftmargini}{0mm}
 %%列表颜色设置%%
 \colorlet{ListColor}{ColorA}
 %%设置不编号点样式%%
@@ -748,7 +775,7 @@ BoldFont=WaterMarkFont.ttf]
 %%%%
 %%无编号列表环境%%
 \NewDocumentEnvironment{UnnumberedItem}{O{1} +O{}}{%
-\setlist[itemize]{labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\UnnumberedLabel}%
+\setlist[itemize]{leftmargin=0mm,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\UnnumberedLabel}%
 \ifnum#1=1%
 \begin{itemize}[#2]%
 \else%
@@ -766,7 +793,7 @@ BoldFont=WaterMarkFont.ttf]
 
 %%编号列表环境%%
 \NewDocumentEnvironment{NumberedItem}{O{1} +O{}}{%
-\setlist[enumerate]{labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\arabic*}}%
+\setlist[enumerate]{leftmargin=0mm,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\arabic*}}%
 \ifnum#1=1%
 \begin{enumerate}[#2]%
 \else%
@@ -788,7 +815,7 @@ BoldFont=WaterMarkFont.ttf]
 \setcounter{@temp@item}{0}
 %%%%
 \NewDocumentEnvironment{QuestionItem}{O{1} +O{}}{%
-\setlist[enumerate]{labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ListColor}\arabic*.}}%
+\setlist[enumerate]{leftmargin=0mm,labelsep=0mm,itemsep=0mm,labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ListColor}\arabic*.}}%
 \ifnum#1=1%
 \begin{enumerate}[#2]%
 \setcounter{enumi}{\value{@temp@item}}%
@@ -865,6 +892,7 @@ BoldFont=WaterMarkFont.ttf]
 \markboth{\protect\@subtitle}{\protect\@subtitle}%默认页眉标记
 \extramarks{\protect\@seriesname}{\protect\@seriesname}%默认页面底部标记
 \MainFont%默认正文字体
+\raggedbottom%确保每一页的第一行文字均紧贴版心顶端
 }
 %%修改文档类中的各类标题、标签%%
 \newcommand{\partlabelfront}{第}
@@ -2378,6 +2406,7 @@ text align={fit to path stretching spaces}%
 %%top参数为标题在新的一页生成，可以添加文字%%
 %%straight参数为标题与内容连续生成，不自动换页%%
 \titleclass{\chapter}{top}
+
 %%修改chapter断页方式%%
 \newcommand{\chapterbreak}{%
 \if@openright%
@@ -2418,9 +2447,12 @@ text align={fit to path stretching spaces}%
 \markboth{#2}{#2}%
 }{\OriginChapter[#2]{#3}}%
 %将长度\chap***cut@#1 封装进命令\@Chapter@Page@***@Cut{#1}{#2}{#3}中，并写入aux文件
-\@store@chapcut
+\@store@chapcut%
+%强制清除章首页的\topskip距离
+\kern-\topskip
 %清除章首页其他的额外垂直空白距离
-\nointerlineskip}
+\nointerlineskip%
+}
 
 %%节样式%%
 %%编号节样式%%
