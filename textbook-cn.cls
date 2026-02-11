@@ -26,6 +26,8 @@
 \DeclareVoidOption{sunrise}{\ekv{themecolor=sunrise}}
 %%声明参考文献生成方式布尔键%%
 \DeclareBoolOption[false]{splitbib}
+%%声明代码盒子生成方式布尔键%%
+\DeclareBoolOption[false]{mintedcode}
 %%加载book作为基础文档类%%
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessKeyvalOptions*\relax
@@ -665,17 +667,25 @@ BoldFont=WaterMarkFont.ttf]
 
 %%%%%%%%%%%%%%%%%%%% 盒子和列表宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage[most]{tcolorbox}%彩色盒子
-%\tcbuselibrary{xparse,minted}
 \tcbuselibrary{xparse}
+%%
+\ifTextBook@mintedcode
+\tcbuselibrary{minted}
+\fi
+%%
 \makesavenoteenv{tcolorbox}%确保tcb环境内的脚注正确生成
 \RequirePackage{empheq}%数学公式盒子
 \RequirePackage{adjustbox,varwidth}%自动调整字体大小的盒子%固定可变长度盒子
 \makesavenoteenv{varwidth}%确保varwidth环境内的脚注正确生成
 \RequirePackage{enumitem,hlist}%控制列表环境格式%对齐列表环境
 \RequirePackage{listings}%伪代码环境
-%\RequirePackage{listings,minted}%伪代码环境
-%\usemintedstyle{xcode}
+%%
+\ifTextBook@mintedcode
+\RequirePackage{minted}%伪代码环境
+\usemintedstyle{xcode}
 %为了使宏包minted正常工作，需要在xelatex编译器参数中添加-shell-escape
+\fi
+%%
 \RequirePackage{lineno}%行号宏包
 \modulolinenumbers[5]%每5行显示一个行号
 \renewcommand{\linenumberfont}{\color{ColorA}\LineNumFont}%修改行号字体
@@ -4222,30 +4232,94 @@ underlay boxed title={%
 %%
 \NewDocumentEnvironment{Cloze*}{+O{} +O{} }{\begin{box8}{\clozetitle}[#1][#2][ColorA]}{\end{box8}}
 
-%%%%%
-%\newtcblisting{PythonBox}[1][]{
-%CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
-%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-%listing only,listing engine=minted,
-%minted language=python}
-%%%
-%\newtcblisting{CppBox}[1][]{
-%CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
-%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-%listing only,listing engine=minted,
-%minted language=cpp}
-%%%
-%\newtcblisting{JavaBox}[1][]{
-%CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
-%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-%listing only,listing engine=minted,
-%minted language=java}
-%
-%\newtcblisting{CodeBox}[3][]{
-%CodeBox={\codetitle}/#1/{}/#3/{\uppercase{\sffamily#2}},
-%minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
-%listing only,listing engine=minted,
-%minted language=#2}
+%%%%
+\ifTextBook@mintedcode
+%%使用minted生成代码块%%
+\newtcblisting{PythonBox}[1][]{
+CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
+code={\renewcommand{\linenumberfont}{\LineNumFont\color{ColorA}}},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+listing only,listing engine=minted,
+minted language=python}
+%%
+\newtcblisting{CppBox}[1][]{
+CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
+code={\renewcommand{\linenumberfont}{\LineNumFont\color{ColorB}}},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+listing only,listing engine=minted,
+minted language=cpp}
+%%
+\newtcblisting{JavaBox}[1][]{
+CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
+code={\renewcommand{\linenumberfont}{\LineNumFont\color{ColorC}}},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+listing only,listing engine=minted,
+minted language=java}
+%%
+\NewTCBListing{OtherCodeBox}{O{} m O{ColorA}}{
+CodeBox={\codetitle}/#1/{}/#3/{\uppercase{\sffamily#2}},
+code={\renewcommand{\linenumberfont}{\LineNumFont\color{#3}}},
+minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
+listing only,listing engine=minted,
+minted language=#2}
+\else
+%%使用listing生成代码块%%
+\NewTCBListing{PythonBox}{O{} O{}}{
+CodeBox={\codetitle}/#2/{}/ColorA/{\uppercase{\sffamily python}},
+listing only,listing engine=listings,
+listing options={language=Python,columns=fullflexible,
+basicstyle=\ttfamily,
+keywordstyle=\bfseries\color{NavyBlue},
+emphstyle=\bfseries\color{Rhodamine},
+commentstyle=\rmfamily\itshape\color{black!50!white},
+stringstyle=\bfseries\color{PineGreen!90!black},
+numberstyle=\LineNumFont\color{ColorA},
+showstringspaces=false,showtabs=false,tabsize=2,
+breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
+#1}}
+%%
+\NewTCBListing{CppBox}{O{} O{}}{
+CodeBox={\codetitle}/#2/{}/ColorB/{\uppercase{\sffamily cpp}},
+listing only,listing engine=listings,
+listing options={language=C++,columns=fullflexible,
+basicstyle=\ttfamily,
+keywordstyle=\bfseries\color{NavyBlue},
+emphstyle=\bfseries\color{Rhodamine},
+commentstyle=\rmfamily\itshape\color{black!50!white},
+stringstyle=\bfseries\color{PineGreen!90!black},
+numberstyle=\LineNumFont\color{ColorB},
+showstringspaces=false,showtabs=false,tabsize=2,
+breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
+#1}}
+%%
+\NewTCBListing{JavaBox}{O{} O{}}{
+CodeBox={\codetitle}/#2/{}/ColorC/{\uppercase{\sffamily java}},
+listing only,listing engine=listings,
+listing options={language=Java,columns=fullflexible,
+basicstyle=\ttfamily,
+keywordstyle=\bfseries\color{NavyBlue},
+emphstyle=\bfseries\color{Rhodamine},
+commentstyle=\rmfamily\itshape\color{black!50!white},
+stringstyle=\bfseries\color{PineGreen!90!black},
+numberstyle=\LineNumFont\color{ColorC},
+showstringspaces=false,showtabs=false,tabsize=2,
+breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
+#1}}
+%%
+\NewTCBListing{OtherCodeBox}{O{} O{} m O{ColorA}}{
+CodeBox={\codetitle}/#2/{}/#4/{\uppercase{\sffamily#3}},
+listing only,listing engine=listings,
+listing options={language=#3,columns=fullflexible,
+basicstyle=\ttfamily,
+keywordstyle=\bfseries\color{NavyBlue},
+emphstyle=\bfseries\color{Rhodamine},
+commentstyle=\rmfamily\itshape\color{black!50!white},
+stringstyle=\bfseries\color{PineGreen!90!black},
+numberstyle=\LineNumFont\color{#4},
+showstringspaces=false,showtabs=false,tabsize=2,
+breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
+#1}}
+\fi
 
 %%%%
 %设置注释盒子%%
