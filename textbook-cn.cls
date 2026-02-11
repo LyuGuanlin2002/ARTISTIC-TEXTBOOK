@@ -18,6 +18,14 @@
 \DeclareVoidOption{orange}{\ekv{themecolor=orange}}
 \DeclareVoidOption{yellow}{\ekv{themecolor=yellow}}
 \DeclareVoidOption{colorful}{\ekv{themecolor=colorful}}
+\DeclareVoidOption{iris}{\ekv{themecolor=iris}}
+\DeclareVoidOption{harvest}{\ekv{themecolor=harvest}}
+\DeclareVoidOption{vineyard}{\ekv{themecolor=vineyard}}
+\DeclareVoidOption{sunflower}{\ekv{themecolor=sunflower}}
+\DeclareVoidOption{cypresses}{\ekv{themecolor=cypresses}}
+\DeclareVoidOption{sunrise}{\ekv{themecolor=sunrise}}
+%%声明参考文献生成方式布尔键%%
+\DeclareBoolOption[false]{splitbib}
 %%加载book作为基础文档类%%
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessKeyvalOptions*\relax
@@ -473,7 +481,7 @@ BoldFont=WaterMarkFont.ttf]
 %%定义非浮动体标签%%
 \newcommand{\nonfloatfigcaption}{\setcaptiontype{figure}\caption} 
 \newcommand{\nonfloattabcaption}{\setcaptiontype{table}\caption}
-
+%%表格宏包%%
 \RequirePackage{tabularray}
 \UseTblrLibrary{amsmath,hook,tikz,diagbox,booktabs,varwidth}
 
@@ -610,6 +618,43 @@ BoldFont=WaterMarkFont.ttf]
 \end{multicols}
 \fi
 \endgroup}
+
+%%%%%%%%%%%%%%%%%%%% 参考文献宏包 %%%%%%%%%%%%%%%%%%%%
+%%参考文献编译方式：先用XeLaTeX编译主文件.tex一次；再用BibTeX编译主文件（或各子文件）.aux一次；然后用XeLaTeX编译主文件.tex两次%%
+\RequirePackage{xstring}%字符串处理宏包
+\RequirePackage[numbers,sectionbib]{natbib}%参考文献格式
+\renewcommand{\bibnumfmt}[1]{\protect\NumberedLabel{#1}}%修改参考文献序号样式
+\renewcommand{\citenumfont}[1]{\color{ColorA}\CiteNumFont#1}%修改引用样式
+\bibpunct{\color{ColorA}{[}}{\color{ColorA}{]}}{,}{n}{}{;}%修改方括号颜色
+\renewcommand{\bibname}{参考文献}%修改参考文献标题
+%%加载宏包chapterbib时需要对各章节的tex文件进行bibtex编译，而不能对主tex文件进行bibtex编译%%
+\ifTextBook@splitbib
+\RequirePackage{chapterbib}%分章节显示参考文献，且参考文献编号各自独立
+\fi
+%%参考文献输出设置%%
+\NewDocumentCommand{\printbib}{O{\chapter*} m s}{%
+\colorlet{ListColor}{ColorA}%
+\def\@biblevel{#1}%
+%判断参考文献的层次是否是带*版本
+\IfSubStr{#1}{*}{%
+\IfBooleanTF{#3}{%
+%如果是带*版本且参数#3被传入*，则提取层次字符串（例如，参数#1为\chapter*，则提取为“chapter”
+%\@tempcmd为去除反斜杠“\”的层次，即“chapter*”
+\edef\@tempcmd{\expandafter\@gobble\string#1}%
+%\@clean@tempcmd为进一步去除*的层次，即“chapter”
+\def\@clean@tempcmd{\@tempcmd}%
+\IfSubStr{\@tempcmd}{*}{%
+\StrBefore{\@tempcmd}{*}[\@clean@tempcmd]%
+}{\relax}%
+%创建目录条目
+\phantomsection%
+\addcontentsline{toc}{\@clean@tempcmd}{\bibname}%
+}{\relax}%
+}{\relax}
+\def\bibsection{\@biblevel{\bibname}}%
+\bibliographystyle{plain}%
+\bibliography{#2}%
+}
 
 %%%%%%%%%%%%%%%%%%%% 数学符号宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{amsmath,amsfonts,amssymb,mathrsfs,array,bm,upgreek}%数学宏包
