@@ -4264,8 +4264,9 @@ listing only,listing engine=minted,
 minted language=#2}
 \else
 %%使用listing生成代码块%%
-\NewTCBListing{PythonBox}{O{} O{}}{
-CodeBox={\codetitle}/#2/{}/ColorA/{\uppercase{\sffamily python}},
+%参数#1为标题，是可选参数，#2为代码关键词等选项，是必选参数
+\NewTCBListing{PythonBox}{O{} m}{
+CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
 listing only,listing engine=listings,
 listing options={language=Python,columns=fullflexible,
 basicstyle=\ttfamily,
@@ -4276,10 +4277,10 @@ stringstyle=\bfseries\color{PineGreen!90!black},
 numberstyle=\LineNumFont\color{ColorA},
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
-#1}}
+#2}}
 %%
-\NewTCBListing{CppBox}{O{} O{}}{
-CodeBox={\codetitle}/#2/{}/ColorB/{\uppercase{\sffamily cpp}},
+\NewTCBListing{CppBox}{O{} m}{
+CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
 listing only,listing engine=listings,
 listing options={language=C++,columns=fullflexible,
 basicstyle=\ttfamily,
@@ -4290,10 +4291,10 @@ stringstyle=\bfseries\color{PineGreen!90!black},
 numberstyle=\LineNumFont\color{ColorB},
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
-#1}}
+#2}}
 %%
-\NewTCBListing{JavaBox}{O{} O{}}{
-CodeBox={\codetitle}/#2/{}/ColorC/{\uppercase{\sffamily java}},
+\NewTCBListing{JavaBox}{O{} m}{
+CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
 listing only,listing engine=listings,
 listing options={language=Java,columns=fullflexible,
 basicstyle=\ttfamily,
@@ -4304,12 +4305,12 @@ stringstyle=\bfseries\color{PineGreen!90!black},
 numberstyle=\LineNumFont\color{ColorC},
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
-#1}}
+#2}}
 %%
-\NewTCBListing{OtherCodeBox}{O{} O{} m O{ColorA}}{
-CodeBox={\codetitle}/#2/{}/#4/{\uppercase{\sffamily#3}},
+\NewTCBListing{OtherCodeBox}{O{} m m O{ColorA}}{
+CodeBox={\codetitle}/#1/{}/#4/{\uppercase{\sffamily#2}},
 listing only,listing engine=listings,
-listing options={language=#3,columns=fullflexible,
+listing options={language=#2,columns=fullflexible,
 basicstyle=\ttfamily,
 keywordstyle=\bfseries\color{NavyBlue},
 emphstyle=\bfseries\color{Rhodamine},
@@ -4318,7 +4319,7 @@ stringstyle=\bfseries\color{PineGreen!90!black},
 numberstyle=\LineNumFont\color{#4},
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
-#1}}
+#3}}
 \fi
 
 %%%%
