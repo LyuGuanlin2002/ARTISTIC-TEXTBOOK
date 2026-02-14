@@ -847,8 +847,15 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \fi}
 
 %%编号列表环境%%
-\NewDocumentEnvironment{NumberedItem}{O{1} +O{}}{%
-\setlist[enumerate]{leftmargin=0mm,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\arabic*}}%
+\NewDocumentEnvironment{NumberedItem}{O{1} +O{} m}{%
+\ifnum#3=1%
+\setlist[enumerate]{leftmargin=0em,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\arabic*}}%
+\else%
+\ifnum#3=2%
+\setlist[enumerate]{leftmargin=1.0em,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\alph*}}%
+\else%
+\relax%
+\fi\fi%
 \ifnum#1=1%
 \begin{enumerate}[#2]%
 \else%
@@ -869,8 +876,15 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \newcounter{@temp@item}[section]
 \setcounter{@temp@item}{0}
 %%%%
-\NewDocumentEnvironment{QuestionItem}{O{1} +O{}}{%
-\setlist[enumerate]{leftmargin=0mm,labelsep=0mm,itemsep=0mm,labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ListColor}\arabic*.}}%
+\NewDocumentEnvironment{QuestionItem}{O{1} +O{} m}{%
+\ifnum#3=1%
+\setlist[enumerate]{leftmargin=0em,labelsep=0mm,itemsep=0mm,labelwidth=2.0em,itemindent=2.0em,align=left,label={\sffamily\bfseries\color{ListColor}\arabic*.}}%
+\else%
+\ifnum#3=2%
+\setlist[enumerate]{leftmargin=1.0em,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label={\sffamily\bfseries\color{ListColor}\alph*.}}%
+\else%
+\relax%
+\fi\fi%
 \ifnum#1=1%
 \begin{enumerate}[#2]%
 \setcounter{enumi}{\value{@temp@item}}%
