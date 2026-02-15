@@ -854,7 +854,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \ifnum#3=2%
 \setlist[enumerate]{leftmargin=1.0em,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label=\protect\NumberedLabel{\alph*}}%
 \else%
-\relax%
+\ClassError{textbook-cn}{The level of the NumberedItem environment is only 1 or 2!}{}%
 \fi\fi%
 \ifnum#1=1%
 \begin{enumerate}[#2]%
@@ -883,7 +883,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \ifnum#3=2%
 \setlist[enumerate]{leftmargin=1.0em,labelsep=0mm,itemsep=0mm,labelwidth=1.5em,itemindent=1.5em,align=left,label={\sffamily\bfseries\color{ListColor}\alph*.}}%
 \else%
-\relax%
+\ClassError{textbook-cn}{The level of the QuestionItem environment is only 1 or 2!}{}%
 \fi\fi%
 \ifnum#1=1%
 \begin{enumerate}[#2]%
@@ -3832,7 +3832,6 @@ pad after break=5.0mm,
 rounded corners,arc=5.0pt,boxrule=2.25pt,
 colback=white,colframe=#4!75,%colframe=white,
 %frame style={left color=#4!50,right color=#4!50,middle color=#4},
-code={\colorlet{ListColor}{#4}},
 boxsep=3.0mm,
 top=1.5mm,bottom=1.5mm,left=2.0em+0.5mm,right=2.0mm,
 before=\par\bigskip,after=\par\bigskip,
@@ -3875,6 +3874,8 @@ overlay middle and last={
 \path[fill=#4!7.5](frame.south west)rectangle([xshift=1.9em]frame.north west);
 \end{tcbclipinterior}},
 code={\setlength{\linenumbersep}{7.5mm}%修改行号与正文的间距
+\colorlet{ListColor}{#4}%
+\renewcommand{\linenumberfont}{\LineNumFont\color{#4}}%
 }
 }}
 %%%%
@@ -4251,28 +4252,24 @@ underlay boxed title={%
 %%使用minted生成代码块%%
 \newtcblisting{PythonBox}[1][]{
 CodeBox={\codetitle}/#1/{}/ColorA/{\uppercase{\sffamily python}},
-code={\renewcommand{\linenumberfont}{\LineNumFont\color{ColorA}}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=python}
 %%
 \newtcblisting{CppBox}[1][]{
 CodeBox={\codetitle}/#1/{}/ColorB/{\uppercase{\sffamily cpp}},
-code={\renewcommand{\linenumberfont}{\LineNumFont\color{ColorB}}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=cpp}
 %%
 \newtcblisting{JavaBox}[1][]{
 CodeBox={\codetitle}/#1/{}/ColorC/{\uppercase{\sffamily java}},
-code={\renewcommand{\linenumberfont}{\LineNumFont\color{ColorC}}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=java}
 %%
 \NewTCBListing{OtherCodeBox}{O{} m O{ColorA}}{
 CodeBox={\codetitle}/#1/{}/#3/{\uppercase{\sffamily#2}},
-code={\renewcommand{\linenumberfont}{\LineNumFont\color{#3}}},
 minted options={breaklines,autogobble,linenos,numbersep=7.5mm,stepnumber=5},
 listing only,listing engine=minted,
 minted language=#2}
@@ -4288,7 +4285,7 @@ keywordstyle=\bfseries\color{NavyBlue},
 emphstyle=\bfseries\color{Rhodamine},
 commentstyle=\rmfamily\itshape\color{black!50!white},
 stringstyle=\bfseries\color{PineGreen!90!black},
-numberstyle=\LineNumFont\color{ColorA},
+numberstyle=\linenumberfont,
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
 #2}}
@@ -4302,7 +4299,7 @@ keywordstyle=\bfseries\color{NavyBlue},
 emphstyle=\bfseries\color{Rhodamine},
 commentstyle=\rmfamily\itshape\color{black!50!white},
 stringstyle=\bfseries\color{PineGreen!90!black},
-numberstyle=\LineNumFont\color{ColorB},
+numberstyle=\linenumberfont,
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
 #2}}
@@ -4316,7 +4313,7 @@ keywordstyle=\bfseries\color{NavyBlue},
 emphstyle=\bfseries\color{Rhodamine},
 commentstyle=\rmfamily\itshape\color{black!50!white},
 stringstyle=\bfseries\color{PineGreen!90!black},
-numberstyle=\LineNumFont\color{ColorC},
+numberstyle=\linenumberfont,
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
 #2}}
@@ -4330,7 +4327,7 @@ keywordstyle=\bfseries\color{NavyBlue},
 emphstyle=\bfseries\color{Rhodamine},
 commentstyle=\rmfamily\itshape\color{black!50!white},
 stringstyle=\bfseries\color{PineGreen!90!black},
-numberstyle=\LineNumFont\color{#4},
+numberstyle=\linenumberfont,
 showstringspaces=false,showtabs=false,tabsize=2,
 breaklines=true,numberfirstline=true,firstnumber=1,stepnumber=5,numbers=left,numbersep=7.5mm,
 #3}}

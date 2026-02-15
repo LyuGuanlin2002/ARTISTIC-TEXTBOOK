@@ -195,7 +195,7 @@
 
 
 
-\begin{PythonBox}{}
+\begin{CppBox}{}
 	#
 	from functools import lru_cache
 	@lru_cache(maxsize=None)
@@ -206,10 +206,10 @@
 	return fibonacci(n-1) + fibonacci(n-2)
 	# 打印前20个
 	print([fibonacci(i) for i in range(20)])
-\end{PythonBox}
+\end{CppBox}
 
 
-\begin{OtherCodeBox}{Python}{}%[ColorB]
+\begin{OtherCodeBox}[测试标题]{Python}{}[ColorE]
 	from functools import lru_cache
 	@lru_cache(maxsize=None)
 	def fibonacci(n):
