@@ -28,6 +28,8 @@
 \DeclareBoolOption[false]{splitbib}
 %%声明代码盒子生成方式布尔键%%
 \DeclareBoolOption[false]{mintedcode}
+%%声明文档出血线（裁切线）生成布尔键%%
+\DeclareBoolOption[false]{trimline}
 %%加载book作为基础文档类%%
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessKeyvalOptions*\relax
@@ -381,7 +383,7 @@ BoldFont=WaterMarkFont.ttf]
 \newcommand{\MainFont}{\upshape\rmfamily\FontSizeSet[1.4]{14pt}}%正文字体
 
 %%%%%%%%%%%%%%%%%%%% 页面布局设定宏包 %%%%%%%%%%%%%%%%%%%%
-\usepackage{setspace}%行距设置
+\RequirePackage{setspace}%行距设置
 %%边注宽度设置%%
 \gdef\@MarginColumn@Ratio{0.25}
 \gdef\@MainColumn@Ratio{\fpeval{1-\@MarginColumn@Ratio}}
@@ -452,6 +454,15 @@ BoldFont=WaterMarkFont.ttf]
 \@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax%
 \textheight\@DefaultTextheight%
 \originpcol@flushfloats}
+%%%%
+%%根据布尔变量加载文档裁切线宏包%%
+\ifTextBook@trimline
+\newlength{\trimlinewidth}
+\setlength{\trimlinewidth}{1.0in}
+\setlength{\stockwidth}{\paperwidth+\trimlinewidth}
+\setlength{\stockheight}{\paperheight+\trimlinewidth}
+\RequirePackage[cam,width=\stockwidth,height=\stockheight,center,noinfo]{crop}
+\fi
 
 %%%%%%%%%%%%%%%%%%%% 图表插入宏包 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage{graphicx}%插入图片路径
@@ -1477,6 +1488,8 @@ text align={fit to path stretching spaces}%
 %%背景颜色%%
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(O);
 \node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
@@ -1574,6 +1587,8 @@ text align={fit to path stretching spaces}%
 %%背景颜色%%
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(O);
 \node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
@@ -1709,6 +1724,8 @@ text align={fit to path stretching spaces}%
 %%背景颜色%%
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(O);
 \node[anchor=south west,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
@@ -1819,6 +1836,8 @@ text align={fit to path stretching spaces}%
 %%背景颜色%%
 \fill[ColorB!7.5](A)rectangle(O);
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(O);
 \node[anchor=south east,outer sep=0mm,inner sep=0mm](Pic)at(O){\@partimage};
 %%如果\@partimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@partimage}{\relax}{%
@@ -2099,6 +2118,8 @@ text align={fit to path stretching spaces}%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(C);
 \node[anchor=north west,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
@@ -2179,6 +2200,8 @@ text align={fit to path stretching spaces}%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(C);
 \node[anchor=north east,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
@@ -2306,6 +2329,8 @@ text align={fit to path stretching spaces}%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=0,out=180]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(C);
 \node[anchor=north west,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
@@ -2402,6 +2427,8 @@ text align={fit to path stretching spaces}%
 (A)--(B)--(C)--(D)--cycle
 (J)[rounded corners=5.0mm]--(I)[rounded corners=5.0mm]--(H)[rounded corners=2.5mm]--(G)[in=180,out=0]to(F)[sharp corners]--(E)--cycle;
 %%章节图片%%
+%%裁剪超出页面范围的图片%%
+\clip(A)rectangle(C);
 \node[anchor=north east,outer sep=0mm,inner sep=0mm](U)at(A){\@chapterimage};
 %%如果\@chapterimage不为空则添加白色透明蒙版%%
 \expandafter\ifblank\expandafter{\@chapterimage}{\relax}{%
