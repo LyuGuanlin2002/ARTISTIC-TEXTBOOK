@@ -1,0 +1,117 @@
+\makeatletter
+%%设计封面%%
+\newcommand{\coverimage}[1]{\long\def\@coverimage{#1}}
+\coverimage{}
+\newcommand{\TitlepageDecorativeFont}{\FontSizeSet[1.2]{80pt}}
+\newcommand{\ifetdef}{
+\maxsizebox{\paperwidth}{!}{\ifdefvoid{\@englishtitle}{}{\@englishtitle}}
+}
+\newcommand{\makecover}[3]{%
+\begin{titlepage}
+\noindent\raggedright%
+\begin{tikzpicture}[remember picture,overlay]
+\tikzset{opacity node/.style={anchor=north west,font=\TitlepageDecorativeFont\bfseries\sffamily,text=ColorB!25}}
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(D)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(E)at([xshift=-\@ExtraWidth,yshift=5.25cm]current page.west);
+\coordinate(F)at([xshift=\@ExtraWidth,yshift=5.25cm]current page.east);
+\coordinate(G)at($0.5*(E)+0.5*(C)$);
+%%背景1%%
+\draw[ColorB!5,fill=ColorB!5,sharp corners](D)rectangle(B);
+%%半透明文字%%
+\node[opacity node,text opacity=1.0](O_1)at(A){\ifetdef};
+\foreach \x[evaluate=\x as \botpoint using int(\x-1),
+evaluate=\x as \opa using 1.2-0.2*\x] in {2,...,10}{
+\node[opacity node,text opacity=\opa](O_\x)at(O_\botpoint.south west){\ifetdef};}
+%%背景2%%
+\draw[ColorA!80,fill=ColorA!80](E)rectangle(C);
+%%封面图%%
+\node[inner sep=0mm,anchor=center](CI)at(G){%
+\tikz{%
+\clip(-\paperwidth/2-\@ExtraWidth,-\paperheight/4-\@ExtraWidth/2-2.625cm)rectangle(\paperwidth/2+\@ExtraWidth,\paperheight/4+\@ExtraWidth/2+2.625cm);
+\node at(#2,#3){\includegraphics[width=#1]{\@coverimage}};}%
+};
+\end{tikzpicture}%
+\color{ColorA}%
+%%标题%%
+{\TitlepageTitleFont\@title\\}%
+%%英文标题%%
+\ifdefvoid{\@englishtitle}{}{%
+{\TitlepageEnglishFont\@englishtitle\\}}
+%%副标题%%
+\ifdefvoid{\@subtitle}{}{%
+{\TitlepageSubtitleFont\@subtitle\\}}%
+%%英文副标题%%
+\ifdefvoid{\@englishsubtitle}{}{%
+{\TitlepageEnglishFont\@englishsubtitle\\}}%
+\vskip2.0cm%
+%%版本号%%
+\ifdefvoid{\@version}{}{{\TitlepageNormalFont\color{white}第\@version 版\\}}%
+%%作者%%
+{\TitlepageNormalFont\color{white}%
+\begin{varwidth}{\linewidth-4.0cm}
+\@author
+\end{varwidth}%
+\qquad%
+\begin{varwidth}{2.0cm}
+编著
+\end{varwidth}%
+\\}%
+\vfill%
+%%出版社%%
+{\TitlepageNormalFont\color{white}%
+\ifdefvoid{\@presslogo}{}{\raisebox{-0.2cm}{\mbox{\includegraphics[width=0.75cm]{\@presslogo}\hskip0.25cm}}}\ifdefvoid{\@pressname}{}{\@pressname}%
+}%
+\end{titlepage}
+}
+
+%%设计封底%%
+\newcommand{\backimage}[1]{\long\def\@backimage{#1}}
+\newcommand{\backintro}[1]{\long\def\@backintro{#1}}
+\newcommand{\barcode}[1]{\long\def\@barcode{#1}}
+%%%%
+\newcommand{\ifestdef}{
+\maxsizebox{\paperwidth}{!}{\ifdefvoid{\@englishsubtitle}{}{\@englishsubtitle}}
+}
+\newcommand{\makeback}[3]{%
+\begin{titlepage}
+\noindent\raggedright%
+\begin{tikzpicture}[remember picture,overlay]
+\tikzset{opacity node/.style={anchor=north east,font=\TitlepageDecorativeFont\bfseries\sffamily,text=ColorB!25}}
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(D)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(E)at([xshift=-\@ExtraWidth,yshift=5.25cm]current page.west);
+\coordinate(F)at([xshift=\@ExtraWidth,yshift=5.25cm]current page.east);
+\coordinate(G)at($0.5*(E)+0.5*(C)$);
+%%背景1%%
+\draw[ColorB!5,fill=ColorB!5,sharp corners](D)rectangle(B);
+%%半透明文字%%
+\node[opacity node,text opacity=1.0](O_1)at(B){\ifestdef};
+\foreach \x[evaluate=\x as \botpoint using int(\x-1),
+evaluate=\x as \opa using 1.2-0.2*\x] in {2,...,10}{
+\node[opacity node,text opacity=\opa](O_\x)at(O_\botpoint.south east){\ifestdef};}
+%%背景2%%
+\draw[ColorA!80,fill=ColorA!80](E)rectangle(C);
+%%封底图%%
+\node[inner sep=0mm,anchor=center](BI)at(G){%
+\tikz{%
+\clip(-\paperwidth/2-\@ExtraWidth,-\paperheight/4-\@ExtraWidth/2-2.625cm)rectangle(\paperwidth/2+\@ExtraWidth,\paperheight/4+\@ExtraWidth/2+2.625cm);
+\node at(#2,#3){\includegraphics[width=#1]{\@backimage}};}%
+};
+\end{tikzpicture}
+\color{ColorA}%
+%%说明文字%%
+{\ChapterSayingFont\hspace*{2.0em}\ifdefvoid{\@backintro}{}{\@backintro}}%
+\vfill%
+%%书籍系列%%
+{\TitlepageNormalFont\color{white}%
+\ifdefvoid{\@serieslogo}{}{\raisebox{-0.2cm}{\mbox{\includegraphics[width=0.75cm]{\@serieslogo}\hskip0.25cm}}}\ifdefvoid{\@seriesname}{}{\@seriesname}%
+}%
+%%条形码%%
+\ifdefvoid{\@barcode}{}{\hfill\colorbox{white}{\includegraphics[width=5.0cm]{\@barcode}}};%
+\end{titlepage}}
+\makeatother

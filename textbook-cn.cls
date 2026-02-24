@@ -455,13 +455,17 @@ BoldFont=WaterMarkFont.ttf]
 \textheight\@DefaultTextheight%
 \originpcol@flushfloats}
 %%%%
+%%出血线宽度
+\newlength{\@ExtraWidth}
+\setlength{\@ExtraWidth}{0mm}
 %%根据布尔变量加载文档裁切线宏包%%
 \ifTextBook@trimline
 \newlength{\trimlinewidth}
 \setlength{\trimlinewidth}{1.0in}
 \setlength{\stockwidth}{\paperwidth+\trimlinewidth}
 \setlength{\stockheight}{\paperheight+\trimlinewidth}
-\RequirePackage[cam,width=\stockwidth,height=\stockheight,center,noinfo]{crop}
+\setlength{\@ExtraWidth}{3.0mm}
+\RequirePackage[cam,width=\stockwidth,height=\stockheight,center,noinfo,axes]{crop}
 \fi
 
 %%%%%%%%%%%%%%%%%%%% 图表插入宏包 %%%%%%%%%%%%%%%%%%%%
@@ -1049,8 +1053,9 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \RenewDocumentCommand{\sectionmark}{+m}{\markright{\sectionlabelfront{\sffamily\thesection}\sectionlabelback\quad#1}}
 %%%%
 %%绘制主页面样式%%
+%%页面边框宽度
 \newlength{\@FrameWidth}
-\setlength{\@FrameWidth}{1.0cm}
+\setlength{\@FrameWidth}{1.0cm+\@ExtraWidth}
 %%声明装订线布尔变量%%
 \newif\if@Gutter
 \@Gutterfalse
@@ -1069,8 +1074,8 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \newdimen\@ChapterPercentLength%
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
-\@PageNumHeight=\dimexpr\@toplen-\headsep+1.5mm\relax%
-\@PageNumWidth=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax%
+\@PageNumHeight=\dimexpr\@ExtraWidth+\@toplen-\headsep+1.5mm\relax%
+\@PageNumWidth=\dimexpr\@ExtraWidth+\@outerlen-\@FrameWidth-2.0mm\relax%
 \@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax%
 \@ThumbStartHeight=6.0cm%
 \@ThumbRangeHeight=\dimexpr\paperheight-2\@ThumbStartHeight\relax%
@@ -1092,14 +1097,14 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \pgfsetlayers{main,@MainPage@Top}%
 %%根据页数的奇偶生成%%
 \ifodd\value{page}
-\coordinate(A)at(current page.north west);
-\coordinate(B)at(current page.north east);
-\coordinate(C)at(current page.south east);
-\coordinate(D)at(current page.south west);
-\coordinate(E)at([xshift=\@GutterWidth,yshift=\@FrameWidth]current page.south west);
-\coordinate(F)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]current page.south east);
-\coordinate(G)at([xshift=-\@FrameWidth,yshift=-\@FrameWidth]current page.north east);
-\coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]current page.north west);
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(D)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(E)at([xshift=\@GutterWidth,yshift=\@FrameWidth]D);
+\coordinate(F)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
+\coordinate(G)at([xshift=-\@FrameWidth,yshift=-\@FrameWidth]B);
+\coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]A);
 \coordinate(I)at(current page.south);
 %%绘制页面框架%%
 \path[fill=ColorB!7.5,even odd rule,sharp corners]
@@ -1107,15 +1112,15 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 %%绘制页码%%
 \path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]
-([xshift=-\@outerlen+0.35cm]B)[rounded corners=1.5mm]--
-([xshift=-\@outerlen+0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
+([xshift=-\@ExtraWidth-\@outerlen+0.35cm]B)[rounded corners=1.5mm]--
+([xshift=-\@ExtraWidth-\@outerlen+0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
 ([xshift=-\@FrameWidth+0.15cm,yshift=-\@PageNumHeight]B)[sharp corners]--
 ([xshift=-\@FrameWidth+0.15cm]B)--cycle;
 %%%%
-\node[font=\PageNumberFont,text=white,anchor=south,inner ysep=2.5mm](P)at([xshift=-\@outerlen/2-\@FrameWidth/2+0.25cm,yshift=-\@PageNumHeight]B){\maxsizebox{\@PageNumWidth-4.0mm}{!}{\centering\thepage}};
+\node[font=\PageNumberFont,text=white,anchor=south,inner ysep=2.5mm](P)at([xshift=-\@ExtraWidth/2-\@outerlen/2-\@FrameWidth/2+0.25cm,yshift=-\@PageNumHeight]B){\maxsizebox{\@PageNumWidth-4.0mm}{!}{\centering\thepage}};
 %%绘制侧标%%
 \begin{pgfonlayer}{@MainPage@Top}
-\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=east,minimum height=2.75cm](T)at([xshift=-0.1cm,yshift=-\@ChapterPercentLength]B){%
+\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=east,minimum height=2.75cm](T)at([xshift=-0.1cm-\@ExtraWidth,yshift=-\@ChapterPercentLength]B){%
 \rotatebox[origin=c]{90}{%
 \begin{varwidth}{\@ThumbStartHeight}
 \@change@minipage@footnote%
@@ -1124,7 +1129,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 };
 \end{pgfonlayer}
 %%%%
-\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA](T.north west)--([xshift=0.1cm]T.north east)--([xshift=0.1cm]T.south east)[rounded corners=1.75mm]--(T.south west)[rounded corners=1.75mm]--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA](T.north west)--([xshift=\@ExtraWidth+0.1cm]T.north east)--([xshift=\@ExtraWidth+0.1cm]T.south east)[rounded corners=1.75mm]--(T.south west)[rounded corners=1.75mm]--cycle;
 %%%%
 %%绘制部分序号标签%%
 \begin{pgfonlayer}{@MainPage@Top}
@@ -1135,7 +1140,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-\@ExtraWidth-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-\@ExtraWidth-0.1cm]PTN.south east)--cycle;
 %%%%
 \if@Gutter
 %%绘制装订线%%
@@ -1149,14 +1154,14 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \fill[ColorB!50]([xshift=\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north west)circle(\@CircleRadius);}
 \fi
 \else
-\coordinate(A)at(current page.north east);
-\coordinate(B)at(current page.north west);
-\coordinate(C)at(current page.south west);
-\coordinate(D)at(current page.south east);
-\coordinate(E)at([xshift=-\@GutterWidth,yshift=\@FrameWidth]current page.south east);
-\coordinate(F)at([xshift=\@FrameWidth,yshift=\@FrameWidth]current page.south west);
-\coordinate(G)at([xshift=\@FrameWidth,yshift=-\@FrameWidth]current page.north west);
-\coordinate(H)at([xshift=-\@GutterWidth,yshift=-\@FrameWidth]current page.north east);
+\coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(B)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(C)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(D)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(E)at([xshift=-\@GutterWidth,yshift=\@FrameWidth]D);
+\coordinate(F)at([xshift=\@FrameWidth,yshift=\@FrameWidth]C);
+\coordinate(G)at([xshift=\@FrameWidth,yshift=-\@FrameWidth]B);
+\coordinate(H)at([xshift=-\@GutterWidth,yshift=-\@FrameWidth]A);
 \coordinate(I)at(current page.south);
 %%绘制页面框架%%
 \path[fill=ColorB!7.5,even odd rule,sharp corners]
@@ -1164,15 +1169,15 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 %%绘制页码%%
 \path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]
-([xshift=\@outerlen-0.35cm]B)[rounded corners=1.5mm]--
-([xshift=\@outerlen-0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
+([xshift=\@ExtraWidth+\@outerlen-0.35cm]B)[rounded corners=1.5mm]--
+([xshift=\@ExtraWidth+\@outerlen-0.35cm,yshift=-\@PageNumHeight]B)[rounded corners=1.5mm]--
 ([xshift=\@FrameWidth-0.15cm,yshift=-\@PageNumHeight]B)[sharp corners]--
 ([xshift=\@FrameWidth-0.15cm]B)--cycle;
 %%%%
-\node[font=\PageNumberFont,text=white,anchor=south,inner ysep=2.5mm](P)at([xshift=\@FrameWidth/2+\@outerlen/2-0.25cm,yshift=-\@PageNumHeight]B){\maxsizebox{\@PageNumWidth-4.0mm}{!}{\centering\thepage}};
+\node[font=\PageNumberFont,text=white,anchor=south,inner ysep=2.5mm](P)at([xshift=\@ExtraWidth/2+\@FrameWidth/2+\@outerlen/2-0.25cm,yshift=-\@PageNumHeight]B){\maxsizebox{\@PageNumWidth-4.0mm}{!}{\centering\thepage}};
 %%绘制侧标%%
 \begin{pgfonlayer}{@MainPage@Top}
-\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=west,minimum height=2.75cm](T)at([xshift=0.1cm,yshift=-\@ChapterPercentLength]B){%
+\node[font=\ThumbFont,text=white,outer sep=0mm,inner xsep=2.5mm,inner ysep=3.5mm,anchor=west,minimum height=2.75cm](T)at([xshift=0.1cm+\@ExtraWidth,yshift=-\@ChapterPercentLength]B){%
 \rotatebox[origin=c]{-90}{%
 \begin{varwidth}{\@ThumbStartHeight}
 \@change@minipage@footnote%
@@ -1181,7 +1186,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 };
 \end{pgfonlayer}
 %%%%
-\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([xshift=-0.1cm]T.north west)[rounded corners=1.75mm]--(T.north east)[rounded corners=1.75mm]--(T.south east)[sharp corners]--([xshift=-0.1cm]T.south west)--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([xshift=-\@ExtraWidth-0.1cm]T.north west)[rounded corners=1.75mm]--(T.north east)[rounded corners=1.75mm]--(T.south east)[sharp corners]--([xshift=-\@ExtraWidth-0.1cm]T.south west)--cycle;
 %%%%
 %%绘制部分序号标签%%
 \begin{pgfonlayer}{@MainPage@Top}
@@ -1192,7 +1197,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-0.1cm]PTN.south east)--cycle;
+\path[preaction={fill=ColorA!60!ColorB},pattern={Lines[angle=-45,distance=5.0pt,line width=4.0pt]},pattern color=ColorA]([yshift=-\@ExtraWidth-0.1cm]PTN.south west)[rounded corners=2.0mm]--(PTN.north west)[rounded corners=2.0mm]--(PTN.north east)[sharp corners]--([yshift=-\@ExtraWidth-0.1cm]PTN.south east)--cycle;
 %%%%
 \if@Gutter
 %%绘制装订线%%
@@ -1290,7 +1295,7 @@ text align={fit to path stretching spaces}%
 %%
 \newcommand{\@Part@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]
-\path[fill=ColorB!7.5](current page.south west)rectangle(current page.north east);
+\path[fill=ColorB!7.5]([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west)rectangle([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
 \node at(current page.center){\WaterMark};
 \end{tikzpicture}}
 %%
@@ -1358,8 +1363,8 @@ text align={fit to path stretching spaces}%
 \coordinate(SP)at(S0);
 \fi
 %%
-\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner xsep=2.0mm,inner ysep=3.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=90](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
-\draw[PartIndexDrawColor,ultra thick](S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--(S\i.south west);
+\path[fill=PartIndexFillColor,draw=none]node[append after command={([xshift=\@ExtraWidth]S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--([xshift=\@ExtraWidth]S\i.south west)--cycle},anchor=south east,font=\ThumbFont,text=PartIndexTextColor,inner xsep=2.0mm,inner ysep=3.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,rotate=90](S\i)at(SP){\parbox{\@Chap@PartIndex@Ht-4.0mm}{\centering\strut\@Chap@PartThumb\strut}\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick]([xshift=\@ExtraWidth]S\i.south east)[rounded corners=2.0mm]--(S\i.north east)--(S\i.north west)[sharp corners]--([xshift=\@ExtraWidth]S\i.south west);
 %%
 %%若本次循环的序数比部分序数少1或等于部分序数，则对纵向偏移量进行微调%%
 \if@PartStop
@@ -1408,8 +1413,8 @@ text align={fit to path stretching spaces}%
 \coordinate(SP)at(S0);
 \fi
 %%
-\path[fill=PartIndexFillColor,draw=none]node[append after command={(S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner xsep=2.0mm,inner ysep=3.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,align=center,rotate=270](S\i)at(SP){\hfill\strut\@Chap@PartThumb\strut\hfill\vspace*{\@Chap@PartIndex@XShift}};
-\draw[PartIndexDrawColor,ultra thick](S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--(S\i.south east);
+\path[fill=PartIndexFillColor,draw=none]node[append after command={([xshift=-\@ExtraWidth]S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--([xshift=-\@ExtraWidth]S\i.south east)--cycle},anchor=south west,font=\ThumbFont,text=PartIndexTextColor,inner xsep=2.0mm,inner ysep=3.0mm,outer sep=0mm,text width=\@Chap@PartIndex@Ht-4.0mm,rotate=270](S\i)at(SP){\parbox{\@Chap@PartIndex@Ht-4.0mm}{\centering\strut\@Chap@PartThumb\strut}\vspace*{\@Chap@PartIndex@XShift}};
+\draw[PartIndexDrawColor,ultra thick]([xshift=-\@ExtraWidth]S\i.south west)[rounded corners=2.0mm]--(S\i.north west)--(S\i.north east)[sharp corners]--([xshift=-\@ExtraWidth]S\i.south east);
 %%
 %%若本次循环的序数比部分序数少1或等于部分序数，则对纵向偏移量进行微调%%
 \if@PartStop
@@ -1451,38 +1456,38 @@ text align={fit to path stretching spaces}%
 \NewDocumentCommand{\@Part@OddPage@Style}{ +m +m }{%
 \begin{pgfonlayer}{@Part@Top}
 %%右上角色块坐标%%
-\coordinate(A)at(current page.north east);
-\coordinate(B)at([xshift=-\@Part@BlockWidth]current page.north east);
-\coordinate(C)at([xshift=-\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north east);
-\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north east);
+\coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(B)at([xshift=-\@Part@BlockWidth-\@ExtraWidth]A);
+\coordinate(C)at([xshift=-\@Part@BlockWidth-\@ExtraWidth,yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
+\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
 %%右上角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
 %%右侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
-\coordinate(R)at([xshift=-\@Part@MiddleOuterBlockLength]Q);
+\coordinate(R)at([xshift=-\@Part@MiddleOuterBlockLength-\@ExtraWidth]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
-\coordinate(S)at([xshift=-\@Part@MiddleOuterBlockLength]T);
+\coordinate(S)at([xshift=-\@Part@MiddleOuterBlockLength-\@ExtraWidth]T);
 %%右侧色块%%
 \path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
 %%右下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
-\coordinate(F)at([xshift=-\@Part@BlockWidth]E);
-\coordinate(H)at(current page.south east);
-\coordinate(G)at([xshift=-\@Part@BlockWidth]H);
+\coordinate(F)at([xshift=-\@Part@BlockWidth-\@ExtraWidth]E);
+\coordinate(H)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(G)at([xshift=-\@Part@BlockWidth-\@ExtraWidth]H);
 %%右下角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%%%
 %%左上角色块坐标%%
 \coordinate(I)at([xshift=-\@Part@StripeWidth]B);
-\coordinate(J)at(current page.north west);
-\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
+\coordinate(J)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]J);
 \coordinate(L)at([xshift=-\@Part@StripeWidth]C);
 %%%%
 %%左下角色块坐标%%
 \coordinate(M)at([xshift=-\@Part@StripeWidth]F);
-\coordinate(N)at([xshift=-\paperwidth]E);
-\coordinate(O)at(current page.south west);
+\coordinate(N)at([xshift=-\paperwidth-2\@ExtraWidth]E);
+\coordinate(O)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
 \coordinate(P)at([xshift=-\@Part@StripeWidth]G);
 %%%%
 %%背景颜色%%
@@ -1535,7 +1540,7 @@ text align={fit to path stretching spaces}%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
-\node[inner sep=0mm,outer sep=0mm,anchor=south west](SC)at([xshift=\@innerlen+2.5mm,yshift=\@botlen]current page.south west){%
+\node[inner sep=0mm,outer sep=0mm,anchor=south west](SC)at([xshift=\@ExtraWidth+\@innerlen+2.5mm,yshift=\@ExtraWidth+\@botlen]O){%
 \parbox{\@DefaultTextwidth-2.45cm}{%
 \begin{multicols}{3}
 \begingroup%
@@ -1551,37 +1556,37 @@ text align={fit to path stretching spaces}%
 \NewDocumentCommand{\@Part@EvenPage@Style}{ +m +m }{%
 \begin{pgfonlayer}{@Part@Top}
 %%左上角色块坐标%%
-\coordinate(A)at(current page.north west);
-\coordinate(B)at([xshift=\@Part@BlockWidth]current page.north west);
-\coordinate(C)at([xshift=\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north west);
-\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north west);
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@Part@BlockWidth+\@ExtraWidth]A);
+\coordinate(C)at([xshift=\@Part@BlockWidth+\@ExtraWidth,yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
+\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
 %%左上角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
 %%左侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
-\coordinate(R)at([xshift=\@Part@MiddleOuterBlockLength]Q);
+\coordinate(R)at([xshift=\@Part@MiddleOuterBlockLength+\@ExtraWidth]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
-\coordinate(S)at([xshift=\@Part@MiddleOuterBlockLength]T);
+\coordinate(S)at([xshift=\@Part@MiddleOuterBlockLength+\@ExtraWidth]T);
 %%左侧色块%%
 \path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
 %%左下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
-\coordinate(F)at([xshift=\@Part@BlockWidth]E);
-\coordinate(H)at(current page.south west);
-\coordinate(G)at([xshift=\@Part@BlockWidth]H);
+\coordinate(F)at([xshift=\@Part@BlockWidth+\@ExtraWidth]E);
+\coordinate(H)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(G)at([xshift=\@Part@BlockWidth+\@ExtraWidth]H);
 %%左下角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%%%
 %%右上角色块坐标%%
 \coordinate(I)at([xshift=\@Part@StripeWidth]B);
-\coordinate(J)at(current page.north east);
-\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
+\coordinate(J)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]J);
 \coordinate(L)at([xshift=\@Part@StripeWidth]C);
 %%右下角色块坐标%%
 \coordinate(M)at([xshift=\@Part@StripeWidth]F);
-\coordinate(N)at([xshift=\paperwidth]E);
-\coordinate(O)at(current page.south east);
+\coordinate(N)at([xshift=\paperwidth+2\@ExtraWidth]E);
+\coordinate(O)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
 \coordinate(P)at([xshift=\@Part@StripeWidth]G);
 %%%%
 %%背景颜色%%
@@ -1635,7 +1640,7 @@ text align={fit to path stretching spaces}%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
-\node[inner sep=0mm,outer sep=0mm,minimum width=4.0cm,anchor=south east](SC)at([xshift=-\@innerlen-2.5mm,yshift=\@botlen]current page.south east){%
+\node[inner sep=0mm,outer sep=0mm,minimum width=4.0cm,anchor=south east](SC)at([xshift=-\@ExtraWidth-\@innerlen-2.5mm,yshift=\@ExtraWidth+\@botlen]O){%
 \parbox{\@DefaultTextwidth-2.45cm}{%
 \begin{multicols}{3}
 \begingroup%
@@ -1689,36 +1694,36 @@ text align={fit to path stretching spaces}%
 \NewDocumentCommand{\@Part@Star@OddPage@Style}{ +m }{%
 \begin{pgfonlayer}{@Part@Star@Top}
 %%右上角色块坐标%%
-\coordinate(A)at(current page.north east);
-\coordinate(B)at([xshift=-\@Part@BlockWidth]current page.north east);
-\coordinate(C)at([xshift=-\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north east);
-\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north east);
+\coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(B)at([xshift=-\@Part@BlockWidth-\@ExtraWidth]A);
+\coordinate(C)at([xshift=-\@Part@BlockWidth-\@ExtraWidth,yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
+\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
 %%右上角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
 %%右侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
-\coordinate(R)at([xshift=-\@Part@MiddleOuterBlockLength]Q);
+\coordinate(R)at([xshift=-\@Part@MiddleOuterBlockLength-\@ExtraWidth]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
-\coordinate(S)at([xshift=-\@Part@MiddleOuterBlockLength]T);
+\coordinate(S)at([xshift=-\@Part@MiddleOuterBlockLength-\@ExtraWidth]T);
 %%右侧色块%%
 \path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
 %%右下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
-\coordinate(F)at([xshift=-\@Part@BlockWidth]E);
-\coordinate(H)at(current page.south east);
-\coordinate(G)at([xshift=-\@Part@BlockWidth]H);
+\coordinate(F)at([xshift=-\@Part@BlockWidth-\@ExtraWidth]E);
+\coordinate(H)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(G)at([xshift=-\@Part@BlockWidth-\@ExtraWidth]H);
 %%右下角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
 %%左上角色块坐标%%
 \coordinate(I)at([xshift=-\@Part@StripeWidth]B);
-\coordinate(J)at(current page.north west);
-\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
+\coordinate(J)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]J);
 \coordinate(L)at([xshift=-\@Part@StripeWidth]C);
 %%左下角色块坐标%%
 \coordinate(M)at([xshift=-\@Part@StripeWidth]F);
-\coordinate(N)at([xshift=-\paperwidth]E);
-\coordinate(O)at(current page.south west);
+\coordinate(N)at([xshift=-\paperwidth-2\@ExtraWidth]E);
+\coordinate(O)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
 \coordinate(P)at([xshift=-\@Part@StripeWidth]G);
 %%%%
 %%背景颜色%%
@@ -1785,7 +1790,7 @@ text align={fit to path stretching spaces}%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
-\node[inner sep=0mm,outer sep=0mm,anchor=south west](SC)at([xshift=\@innerlen+2.5mm,yshift=\@botlen]current page.south west){%
+\node[inner sep=0mm,outer sep=0mm,anchor=south west](SC)at([xshift=\@ExtraWidth+\@innerlen+2.5mm,yshift=\@ExtraWidth+\@botlen]O){%
 \parbox{\@DefaultTextwidth-2.45cm}{%
 \begin{multicols}{3}
 \begingroup%
@@ -1800,37 +1805,37 @@ text align={fit to path stretching spaces}%
 %%偶数页布局%%
 \NewDocumentCommand{\@Part@Star@EvenPage@Style}{ +m }{%
 \begin{pgfonlayer}{@Part@Star@Top}
-%%右上角色块坐标%%
-\coordinate(A)at(current page.north west);
-\coordinate(B)at([xshift=\@Part@BlockWidth]current page.north west);
-\coordinate(C)at([xshift=\@Part@BlockWidth,yshift=-\@Part@TopOuterBlockLength]current page.north west);
-\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength]current page.north west);
-%%右上角色块%%
+%%左上角色块坐标%%
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@Part@BlockWidth+\@ExtraWidth]A);
+\coordinate(C)at([xshift=\@Part@BlockWidth+\@ExtraWidth,yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
+\coordinate(D)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]A);
+%%左上角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](A)--(B)[rounded corners=2.5mm]--(C)[sharp corners]--(D)--cycle;
-%%右侧色块坐标%%
+%%左侧色块坐标%%
 \coordinate(Q)at([yshift=-\@Part@StripeWidth]D);
-\coordinate(R)at([xshift=\@Part@MiddleOuterBlockLength]Q);
+\coordinate(R)at([xshift=\@Part@MiddleOuterBlockLength+\@ExtraWidth]Q);
 \coordinate(T)at([yshift=-\@Part@BlockWidth]Q);
-\coordinate(S)at([xshift=\@Part@MiddleOuterBlockLength]T);
-%%右侧色块%%
+\coordinate(S)at([xshift=\@Part@MiddleOuterBlockLength+\@ExtraWidth]T);
+%%左侧色块%%
 \path[fill=ColorB!75,opacity=\@ColorBlock@Opacity](Q)[rounded corners=2.5mm]--(R)--(S)[sharp corners]--(T)--cycle;
-%%右下角色块坐标%%
+%%左下角色块坐标%%
 \coordinate(E)at([yshift=-\@Part@StripeWidth]T);
-\coordinate(F)at([xshift=\@Part@BlockWidth]E);
-\coordinate(H)at(current page.south west);
-\coordinate(G)at([xshift=\@Part@BlockWidth]H);
-%%右下角色块%%
+\coordinate(F)at([xshift=\@Part@BlockWidth+\@ExtraWidth]E);
+\coordinate(H)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(G)at([xshift=\@Part@BlockWidth+\@ExtraWidth]H);
+%%左下角色块%%
 \path[fill=ColorA,opacity=\@ColorBlock@Opacity](E)[rounded corners=2.5mm]--(F)[sharp corners]--(G)--(H)--cycle;
 \end{pgfonlayer}
-%%左上角色块坐标%%
+%%右上角色块坐标%%
 \coordinate(I)at([xshift=\@Part@StripeWidth]B);
-\coordinate(J)at(current page.north east);
-\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength]J);
+\coordinate(J)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(K)at([yshift=-\@Part@TopOuterBlockLength-\@ExtraWidth]J);
 \coordinate(L)at([xshift=\@Part@StripeWidth]C);
-%%左下角色块坐标%%
+%%右下角色块坐标%%
 \coordinate(M)at([xshift=\@Part@StripeWidth]F);
-\coordinate(N)at([xshift=\paperwidth]E);
-\coordinate(O)at(current page.south east);
+\coordinate(N)at([xshift=\paperwidth+2\@ExtraWidth]E);
+\coordinate(O)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
 \coordinate(P)at([xshift=\@Part@StripeWidth]G);
 %%%%
 %%背景颜色%%
@@ -1897,7 +1902,7 @@ text align={fit to path stretching spaces}%
 \@partintro
 \end{varwidth}};
 %%部分目录%%
-\node[inner sep=0mm,outer sep=0mm,minimum width=4.0cm,anchor=south east](SC)at([xshift=-\@innerlen-2.5mm,yshift=\@botlen]current page.south east){%
+\node[inner sep=0mm,outer sep=0mm,minimum width=4.0cm,anchor=south east](SC)at([xshift=-\@ExtraWidth-\@innerlen-2.5mm,yshift=\@ExtraWidth+\@botlen]O){%
 \parbox{\@DefaultTextwidth-2.45cm}{%
 \begin{multicols}{3}
 \begingroup%
@@ -2040,12 +2045,12 @@ text align={fit to path stretching spaces}%
 \newdimen\@DefaultTextheight
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
-\@Chapter@PageSize=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax
+\@Chapter@PageSize=\dimexpr\@ExtraWidth+\@outerlen-\@FrameWidth-2.0mm\relax
 \@Chapter@StripeWidth=0.325cm
 \@Chapter@LabelSep=0.5cm
 \@Chapter@LabelYShift@Up=0.5cm
 \@Chapter@LabelYShift@Down=0.65cm
-\@Chapter@SayingBlockHeight=\dimexpr\@outerlen-2.5mm\relax
+\@Chapter@SayingBlockHeight=\dimexpr\@ExtraWidth+\@outerlen-2.5mm\relax
 \@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
 \@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax
 %%定义页面底部裁剪长度%%
@@ -2056,35 +2061,35 @@ text align={fit to path stretching spaces}%
 \pgfsetlayers{@Chapter@Bottom,main,@Chapter@Top}
 \ifodd\value{page}%判断奇偶页
 %%坐标%%
-\coordinate(A)at(current page.north west);
-\coordinate(B)at(current page.north east);
-\coordinate(C)at(current page.south east);
-\coordinate(D)at(current page.south west);
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(D)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
 \coordinate(E)at([xshift=\@GutterWidth,yshift=\@Chapter@SayingBlockHeight]D);
 \coordinate(F)at([xshift=-5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=-3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([xshift=-\@outerlen,yshift=\@Chapter@LabelYShift@Up-\@toplen]current page.north east);
+\coordinate(N)at([xshift=-\@outerlen-\@ExtraWidth,yshift=\@Chapter@LabelYShift@Up-\@toplen]B);
 \coordinate(Q1)at([xshift=-\@FrameWidth+0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=-\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
 \begin{pgfonlayer}{@Chapter@Top}
 %%编号%%
-\path[fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
+\path[fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up+\@ExtraWidth]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up+\@ExtraWidth]T.north west)[rounded corners=2.5mm]--cycle},anchor=north east,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up-\@ExtraWidth]N){%
 \begin{varwidth}{\@DefaultTextwidth/3}
 \@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 %%渐变带%%
-\path[fill=ColorB!90,opacity=0.9]([xshift=\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south east)rectangle([xshift=-\paperwidth+\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south east);
+\path[fill=ColorB!90,opacity=0.9]([xshift=\@outerlen+\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south east)rectangle([xshift=-\paperwidth+\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south east);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
-\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth}
+\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth+\@ExtraWidth}
 %%
-\coordinate(PUL)at([xshift=-\paperwidth+\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east);
+\coordinate(PUL)at([xshift=-\paperwidth+\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east);
 \coordinate(PUR)at([xshift=-\paperwidth+\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]T.south east);
 \coordinate(PDR)at([xshift=-\paperwidth+\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
-\coordinate(PDL)at([xshift=-\paperwidth+\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
+\coordinate(PDL)at([xshift=-\paperwidth+\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south east);
 %%
 \path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%标题%%
@@ -2095,22 +2100,22 @@ text align={fit to path stretching spaces}%
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\coordinate(I)at([xshift=\@outerlen-\@FrameWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
-\coordinate(J)at([xshift=-\paperwidth+\@outerlen+\@GutterWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
+\coordinate(I)at([xshift=\@outerlen-\@FrameWidth+\@ExtraWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
+\coordinate(J)at([xshift=-\paperwidth+\@outerlen+\@GutterWidth-\@ExtraWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south east);
 \coordinate(K)at([xshift=-\@GutterWidth]J);
-\coordinate(L)at([yshift=-\@toplen]A);
+\coordinate(L)at([yshift=-\@toplen-\@ExtraWidth]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 %若标题区域高度过高（大于三分之一默认版心高度）
 \ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
-%并压缩副标题高度
-\coordinate(I)at([xshift=\paperwidth-\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+%并压缩标题高度
+\coordinate(I)at([xshift=\paperwidth-\@FrameWidth+2\@ExtraWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(J)at([xshift=\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 \fi
-\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth+\@ExtraWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
 %%框架%%
@@ -2132,41 +2137,41 @@ text align={fit to path stretching spaces}%
 %%
 \begin{pgfonlayer}{@Chapter@Top}
 %%底部文字%%
-\node[anchor=west,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=\@innerlen,yshift=\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
+\node[anchor=west,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=\@innerlen,yshift=\@ExtraWidth/2+\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
 \end{pgfonlayer}
 \else
-\coordinate(A)at(current page.north east);
-\coordinate(B)at(current page.north west);
-\coordinate(C)at(current page.south west);
-\coordinate(D)at(current page.south east);
+\coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(B)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(C)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(D)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
 \coordinate(E)at([xshift=-\@GutterWidth,yshift=\@Chapter@SayingBlockHeight]D);
 \coordinate(F)at([xshift=5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([xshift=\@outerlen,yshift=\@Chapter@LabelYShift@Up-\@toplen]current page.north west);
+\coordinate(N)at([xshift=\@outerlen+\@ExtraWidth,yshift=\@Chapter@LabelYShift@Up-\@toplen]B);
 \coordinate(Q1)at([xshift=\@FrameWidth-0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
 \begin{pgfonlayer}{@Chapter@Top}
 %%编号%%
-\path[fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up]T.north west)[rounded corners=2.5mm]--cycle},anchor=north west,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up]N){%
+\path[fill=ColorA,sharp corners]node[append after command={(T.south west)[rounded corners=2.5mm]--(T.south east)[sharp corners]--([yshift=\@toplen-2\@Chapter@LabelYShift@Up+\@ExtraWidth]T.north east)--([yshift=\@toplen-2\@Chapter@LabelYShift@Up+\@ExtraWidth]T.north west)[rounded corners=2.5mm]--cycle},anchor=north west,font=\ChapterLabelFont,text=white,inner xsep=\@Chapter@LabelSep,inner ysep=0mm,outer sep=0mm](T)at([yshift=\@Chapter@LabelYShift@Up-\@ExtraWidth]N){%
 \begin{varwidth}{\@DefaultTextwidth/3}%
 \@change@minipage@footnote%
 \strut#1\strut
 \end{varwidth}};
 %%渐变带%%
-\path[fill=ColorB!90,opacity=0.9]([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south west)rectangle([xshift=\paperwidth-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south west);
+\path[fill=ColorB!90,opacity=0.9]([xshift=-\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4+2.0pt]T.south west)rectangle([xshift=\paperwidth-\@outerlen+\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]T.south west);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
-\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth}
+\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth+\@ExtraWidth}
 %%
-\coordinate(PUL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west);
+\coordinate(PUL)at([xshift=-\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west);
 \coordinate(PUR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4]T.south west);
 \coordinate(PDR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
-\coordinate(PDL)at([xshift=-\@outerlen,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
+\coordinate(PDL)at([xshift=-\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@LabelYShift@Down/4-\@Chapter@StripeWidth]T.south west);
 %%
 \path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%标题%%
@@ -2177,22 +2182,22 @@ text align={fit to path stretching spaces}%
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\coordinate(I)at([xshift=-\@outerlen+\@FrameWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
-\coordinate(J)at([xshift=\paperwidth-\@outerlen-\@GutterWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
+\coordinate(I)at([xshift=-\@outerlen+\@FrameWidth-\@ExtraWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
+\coordinate(J)at([xshift=\paperwidth-\@outerlen-\@GutterWidth+\@ExtraWidth,yshift=-2\@Chapter@LabelYShift@Down/3]P.south west);
 \coordinate(K)at([xshift=\@GutterWidth]J);
-\coordinate(L)at([yshift=-\@toplen]A);
+\coordinate(L)at([yshift=-\@toplen-\@ExtraWidth]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 %若标题区域高度过高（大于三分之一默认版心高度）
 \ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
 %并压缩副标题高度
-\coordinate(I)at([xshift=-\paperwidth+\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(I)at([xshift=-\paperwidth+\@FrameWidth-2\@ExtraWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(J)at([xshift=-\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 \fi
-\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth+\@ExtraWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Bottom}
 %%框架%%
@@ -2214,7 +2219,7 @@ text align={fit to path stretching spaces}%
 %%
 \begin{pgfonlayer}{@Chapter@Top}
 %%底部文字%%
-\node[anchor=east,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=-\@innerlen,yshift=\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
+\node[anchor=east,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=-\@innerlen,yshift=\@ExtraWidth/2+\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
@@ -2238,12 +2243,12 @@ text align={fit to path stretching spaces}%
 \newdimen\@DefaultTextheight
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
-\@Chapter@PageSize=\dimexpr\@outerlen-\@FrameWidth-2.0mm\relax
+\@Chapter@PageSize=\dimexpr\@ExtraWidth+\@outerlen-\@FrameWidth-2.0mm\relax
 \@Chapter@StripeWidth=0.325cm
 \@Chapter@Star@LabelNameXSep=0.4cm
 \@Chapter@Star@LabelYShift@Up=0.5cm
 \@Chapter@Star@LabelYShift@Down=0.65cm
-\@Chapter@SayingBlockHeight=\dimexpr\@outerlen-2.5mm\relax
+\@Chapter@SayingBlockHeight=\dimexpr\@ExtraWidth+\@outerlen-2.5mm\relax
 \@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax
 \@DefaultTextheight=\dimexpr\paperheight-\@toplen-\@botlen\relax
 %%定义页面底部裁剪长度%%
@@ -2254,15 +2259,15 @@ text align={fit to path stretching spaces}%
 \pgfsetlayers{@Chapter@Star@Bottom,main,@Chapter@Star@Top}
 \ifodd\value{page}%判断奇偶页
 %%坐标点%%
-\coordinate(A)at(current page.north west);
-\coordinate(B)at(current page.north east);
-\coordinate(C)at(current page.south east);
-\coordinate(D)at(current page.south west);
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(D)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
 \coordinate(E)at([xshift=\@GutterWidth,yshift=\@Chapter@SayingBlockHeight]D);
 \coordinate(F)at([xshift=-5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=-3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([xshift=\@innerlen,yshift=\@Chapter@Star@LabelYShift@Up-\@toplen]current page.north west);
+\coordinate(N)at([xshift=\@innerlen+\@ExtraWidth,yshift=\@Chapter@Star@LabelYShift@Up-\@toplen-\@ExtraWidth]A);
 \coordinate(Q1)at([xshift=-\@FrameWidth+0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=-\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
@@ -2287,15 +2292,15 @@ text align={fit to path stretching spaces}%
 \endgroup%
 %%
 %%渐变带%%
-\path[fill=ColorB!90,opacity=0.9]([xshift=-\@innerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4+2.0pt]TT.south west)rectangle([xshift=\@outerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south east);
+\path[fill=ColorB!90,opacity=0.9]([xshift=-\@innerlen-\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4+2.0pt]TT.south west)rectangle([xshift=\@outerlen+\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south east);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
-\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth}
+\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth+\@ExtraWidth}
 %%
-\coordinate(PUL)at([xshift=-\@innerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4]TT.south west);
+\coordinate(PUL)at([xshift=-\@innerlen-\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4]TT.south west);
 \coordinate(PUR)at([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@Star@LabelYShift@Down/4]TT.south west);
 \coordinate(PDR)at([xshift=-\@innerlen+\@PagePercentLength,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
-\coordinate(PDL)at([xshift=-\@innerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\coordinate(PDL)at([xshift=-\@innerlen-\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
 %%
 \path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%副标题%%
@@ -2306,22 +2311,22 @@ text align={fit to path stretching spaces}%
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\coordinate(I)at([xshift=\@outerlen-\@FrameWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
-\coordinate(J)at([xshift=-\paperwidth+\@outerlen+\@GutterWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
+\coordinate(I)at([xshift=\@outerlen-\@FrameWidth+\@ExtraWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
+\coordinate(J)at([xshift=-\paperwidth+\@outerlen+\@GutterWidth-\@ExtraWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south east);
 \coordinate(K)at([xshift=-\@GutterWidth]J);
-\coordinate(L)at([yshift=-\@toplen]A);
+\coordinate(L)at([yshift=-\@toplen-\@ExtraWidth]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 %若标题区域高度过高（大于三分之一默认版心高度）
 \ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
 %并压缩副标题高度
-\coordinate(I)at([xshift=\paperwidth-\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(I)at([xshift=\paperwidth-\@FrameWidth+2\@ExtraWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(J)at([xshift=\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 \fi
-\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth+\@ExtraWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
 %%框架%%
@@ -2343,22 +2348,22 @@ text align={fit to path stretching spaces}%
 %%
 \begin{pgfonlayer}{@Chapter@Star@Top}
 %%底部文字%%
-\node[anchor=west,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=\@innerlen,yshift=\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
+\node[anchor=west,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=\@innerlen,yshift=\@ExtraWidth/2+\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
 \end{pgfonlayer}
 \else
 %%坐标点%%
-\coordinate(A)at(current page.north east);
-\coordinate(B)at(current page.north west);
-\coordinate(C)at(current page.south west);
-\coordinate(D)at(current page.south east);
+\coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(B)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(C)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(D)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
 \coordinate(E)at([xshift=-\@GutterWidth,yshift=\@Chapter@SayingBlockHeight]D);
 \coordinate(F)at([xshift=5.0cm,yshift=\@Chapter@SayingBlockHeight]C);
 \coordinate(G)at([xshift=3.0cm,yshift=\@FrameWidth]C);
 \coordinate(H)at([xshift=\@FrameWidth,yshift=\@FrameWidth]C);
-\coordinate(N)at([xshift=-\@innerlen,yshift=\@Chapter@Star@LabelYShift@Up-\@toplen]current page.north east);
+\coordinate(N)at([xshift=-\@innerlen-\@ExtraWidth,yshift=\@Chapter@Star@LabelYShift@Up-\@toplen-\@ExtraWidth]A);
 \coordinate(Q1)at([xshift=\@FrameWidth-0.15cm,yshift=\@FrameWidth-0.15cm]C);
 \coordinate(Q2)at([xshift=\@Chapter@PageSize,yshift=\@Chapter@PageSize]Q1);
 \coordinate(Q)at($0.5*(Q1)+0.5*(Q2)$);
@@ -2385,15 +2390,15 @@ text align={fit to path stretching spaces}%
 \endgroup%
 %%
 %%渐变带%%
-\path[fill=ColorB!90,opacity=0.9]([xshift=\@innerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4+2.0pt]TT.south east)rectangle([xshift=-\@outerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south west);
+\path[fill=ColorB!90,opacity=0.9]([xshift=\@innerlen+\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4+2.0pt]TT.south east)rectangle([xshift=-\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth-2.0pt]TT.south west);
 %%记录当前页占文档总页数的百分比%%
 \def\@PagePercent{\fpeval{\arabic{totalpages}/\@abspage@last}}
-\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth}
+\@PagePercentLength=\dimeval{\@innerlen+\@PagePercent\@DefaultTextwidth+\@ExtraWidth}
 %%
-\coordinate(PUL)at([xshift=-\@outerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4]TT.south west);
+\coordinate(PUL)at([xshift=-\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4]TT.south west);
 \coordinate(PUR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@Star@LabelYShift@Down/4]TT.south west);
 \coordinate(PDR)at([xshift=-\@outerlen+\@PagePercentLength,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
-\coordinate(PDL)at([xshift=-\@outerlen,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
+\coordinate(PDL)at([xshift=-\@outerlen-\@ExtraWidth,yshift=-3\@Chapter@Star@LabelYShift@Down/4-\@Chapter@StripeWidth]TT.south west);
 %%
 \path[fill=ColorA,opacity=0.8](PUL)[rounded corners=\@Chapter@StripeWidth/2]--(PUR)--(PDR)[sharp corners]--(PDL)--cycle;
 %%副标题%%
@@ -2404,22 +2409,22 @@ text align={fit to path stretching spaces}%
 \end{varwidth}};
 \end{pgfonlayer}
 %%%%
-\coordinate(I)at([xshift=-\@outerlen+\@FrameWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
-\coordinate(J)at([xshift=\paperwidth-\@outerlen-\@GutterWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
+\coordinate(I)at([xshift=-\@outerlen+\@FrameWidth-\@ExtraWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
+\coordinate(J)at([xshift=\paperwidth-\@outerlen-\@GutterWidth+\@ExtraWidth,yshift=-2\@Chapter@Star@LabelYShift@Down/3]P.south west);
 \coordinate(K)at([xshift=\@GutterWidth]J);
-\coordinate(L)at([yshift=-\@toplen]A);
+\coordinate(L)at([yshift=-\@toplen-\@ExtraWidth]A);
 %%%%
 %%获取标题区域的高度%%
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 %若标题区域高度过高（大于三分之一默认版心高度）
 \ifdim\@Chapter@TitleBlockHeight>\dimexpr\@DefaultTextheight/3\relax
 %并压缩副标题高度
-\coordinate(I)at([xshift=-\paperwidth+\@FrameWidth,yshift=-\@DefaultTextheight/3]L);
+\coordinate(I)at([xshift=-\paperwidth+\@FrameWidth-2\@ExtraWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(J)at([xshift=-\@GutterWidth,yshift=-\@DefaultTextheight/3]L);
 \coordinate(K)at([yshift=-\@DefaultTextheight/3]L);
 \pgfgetdistance(K)(L)\@Chapter@TitleBlockHeight
 \fi
-\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth}
+\gsetlength{\@ChapterPage@TopCut}{\@Chapter@TitleBlockHeight+\@toplen-\@FrameWidth+\@ExtraWidth}
 %%%%
 \begin{pgfonlayer}{@Chapter@Star@Bottom}
 %%框架%%
@@ -2441,7 +2446,7 @@ text align={fit to path stretching spaces}%
 %%
 \begin{pgfonlayer}{@Chapter@Star@Top}
 %%底部文字%%
-\node[anchor=east,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=-\@innerlen,yshift=\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
+\node[anchor=east,font=\ChapterSayingFont,text=ColorA,text width=\paperwidth-\@innerlen-5.0cm,inner sep=0mm,outer sep=0mm](S)at([xshift=-\@innerlen,yshift=\@ExtraWidth/2+\@Chapter@SayingBlockHeight/2]D){\@chaptersaying};
 %%页码%%
 \path[fill=ColorA,rounded corners=2.0mm](Q1)rectangle(Q2);
 \node[font=\PageNumberFont,text=white,anchor=center,align=center](PP)at(Q){\maxsizebox{\@Chapter@PageSize-0.3cm}{!}{\thepage}};
@@ -4460,14 +4465,14 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
 %%
-\coordinate(A)at(current page.north west);
-\coordinate(B)at(current page.north east);
-\coordinate(C)at(current page.south east);
-\coordinate(D)at(current page.south west);
-\coordinate(E)at([xshift=\@GutterWidth,yshift=\@FrameWidth]current page.south west);
-\coordinate(F)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]current page.south east);
-\coordinate(G)at([xshift=-\@FrameWidth,yshift=-\@FrameWidth]current page.north east);
-\coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]current page.north west);
+\coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(D)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(E)at([xshift=\@GutterWidth,yshift=\@FrameWidth]D);
+\coordinate(F)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
+\coordinate(G)at([xshift=-\@FrameWidth,yshift=-\@FrameWidth]B);
+\coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]A);
 %%背景%%
 \path[fill=ColorB!7.5,sharp corners](D)rectangle(B);
 %%
@@ -4475,6 +4480,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 (A)--(B)--(C)--(D)--cycle
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 \end{tikzpicture}%
+\setlength{\parindent}{0pt}%
 \centering\color{ColorA}%
 %%书籍系列%%
 {\TitlepageNormalFont%
@@ -4498,7 +4504,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 %%版本号%%
 \ifdefvoid{\@version}{}{%
 \vskip0.75cm%
-{\TitlepageNormalFont 第 \@version 版\\}}%
+{\TitlepageNormalFont 第\@version 版\\}}%
 \vskip1.0cm%
 %%作者%%
 {\TitlepageNormalFont%
