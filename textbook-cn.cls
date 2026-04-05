@@ -1077,7 +1077,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \@PageNumHeight=\dimexpr\@ExtraWidth+\@toplen-\headsep+1.5mm\relax%
 \@PageNumWidth=\dimexpr\@ExtraWidth+\@outerlen-\@FrameWidth-2.0mm\relax%
 \@DefaultTextwidth=\dimexpr\paperwidth-\@innerlen-\@outerlen\relax%
-\@ThumbStartHeight=6.0cm%
+\@ThumbStartHeight=\dimexpr\@ExtraWidth+6.0cm\relax%
 \@ThumbRangeHeight=\dimexpr\paperheight-2\@ThumbStartHeight\relax%
 %%侧标位置更新%%
 \ifnum\totvalue{@Chapter@Number}=0
@@ -2766,12 +2766,12 @@ text align={fit to path stretching spaces}%
 \tikz[baseline=-0.4em]{%
 \begingroup%
 \SubsubsectionFont%
-\newdimen\@Subsubsection@LabelRadius
+\newdimen\@Subsubsection@LabelRadius%
 %%
 \@Subsubsection@LabelRadius=\dimexpr5\baselineskip/12\relax%
 \node[outer sep=0mm,inner sep=0mm]{\@HalfCircle@Label{ColorB}{\@Subsubsection@LabelRadius}};
 \endgroup}%
-}{4.0mm}{#1}
+}{2.5mm}{#1}
 %%间距设置%%
 \titlespacing*{\subsubsection}{0pt}{5.0mm}{5.0mm}
 %%page参数为标题占据一整页，不可以添加文字%%
@@ -3727,43 +3727,47 @@ text align={fit to path stretching spaces}%
 
 %%%%
 %%例题%%
-\newenvironment{Example}{%
+\NewDocumentEnvironment{Example}{+O{}}{%
 \medskip%
 \colorlet{ListColor}{ColorA}%
 \if@mainmatter%
 \stepcounter{@example}%
 \@ExampleStyle{\exampletitle}{\environmentmark\the@prenumber.\the@example}{ColorA}%
 \else%
-\@AnswerStyle{\@Example@Name}{ColorA}%
+\@AnswerStyle{\exampletitle}{ColorA}%
 \fi%
 \hspace*{0.5em}\vspace*{0.25em}%
+{\color{ColorA}\bfseries #1~~}%
 }{\medskip}
 %%%%
-\newenvironment{Example*}{%
+\NewDocumentEnvironment{Example*}{+O{}}{%
 \medskip%
 \colorlet{ListColor}{ColorA}%
-\@AnswerStyle{\@Example@Name}{ColorA}%
+\@AnswerStyle{\exampletitle}{ColorA}%
 \hspace*{0.5em}\vspace*{0.25em}%
+{\color{ColorA}\bfseries #1~~}%
 }{\medskip}
 
 %%变式%%
-\newenvironment{Variant}{%
+\NewDocumentEnvironment{Variant}{+O{}}{%
 \medskip%
 \colorlet{ListColor}{ColorB}%
 \if@mainmatter%
 \stepcounter{@variant}%
 \@ExampleStyle{\varianttitle}{\environmentmark\the@prenumber.\the@variant}{ColorB}%
 \else%
-\@AnswerStyle{\@Variant@Name}{ColorB}%
+\@AnswerStyle{\varianttitle}{ColorB}%
 \fi%
 \hspace*{0.5em}\vspace*{0.25em}%
+{\color{ColorB}\bfseries #1~~}%
 }{\medskip}
 %%%%
-\newenvironment{Variant*}{%
+\NewDocumentEnvironment{Variant*}{+O{}}{%
 \medskip%
 \colorlet{ListColor}{ColorB}%
-\@AnswerStyle{\@Variant@Name}{ColorB}%
+\@AnswerStyle{\varianttitle}{ColorB}%
 \hspace*{0.5em}\vspace*{0.25em}%
+{\color{ColorB}\bfseries #1~~}%
 }{\medskip}
 
 %%%%
@@ -4387,14 +4391,14 @@ NoteBox=#2/#3,%边注内盒子不要加载breakable参数，会导致行距异�
 fontupper=\MarginNoteFont,
 fontlower=\MarginNoteFont,
 #1}
-%%边注盒子
-\newtcbox{\sidenotemark}[1]{on line,empty,colupper=white,fontupper=\FontSizeSet{11pt}\bfseries,
+%%边注标记盒子
+\newtcbox{\sidenotemark}[1][ColorA]{on line,empty,colupper=white,fontupper=\FontSizeSet{11pt}\bfseries,
 boxsep=0mm,left=2.0mm,right=2.0mm,top=0.5mm,bottom=0.5mm,
 overlay={%
 \pgfgetnodeheight(frame)\@sidebox@height%
 \draw[#1,fill=#1,rounded corners={\@sidebox@height/2}](frame.north west)rectangle(frame.south east);
 }}
-%%%%
+%%边注盒子%%
 %%+m表示允许换行、空行的参数%%
 \DeclareDocumentCommand{\RelaInfo}{ s +m O{0pt} }
 {\if@mainmatter%

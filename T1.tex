@@ -6,7 +6,7 @@
 
 \chaptersaying{不了解运动，就不了解自然。——亚里士多德}
 
-%\chapterimage{\includegraphics[width=\paperwidth]{Newton.jpg}}运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述
+%\chapterimage{\includegraphics[width=\paperwidth+1.0cm]{Newton.jpg}}运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述
 \chapter[运动的描述]{运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述运动的描述}
 
 \addmarginparintoc{\cutimage{1.5\linewidth}{-3.0mm}{0}{iris.jpg}}
@@ -205,7 +205,9 @@ vline{2-Y}={gray}
 \end{paracol}
 
 
-\begin{Variant}
+\begin{Example*}[测试文字测试文字测试文字测试文字测试文字
+	
+测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字]
 这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题
 
 \begin{NumberedItem}{1}
@@ -219,7 +221,7 @@ vline{2-Y}={gray}
 		\end{NumberedItem}
 \end{NumberedItem}
 
-\end{Variant}
+\end{Example*}
 
 
 \begin{NumberedItem}{1}
@@ -276,7 +278,7 @@ vline{2-Y}={gray}
 
 
 
-%\chapterimage{\includegraphics[height=\paperheight]{poppies.jpg}}
+%\chapterimage{\includegraphics[height=\paperheight+1.0cm]{poppies.jpg}}
 \chapter{附录1}
 %\AddGutter
 
@@ -300,7 +302,7 @@ vline{2-Y}={gray}
 
 \begin{Appendix}
 
-%\chapterimage{\includegraphics[height=\paperheight]{iris1.jpg}}
+%\chapterimage{\includegraphics[height=\paperheight+1.0cm]{iris1.jpg}}
 \chapter{附录2}
 
 
@@ -343,6 +345,14 @@ vline{2-Y}={gray}
 \subsubsection{看目录}
 
 \subsubsection*{看目录}
+
+
+\makeatletter
+\begin{tikzpicture}[remember picture,overlay]
+\node[draw=ColorB,rounded corners=7.5pt,line width=5.0pt,opacity=0.15,text=ColorB,font={\bfseries\FontSizeSet[0.5]{0.85cm}},align=center,anchor=center,rotate=0]at(current page.center){内部资料\\严禁外传};
+\end{tikzpicture}
+\makeatother
+
 
 
 \section{测试}
@@ -409,7 +419,7 @@ vline{2-Y}={gray}
 \part*{丝柏树}
 
 
-\chapterimage{\includegraphics[height=\paperheight]{cypresses.jpg}}
+\chapterimage{\includegraphics[height=\paperheight+1.0cm]{cypresses.jpg}}
 \chapter{彩色计时器彩色计时器彩色计时器彩色计时器彩色计时}
 
 文森特·威廉·梵高（Vincent Willem van Gogh，1853年3月30日—1890年7月29日），荷兰后印象派画家。代表作有《星月夜》、自画像系列、向日葵系列等。
@@ -462,7 +472,7 @@ vline{2-Y}={gray}
 
 
 \begin{paracol}{2}
-	\NoteArea[2.0em]
+	\NoteArea[1.0em]
 	
 	
 %	\tcbox[boxsep=0mm,fontupper=\BoxTitleFont,colupper=ColorA,colframe=ColorB!7.5,width=\linewidth]{\faCaretLeft~\notetitle~\faCaretRight}
@@ -519,7 +529,7 @@ vline{2-Y}={gray}
 从力的性质来看，力学中经常遇到的有重力、弹力、摩擦力．下面几节就分别介绍这三种力．
 
 
-\begin{Example}
+\begin{Example}[测试文字]
 	\lipsum[1][1-7]
 	\begin{flalign}
 		\Psi=\int_\Omega\left[f\left(\phi\right)+\kappa\left|\nabla\phi\right|^2\right]{\rm d}V
@@ -777,36 +787,6 @@ vline{2-Y}={gray}
 
 
 
-%\begin{PythonBox}[神经网络]
-%import pytorch as pt
-%import numpy as np
-%import pandas as pd
-%import pytorch as pt
-%import numpy as np
-%import pandas as pd
-%import pytorch as pt
-%import numpy as np
-%import pytorch as pt
-%import numpy as np
-%import pandas as pd
-%import pytorch as pt
-%import numpy as np
-%import pandas as pd
-%import pandas as pd
-%import pytorch as pt
-%import numpy as np
-%import pandas as pd
-%import pytorch as pt
-%import numpy as np
-%import pandas as pd
-%\end{PythonBox}
-
-
-
-
-
-
-
 
 
 
@@ -861,9 +841,8 @@ vline{2-Y}={gray}
 
 \Improve
 \begin{QuestionItem}[2]{1}
-	\item test$\Psi=\int_\Omega\left[f\left(\phi\right)+\kappa\left|\nabla\phi\right|^2\right]{\rm d}V$
-	\item test
-	$$\Psi=\int_\Omega\left[f\left(\phi\right)+\kappa\left|\nabla\phi\right|^2\right]{\rm d}V$$
+	\item $\Psi=\int_\Omega\left[f\left(\phi\right)+\kappa\left|\nabla\phi\right|^2\right]{\rm d}V$
+	\item $$\Psi=\int_\Omega\left[f\left(\phi\right)+\kappa\left|\nabla\phi\right|^2\right]{\rm d}V$$
 	\item test
 	\item test
 	\item test
@@ -901,7 +880,7 @@ vline{2-Y}={gray}
 }
 
 
-\chapterimage{\includegraphics[height=\paperheight]{vineyard.jpg}}
+\chapterimage{\includegraphics[height=\paperheight+1.0cm]{vineyard.jpg}}
 \chapter*{测试文字}
 \zhlipsum[1]
 
@@ -913,7 +892,7 @@ vline{2-Y}={gray}
 \begin{Appendix*}
 	
 
-\chapterimage{\includegraphics[height=\paperheight]{poppies.jpg}}
+\chapterimage{\includegraphics[height=\paperheight+1.0cm]{poppies.jpg}}
 \chapter{测试计数器}
 
 \lipsum
@@ -942,7 +921,7 @@ vline{2-Y}={gray}
 \zhlipsum
 
 
-\chapterimage{\includegraphics[height=\paperheight]{garden.jpg}}
+\chapterimage{\includegraphics[height=\paperheight+1.0cm]{garden.jpg}}
 \chapter{测试计数器}
 奥斯卡-克劳德·莫奈（法文：Oscar-Claude Monet，1840年11月14日——1926年12月5日），法国画家，被誉为“印象派领导者”，印象派代表人物和创始人之一。
 
