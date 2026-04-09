@@ -1062,6 +1062,16 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 %%
 \newcommand{\AddGutter}{\@Guttertrue}%添加装订线
 \newcommand{\RemoveGutter}{\@Gutterfalse}%移除装订线
+%%三叶草图案%%
+\NewDocumentCommand{\Clover}{O{ColorB!7.5} O{0.25}}{%
+\tikz[#1,scale=#2]{%
+\fill(.1,0) ..controls + (-60:2) and + (60:4)..(-3,-25)--++(-.5,0) ..controls + (60:2) and + (-60:2)..(-.1,0)--cycle;
+\def\petal{%
+(0.2,0) ..controls + (90:2) and + (-90:4)..(6,7) ..controls + (90:4) and + (90:4)..(0,7) ..controls + (90:4) and + (90:4)..(-6,7) ..controls + (-90:4) and + (90:2)..(-.2,0)}
+\fill\petal;
+\fill[rotate=120]\petal;
+\fill[rotate=-120]\petal;}
+}
 %%
 \newcommand{\@Main@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]%
@@ -1153,6 +1163,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \foreach \i in {1,...,\@CircleNumber}{%
 \fill[ColorB!50]([xshift=\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north west)circle(\@CircleRadius);}
 \fi
+%%%%
 \else
 \coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
 \coordinate(B)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
@@ -4483,6 +4494,8 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 \path[fill=ColorB!15]
 (A)--(B)--(C)--(D)--cycle
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
+%%
+\node[inner sep=0mm]at(current page.center){\Clover[ColorB!15][0.25]};
 \end{tikzpicture}%
 \setlength{\parindent}{0pt}%
 \centering\color{ColorA}%
