@@ -4254,7 +4254,8 @@ underlay boxed title={%
 %%
 \newenvironment{Solution}{\begin{box7*}[][\faBars~~\solutiontitle]}{\end{box7*}}
 %%
-\newcommand{\Summary}[1]{\begin{box7*}[][\faBars~~\summarytitle]\vspace*{#1}\end{box7*}}
+\newcommand{\Summary}[1]{\begin{box7*}[overlay app={%
+\node[inner sep=0mm,anchor=south east]at([yshift=5.0mm]interior.south east){\Clover[ColorB!15][0.25]};}][\faBars~~\summarytitle]\vspace*{#1}\end{box7*}}
 %%
 \DeclareDocumentEnvironment{Block}{ +O{} }{%
 \ifblank{#1}{\begin{box7}}{\begin{box7*}[][#1]}%
