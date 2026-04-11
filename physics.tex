@@ -1,4 +1,4 @@
-\documentclass[themecolor=vineyard,trimline]{textbook-cn}%,openany
+\documentclass[themecolor=vineyard]{textbook-cn}%,trimline,openany
 \graphicspath{{./figure/}{./figures/}{./image/}{./images/}{./graphics/}{./graphic/}{./pictures/}{./picture/}}%提供多种图片路径
 \input{./styles/Cover-cn.tex}
 \input{./styles/Logo.tex}
@@ -26,6 +26,7 @@
 \coverimage{vineyard.jpg}
 \backimage{vineyard.jpg}
 \barcode{barcode.pdf}
+\bookintro{\lipsum[1]}
 
 %%logo插入命令%%
 \newcommand{\inputlogo}[1]{\raisebox{-0.5em}{\includegraphics[width=1.5cm]{#1}}~~}
@@ -133,7 +134,7 @@
 %%扉页
 \maketitle
 
-\zhlipsum[1]
+%\zhlipsum[1]
 
 
 \frontmatter
@@ -262,6 +263,7 @@
 
 
 
+\Summary{10.0cm}
 
 
 

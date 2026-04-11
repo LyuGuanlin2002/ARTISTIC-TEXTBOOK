@@ -244,6 +244,7 @@
 \newcommand{\englishsubtitle}[1]{\long\def\@englishsubtitle{\MakeUppercase{#1}}}
 \newcommand{\presslogo}[1]{\long\def\@presslogo{#1}}
 \newcommand{\pressname}[1]{\long\def\@pressname{#1}}
+\newcommand{\bookintro}[1]{\long\def\@bookintro{#1}}
 
 %%%%%%%%%%%%%%%%%%%% 字体设置 %%%%%%%%%%%%%%%%%%%%
 \RequirePackage[fontset=none]{ctex}%中文文本
@@ -1032,6 +1033,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \newcommand{\reviewtitle}{知识回顾}
 \newcommand{\prooftitle}{证明}
 \newcommand{\solutiontitle}{参考答案}
+\newcommand{\summarytitle}{要点总结}
 \newcommand{\comprehensiontitle}{阅读理解}
 \newcommand{\clozetitle}{完形填空}
 \newcommand{\articletitle}{文本解读}
@@ -1062,17 +1064,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 %%
 \newcommand{\AddGutter}{\@Guttertrue}%添加装订线
 \newcommand{\RemoveGutter}{\@Gutterfalse}%移除装订线
-%%三叶草图案%%
-\NewDocumentCommand{\Clover}{O{ColorB!7.5} O{0.25}}{%
-\tikz[#1,scale=#2]{%
-\fill(.1,0) ..controls + (-60:2) and + (60:4)..(-3,-25)--++(-.5,0) ..controls + (60:2) and + (-60:2)..(-.1,0)--cycle;
-\def\petal{%
-(0.2,0) ..controls + (90:2) and + (-90:4)..(6,7) ..controls + (90:4) and + (90:4)..(0,7) ..controls + (90:4) and + (90:4)..(-6,7) ..controls + (-90:4) and + (90:2)..(-.2,0)}
-\fill\petal;
-\fill[rotate=120]\petal;
-\fill[rotate=-120]\petal;}
-}
-%%
+%%%%
 \newcommand{\@Main@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]%
 \newdimen\@GutterWidth%
@@ -4257,10 +4249,12 @@ underlay boxed title={%
 %%
 \DeclareTColorBox{box7}{ +O{} +O{} }{BlockBox=#2,#1}
 \DeclareTColorBox{box7*}{ +O{} +O{} }{FoldBox=#2,#1}
-
+%%
 \newenvironment{Proof}{\begin{box7*}[][\faBars~~\prooftitle]}{\end{box7*}}
 %%
 \newenvironment{Solution}{\begin{box7*}[][\faBars~~\solutiontitle]}{\end{box7*}}
+%%
+\newcommand{\Summary}[1]{\begin{box7*}[][\faBars~~\summarytitle]\vspace*{#1}\end{box7*}}
 %%
 \DeclareDocumentEnvironment{Block}{ +O{} }{%
 \ifblank{#1}{\begin{box7}}{\begin{box7*}[][#1]}%
@@ -4471,15 +4465,24 @@ before={\begin{center}},after={\end{center}},
 colframe=ColorB!7.5,colback=ColorB!7.5,
 rounded corners,arc=5.0pt,colupper=ColorA,#1}
 
-%%重定义标题页%%
-\renewcommand{\maketitle}{%
-\begin{titlepage}%
-\setlength{\parindent}{0em}
+%%三叶草图案%%
+\NewDocumentCommand{\Clover}{O{ColorB!7.5} O{0.25}}{%
+\tikz[#1,scale=#2]{%
+\fill(.1,0) ..controls + (-60:2) and + (60:4)..(-3,-25)--++(-.5,0) ..controls + (60:2) and + (-60:2)..(-.1,0)--cycle;
+\def\petal{%
+(0.2,0) ..controls + (90:2) and + (-90:4)..(6,7) ..controls + (90:4) and + (90:4)..(0,7) ..controls + (90:4) and + (90:4)..(-6,7) ..controls + (-90:4) and + (90:2)..(-.2,0)}
+\fill\petal;
+\fill[rotate=120]\petal;
+\fill[rotate=-120]\petal;}
+}
+%%扉页样式%%
+\newcommand{\@Title@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]%
 \newdimen\@GutterWidth
 %%
 \@GutterWidth=\dimexpr\@FrameWidth+\@innerlen-\@outerlen\relax
-%%
+%%根据页数的奇偶生成%%
+\ifodd\value{page}
 \coordinate(A)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
 \coordinate(B)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
 \coordinate(C)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
@@ -4488,6 +4491,16 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 \coordinate(F)at([xshift=-\@FrameWidth,yshift=\@FrameWidth]C);
 \coordinate(G)at([xshift=-\@FrameWidth,yshift=-\@FrameWidth]B);
 \coordinate(H)at([xshift=\@GutterWidth,yshift=-\@FrameWidth]A);
+\else%
+\coordinate(A)at([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
+\coordinate(B)at([xshift=-\@ExtraWidth,yshift=\@ExtraWidth]current page.north west);
+\coordinate(C)at([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west);
+\coordinate(D)at([xshift=\@ExtraWidth,yshift=-\@ExtraWidth]current page.south east);
+\coordinate(E)at([xshift=-\@GutterWidth,yshift=\@FrameWidth]D);
+\coordinate(F)at([xshift=\@FrameWidth,yshift=\@FrameWidth]C);
+\coordinate(G)at([xshift=\@FrameWidth,yshift=-\@FrameWidth]B);
+\coordinate(H)at([xshift=-\@GutterWidth,yshift=-\@FrameWidth]A);
+\fi%
 %%背景%%
 \path[fill=ColorB!7.5,sharp corners](D)rectangle(B);
 %%
@@ -4496,8 +4509,12 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 (E)[rounded corners=5.0mm]--(F)[rounded corners=5.0mm]--(G)[sharp corners]--(H)[sharp corners]--cycle;
 %%
 \node[inner sep=0mm]at(current page.center){\Clover[ColorB!15][0.25]};
-\end{tikzpicture}%
-\setlength{\parindent}{0pt}%
+\end{tikzpicture}}
+%%重定义标题页%%
+\RenewDocumentCommand{\maketitle}{}{%
+\begin{titlepage}%
+\setlength{\parindent}{0em}%务必放在第一行
+\@Title@PageStyle%
 \centering\color{ColorA}%
 %%书籍系列%%
 {\TitlepageNormalFont%
@@ -4538,5 +4555,10 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 {\TitlepageNormalFont%
 \ifdefvoid{\@presslogo}{}{\raisebox{-0.2cm}{\mbox{\includegraphics[width=0.75cm]{\@presslogo}\hskip0.25cm}}}\ifdefvoid{\@pressname}{}{\@pressname}%
 }%
+\clearpage%
+\setlength{\parindent}{2.0em}%
+\@Title@PageStyle%
+\RaggedRight%
+\@bookintro%
 \end{titlepage}}
 \makeatother
