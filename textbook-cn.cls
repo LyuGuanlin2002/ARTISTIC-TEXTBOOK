@@ -1153,7 +1153,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \@CircleSep=\dimeval{(\paperheight-\@toplen-\@botlen)/(\@CircleNumber-1)}
 %%
 \foreach \i in {1,...,\@CircleNumber}{%
-\fill[ColorB!50]([xshift=\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north west)circle(\@CircleRadius);}
+\fill[ColorB!15]([xshift=\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north west)circle(\@CircleRadius);}
 \fi
 %%%%
 \else
@@ -1211,7 +1211,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \@CircleSep=\dimeval{(\paperheight-\@toplen-\@botlen)/(\@CircleNumber-1)}
 %%
 \foreach \i in {1,...,\@CircleNumber}{%
-\fill[ColorB!50]([xshift=-\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north east)circle(\@CircleRadius);}
+\fill[ColorB!15]([xshift=-\@GutterWidth/2,yshift=-\@toplen-(\i-1)*\@CircleSep]current page.north east)circle(\@CircleRadius);}
 \fi
 \fi
 \end{tikzpicture}%
@@ -3942,7 +3942,8 @@ before title={\@change@minipage@footnote}
 }}
 %%%%
 \tcbset{FoldBox/.style args={#1}{%
-empty,breakable,
+enhanced standard,%empty,
+breakable,
 pad after break=5.0mm,
 colback=ColorB!7.5,colframe=ColorB!7.5,
 boxsep=3.0mm,
@@ -3963,9 +3964,10 @@ segmentation style={cap=round,line width=2.25pt,draw=ColorA!25,solid,shorten <= 
 segmentation at break=false,
 underlay boxed title={%
 \path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](title.north west)--(title.north east)--([xshift=5.0mm]title.south east)--(frame.north east)--(frame.south east)--(frame.south west)--cycle;},
-overlay middle and last={%
-\path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](frame.north west)rectangle(frame.south east);}
-}}
+%overlay middle and last={%
+%\path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](frame.north west)rectangle(frame.south east);}
+}
+}
 
 %%设置节前盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
@@ -4255,7 +4257,10 @@ underlay boxed title={%
 \newenvironment{Solution}{\begin{box7*}[][\faBars~~\solutiontitle]}{\end{box7*}}
 %%
 \newcommand{\Summary}[1]{\begin{box7*}[overlay app={%
-\node[inner sep=0mm,anchor=south east]at([yshift=5.0mm]interior.south east){\Clover[ColorB!15][0.25]};}][\faBars~~\summarytitle]\vspace*{#1}\end{box7*}}
+\begin{tcbclipinterior}
+\node[inner sep=0mm,anchor=south east]at([yshift=5.0mm]interior.south east){\Clover[ColorB!15][0.25]};
+\end{tcbclipinterior}},
+before upper app=\vspace*{#1}][\faBars~~\summarytitle]\end{box7*}}
 %%
 \DeclareDocumentEnvironment{Block}{ +O{} }{%
 \ifblank{#1}{\begin{box7}}{\begin{box7*}[][#1]}%
