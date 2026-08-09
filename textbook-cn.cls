@@ -3720,7 +3720,7 @@ text align={fit to path stretching spaces}%
 \@AnswerStyle{\answertitle}{ColorG}%
 \hspace*{0.5em}\vspace*{0.25em}%
 {\color{ColorG}\bfseries #1~~}%
-}{\medskip}
+}{\par\medskip}
 %%%%
 \NewDocumentEnvironment{Answer*}{+O{}}{%
 \medskip%
@@ -3728,7 +3728,7 @@ text align={fit to path stretching spaces}%
 \@AnswerStyle{\analysistitle}{ColorF}%
 \hspace*{0.5em}\vspace*{0.25em}%
 {\color{ColorG}\bfseries #1~~}%
-}{\medskip}
+}{\par\medskip}
 
 %%%%
 %%例题%%
@@ -3743,7 +3743,7 @@ text align={fit to path stretching spaces}%
 \fi%
 \hspace*{0.5em}\vspace*{0.25em}%
 {\color{ColorA}\bfseries #1~~}%
-}{\medskip}
+}{\par\medskip}
 %%%%
 \NewDocumentEnvironment{Example*}{+O{}}{%
 \medskip%
@@ -3751,7 +3751,7 @@ text align={fit to path stretching spaces}%
 \@AnswerStyle{\exampletitle}{ColorA}%
 \hspace*{0.5em}\vspace*{0.25em}%
 {\color{ColorA}\bfseries #1~~}%
-}{\medskip}
+}{\par\medskip}
 
 %%变式%%
 \NewDocumentEnvironment{Variant}{+O{}}{%
@@ -3765,7 +3765,7 @@ text align={fit to path stretching spaces}%
 \fi%
 \hspace*{0.5em}\vspace*{0.25em}%
 {\color{ColorB}\bfseries #1~~}%
-}{\medskip}
+}{\par\medskip}
 %%%%
 \NewDocumentEnvironment{Variant*}{+O{}}{%
 \medskip%
@@ -3773,7 +3773,7 @@ text align={fit to path stretching spaces}%
 \@AnswerStyle{\varianttitle}{ColorB}%
 \hspace*{0.5em}\vspace*{0.25em}%
 {\color{ColorB}\bfseries #1~~}%
-}{\medskip}
+}{\par\medskip}
 
 %%%%
 %%设置注释盒子样式%%
