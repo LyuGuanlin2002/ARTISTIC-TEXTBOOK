@@ -1225,7 +1225,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \fancyhead[LE]{\HeaderFont\color{ColorA}\leftmark}}
 
 %%防伪水印%%
-\newcommand{\WaterMark}{%
+\newcommand{\Medal}{%
 \tikz[scale=2.25,opaque]{%
 \begingroup%
 %参数
@@ -1299,7 +1299,7 @@ text align={fit to path stretching spaces}%
 \newcommand{\@Part@PageStyle}{%
 \begin{tikzpicture}[remember picture,overlay]
 \path[fill=ColorB!7.5]([xshift=-\@ExtraWidth,yshift=-\@ExtraWidth]current page.south west)rectangle([xshift=\@ExtraWidth,yshift=\@ExtraWidth]current page.north east);
-\node at(current page.center){\WaterMark};
+\node at(current page.center){\Clover[ColorB!15][0.5]};
 \end{tikzpicture}}
 %%
 %%定义部分页面样式%%
@@ -3714,18 +3714,20 @@ text align={fit to path stretching spaces}%
 }
 %%%%
 %%解答%%
-\newenvironment{Answer}{%
+\NewDocumentEnvironment{Answer}{+O{}}{%
 \medskip%
 \colorlet{ListColor}{ColorG}%
 \@AnswerStyle{\answertitle}{ColorG}%
 \hspace*{0.5em}\vspace*{0.25em}%
+{\color{ColorG}\bfseries #1~~}%
 }{\medskip}
 %%%%
-\newenvironment{Answer*}{%
+\NewDocumentEnvironment{Answer*}{+O{}}{%
 \medskip%
 \colorlet{ListColor}{ColorF}%
 \@AnswerStyle{\analysistitle}{ColorF}%
 \hspace*{0.5em}\vspace*{0.25em}%
+{\color{ColorG}\bfseries #1~~}%
 }{\medskip}
 
 %%%%
@@ -3938,12 +3940,15 @@ subtitle style={empty,fontupper=\BoxSubtitleFont,colupper=ColorA,top=-3.0mm,bott
 segmentation style={cap=round,line width=2.25pt,draw=ColorA!25,solid,shorten <= 5.0mm,shorten >= 5.0mm,loosely dashed},
 segmentation at break=false,
 IfBlankTF={#1}{}{title={\strut#1\strut}},
-before title={\@change@minipage@footnote}
+before title={\@change@minipage@footnote},
+overlay={%
+\begin{tcbclipinterior}
+\node[inner sep=0mm,anchor=south east]at([yshift=5.0mm]interior.south east){\Clover[ColorB!15][0.25]};
+\end{tcbclipinterior}}
 }}
 %%%%
 \tcbset{FoldBox/.style args={#1}{%
-enhanced standard,%empty,
-breakable,
+enhanced standard,breakable,
 pad after break=5.0mm,
 colback=ColorB!7.5,colframe=ColorB!7.5,
 boxsep=3.0mm,
@@ -3964,10 +3969,11 @@ segmentation style={cap=round,line width=2.25pt,draw=ColorA!25,solid,shorten <= 
 segmentation at break=false,
 underlay boxed title={%
 \path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](title.north west)--(title.north east)--([xshift=5.0mm]title.south east)--(frame.north east)--(frame.south east)--(frame.south west)--cycle;},
-%overlay middle and last={%
-%\path[draw=ColorB!7.5,fill=ColorB!7.5,rounded corners=7.5pt](frame.north west)rectangle(frame.south east);}
-}
-}
+overlay={%
+\begin{tcbclipinterior}
+\node[inner sep=0mm,anchor=south east]at([yshift=5.0mm]interior.south east){\Clover[ColorB!15][0.25]};
+\end{tcbclipinterior}}
+}}
 
 %%设置节前盒子%%
 %盒子内脚注设置，使得脚注位于页面最下方而不是盒子最下方
@@ -4256,11 +4262,7 @@ underlay boxed title={%
 %%
 \newenvironment{Solution}{\begin{box7*}[][\faBars~~\solutiontitle]}{\end{box7*}}
 %%
-\newcommand{\Summary}[1]{\begin{box7*}[overlay app={%
-\begin{tcbclipinterior}
-\node[inner sep=0mm,anchor=south east]at([yshift=5.0mm]interior.south east){\Clover[ColorB!15][0.25]};
-\end{tcbclipinterior}},
-before upper app=\vspace*{#1}][\faBars~~\summarytitle]\end{box7*}}
+\newcommand{\Summary}[1]{\begin{box7*}[before upper app=\vspace*{#1}][\faBars~~\summarytitle]\end{box7*}}
 %%
 \DeclareDocumentEnvironment{Block}{ +O{} }{%
 \ifblank{#1}{\begin{box7}}{\begin{box7*}[][#1]}%
@@ -4416,7 +4418,7 @@ overlay={%
 \refstepcounter{@sideinfo}%
 \fi%
 \IfBooleanTF{#1}
-{\hspace{0.5em}\sidenotemark{ColorH}{\relainfotitle~{\sffamily\the@sideinfo}}%
+{\hspace{0.5em}\sidenotemark[ColorH]{\relainfotitle~{\sffamily\the@sideinfo}}%
 \marginnote{%
 \parindent=0pt%
 \begin{box10}{\faCommentDots~~\relainfotitle~{\sffamily\the@sideinfo}}{ColorH}
@@ -4433,7 +4435,7 @@ overlay={%
 \refstepcounter{@sidethink}%
 \fi%
 \IfBooleanTF{#1}
-{\hspace{0.5em}\sidenotemark{ColorB!90!black}{\deepthinktitle~{\sffamily\the@sidethink}}%
+{\hspace{0.5em}\sidenotemark[ColorB!90!black]{\deepthinktitle~{\sffamily\the@sidethink}}%
 \marginnote{%
 \parindent=0pt%
 \begin{box10}{\faTh~~\deepthinktitle~{\sffamily\the@sidethink}}{ColorB!90!black}
@@ -4450,7 +4452,7 @@ overlay={%
 \refstepcounter{@sidemark}%
 \fi%
 \IfBooleanTF{#1}
-{\hspace{0.5em}\sidenotemark{ColorF}{\remarktitle~{\sffamily\the@sidemark}}%
+{\hspace{0.5em}\sidenotemark[ColorF]{\remarktitle~{\sffamily\the@sidemark}}%
 \marginnote{%
 \parindent=0pt%
 \begin{box10}{\faBurn~~\remarktitle~{\sffamily\the@sidemark}}{ColorF}
