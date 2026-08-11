@@ -1,4 +1,4 @@
-\documentclass[themecolor=vineyard]{textbook-cn}%trimline,openany
+\documentclass[themecolor=vineyard,fontscale=small]{textbook-cn}%,trimline,openany
 \graphicspath{{./figure/}{./figures/}{./image/}{./images/}{./graphics/}{./graphic/}{./pictures/}{./picture/}}%提供多种图片路径
 \input{./styles/Cover-cn.tex}
 \input{./styles/Logo.tex}
@@ -265,7 +265,7 @@
 
 \Summary{80cm}
 
-\Summary{3cm}
+\Summary{10cm}
 
 \backmatter
 
@@ -284,8 +284,8 @@
 
 
 \chaptersubtitle{测试文字}
-\chapter{后记测试}
-\PartEnd
+\chapter{后记测试}*[测试文字测试文字]
+%\PartEnd
 \zhlipsum
 
 \zhlipsum[1]
@@ -331,14 +331,23 @@ $$
 
 
 
+\chapter{测试好好好}
+\zhlipsum
+\zhlipsum
 
 
+\chapter{测试坏坏坏}*
+\zhlipsum
+\zhlipsum
 
+%\PartStart
 \chaptersubtitle{测试文字}
-\chapter{测试}
+\chapter{测试}[测试文字测试文字测试文字][名人名言]
 
 \zhlipsum
 \zhlipsum
+
+
 
 
 
