@@ -4605,6 +4605,7 @@ rounded corners,arc=5.0pt,colupper=ColorA,#1}
 \setlength{\parindent}{2.0em}%
 \@Title@PageStyle%
 \RaggedRight%
+\justifying%
 \@bookintro%
 \end{titlepage}}
 \makeatother
