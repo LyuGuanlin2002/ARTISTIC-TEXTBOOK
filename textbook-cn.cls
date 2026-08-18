@@ -5,7 +5,7 @@
 
 \makeatletter
 %%%%%%%%%%%%%%%%%%%% 自定义命令宏包 %%%%%%%%%%%%%%%%%%%%
-\RequirePackage{xkeyval,kvoptions,etoolbox,ifthen,xifthen,xparse,expl3,letltxmacro}%设置键和键值%自定义命令
+\RequirePackage{xkeyval,kvoptions,etoolbox,ifthen,xifthen,xparse,expl3,letltxmacro,atbegshi}%设置键和键值%自定义命令
 \SetupKeyvalOptions{family=TextBook,prefix=TextBook@,setkeys=\kvsetkeys}
 \newcommand{\ekv}[1]{\kvsetkeys{TextBook}{#1}}
 %%声明颜色键及默认值%%
@@ -663,7 +663,7 @@ BoldFont=WaterMarkFont.ttf]
 \fi
 %%参考文献输出设置%%
 \NewDocumentCommand{\printbib}{O{\chapter*} m s}{%
-\colorlet{ListColor}{ColorA}%
+\colorlet{}{ColorA}%
 \def\@biblevel{#1}%
 %判断参考文献的层次是否是带*版本
 \IfSubStr{#1}{*}{%
@@ -836,6 +836,7 @@ book=\scalebox{\fpeval{0.35*#1}}{\bfseries\sffamily ABC},bookcolour=blue!30!blac
 \newcounter{@sidemark}[section]
 \newcounter{@sidethink}[section]
 \newcounter{@sideinfo}[section]
+\newcounter{@boxpara}
 %%%%
 \renewcommand{\thesubfigure}{\thefigure.\Alph{subfigure}}
 \renewcommand{\thesubtable}{\thetable.\Alph{subtable}}
@@ -4313,10 +4314,25 @@ underlay boxed title={%
 
 \DeclareTColorBox{box8}{+O{} +m +O{} +O{} O{ColorA} O{}}{CodeBox=#2/#3/#4/#5/#6,#1}
 
+%%段落编号命令：使用段落钩子
+\newcommand{\SetupParaNumberHook}{%
+\AddToHook{para/begin}[parabox‑hook]{%
+\stepcounter{@boxpara}%
+\llap{\LineNumFont\color{ListColor}\the@boxpara\hbox to 7.5mm{}}}%
+}
+%%移除段落编号
+\newcommand{\RemoveParaNumber}{\RemoveFromHook{para/begin}[parabox‑hook]}
+%%
 \NewDocumentEnvironment{Comprehension}{+O{} +O{} }{\begin{box8}[phantom={%
 \if@mainmatter%
 \refstepcounter{@comprehension}%
-\fi}]{\comprehensiontitle%
+\fi},%
+before upper app={%
+\setcounter{@boxpara}{0}%
+\SetupParaNumberHook},
+after upper app={\RemoveParaNumber},
+before lower app={\SetupParaNumberHook},
+after lower app={\RemoveParaNumber}]{\comprehensiontitle%
 \if@mainmatter%
 {\sffamily\the@comprehension}%
 \fi}[#1][#2][ColorB]}{\end{box8}}
@@ -4324,18 +4340,43 @@ underlay boxed title={%
 \NewDocumentEnvironment{Cloze}{+O{} +O{} }{\begin{box8}[phantom={%
 \if@mainmatter%
 \refstepcounter{@cloze}%
-\fi}]{\clozetitle%
+\fi},%
+before upper app={%
+\setcounter{@boxpara}{0}%
+\SetupParaNumberHook},
+after upper app={\RemoveParaNumber},
+before lower app={\SetupParaNumberHook},
+after lower app={\RemoveParaNumber}]{\clozetitle%
 \if@mainmatter%
 {\sffamily\the@cloze}%
 \fi}[#1][#2][ColorA]}{\end{box8}}
 %%
-\NewDocumentEnvironment{Article}{+O{} +O{} }{\begin{box8}{\articletitle}[#1][#2][ColorC]}{\end{box8}}
+\NewDocumentEnvironment{Article}{+O{} +O{} }{\begin{box8}[%
+before upper app={%
+\setcounter{@boxpara}{0}%
+\SetupParaNumberHook},
+after upper app={\RemoveParaNumber},
+before lower app={\SetupParaNumberHook},
+after lower app={\RemoveParaNumber}	
+]{\articletitle}[#1][#2][ColorC]}{\end{box8}}
 %%
 \NewDocumentEnvironment{Vocabulary}{ +O{} +O{} }{\begin{box8}{\vocabularytitle}[#1][#2][ColorE]}{\end{box8}}
 
-\NewDocumentEnvironment{Comprehension*}{+O{} +O{} }{\begin{box8}{\comprehensiontitle}[#1][#2][ColorB]}{\end{box8}}
+\NewDocumentEnvironment{Comprehension*}{+O{} +O{} }{\begin{box8}[%
+before upper app={%
+\setcounter{@boxpara}{0}%
+\SetupParaNumberHook},
+after upper app={\RemoveParaNumber},
+before lower app={\SetupParaNumberHook},
+after lower app={\RemoveParaNumber}]{\comprehensiontitle}[#1][#2][ColorB]}{\end{box8}}
 %%
-\NewDocumentEnvironment{Cloze*}{+O{} +O{} }{\begin{box8}{\clozetitle}[#1][#2][ColorA]}{\end{box8}}
+\NewDocumentEnvironment{Cloze*}{+O{} +O{} }{\begin{box8}[%
+before upper app={%
+\setcounter{@boxpara}{0}%
+\SetupParaNumberHook},
+after upper app={\RemoveParaNumber},
+before lower app={\SetupParaNumberHook},
+after lower app={\RemoveParaNumber}]{\clozetitle}[#1][#2][ColorA]}{\end{box8}}
 
 %%%%
 \ifTextBook@mintedcode

@@ -1,7 +1,7 @@
 
-\partintro{这部分是力学。}
+%\partintro{这部分是力学。}
 %\partimage{\includegraphics[height=\paperheight]{starry.jpg}}
-\part[直线运动]{运动学I：直线运动}
+%\part[直线运动]{运动学I：直线运动}
 
 
 \chaptersaying{不了解运动，就不了解自然。——亚里士多德}
@@ -205,13 +205,12 @@ vline{2-Y}={gray}
 		cswz
 	\end{Warning}
 	
-	\zhlipsum[3]
+	\zhlipsum
 \end{paracol}
 
+%\clearpage
 
-\begin{Example*}[测试文字测试文字测试文字测试文字测试文字
-	
-测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字]
+\begin{Example*}[测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字]
 这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题这是一道例题
 
 \begin{NumberedItem}{1}
@@ -420,8 +419,8 @@ vline{2-Y}={gray}
 
 
 %\partimage{\includegraphics[height=\paperheight]{starry.jpg}}
-\part*{丝柏树}
-\part*{丝柏树}
+%\part*{丝柏树}
+%\part*{丝柏树}
 
 
 \chapterimage{\includegraphics[height=\paperheight+1.0cm]{cypresses.jpg}}
@@ -771,15 +770,32 @@ vline{2-Y}={gray}
 
 
 
-\begin{Comprehension}[测试文字\footnote{脚注}]
+\begin{Article}[测试文字\footnote{脚注}]
 	\lipsum
-		
+	
+	你好
+	
+	\tcblower	
 	\lipsum
+	\RemoveParaNumber
 	\begin{NumberedItem}{1}
 		\item 测试文字
 	\end{NumberedItem}
-\end{Comprehension}
+\end{Article}
 
+
+\begin{PythonBox}{}
+	#
+	from functools import lru_cache
+	@lru_cache(maxsize=None)
+	def fibonacci(n):
+	"""使用缓存的斐波那契函数"""#
+	if n < 2:
+	return n
+	return fibonacci(n-1) + fibonacci(n-2)
+	# 打印前20个
+	print([fibonacci(i) for i in range(20)])
+\end{PythonBox}
 
 
 \Remark{\zhlipsum[1]%
@@ -921,7 +937,7 @@ vline{2-Y}={gray}
 \chapter{计数器}
 
 
-\part{测试部分}
+%\part{测试部分}
 
 
 \zhlipsum
