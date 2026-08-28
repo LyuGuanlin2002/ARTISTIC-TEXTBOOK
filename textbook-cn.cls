@@ -4493,9 +4493,7 @@ overlay={%
 %%边注盒子%%
 %%+m表示允许换行、空行的参数%%
 \DeclareDocumentCommand{\RelaInfo}{ s +m O{0pt} }
-{\if@mainmatter%
-\refstepcounter{@sideinfo}%
-\fi%
+{\refstepcounter{@sideinfo}%
 \IfBooleanTF{#1}
 {\hspace{0.5em}\sidenotemark[ColorH]{\relainfotitle~{\sffamily\the@sideinfo}}%
 \marginnote{%
@@ -4510,9 +4508,7 @@ overlay={%
 }
 %%%%
 \DeclareDocumentCommand{\DeepThink}{ s +m O{0pt} }
-{\if@mainmatter%
-\refstepcounter{@sidethink}%
-\fi%
+{\refstepcounter{@sidethink}%
 \IfBooleanTF{#1}
 {\hspace{0.5em}\sidenotemark[ColorB!90!black]{\deepthinktitle~{\sffamily\the@sidethink}}%
 \marginnote{%
@@ -4523,15 +4519,13 @@ overlay={%
 }{\begin{box9}{\faTh~~\deepthinktitle~{\sffamily\the@sidethink}}[ColorB!90!black]
 #2
 \end{box9}
-\gobble{#3}}
+\gobble{#3}}%
 }
 %%%%
 \DeclareDocumentCommand{\Remark}{ s +m O{0pt} }
-{\if@mainmatter%
-\refstepcounter{@sidemark}%
-\fi%
-\IfBooleanTF{#1}
-{\hspace{0.5em}\sidenotemark[ColorF]{\remarktitle~{\sffamily\the@sidemark}}%
+{\refstepcounter{@sidemark}%
+\IfBooleanTF{#1}{%
+\hspace{0.5em}\sidenotemark[ColorF]{\remarktitle~{\sffamily\the@sidemark}}%
 \marginnote{%
 \parindent=0pt%
 \begin{box10}{\faBurn~~\remarktitle~{\sffamily\the@sidemark}}{ColorF}
